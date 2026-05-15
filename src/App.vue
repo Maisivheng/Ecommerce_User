@@ -4,5 +4,6 @@ import { RouterView } from 'vue-router'
 
 
 <template>
+  <h1 class="text-danger fs-6">title</h1>
   <RouterView />
 </template>
