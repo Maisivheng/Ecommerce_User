@@ -1,4 +1,3 @@
 <template>
-    <h1>Login</h1>
-    
+    <h1 class="text-danger">Login</h1>
 </template>
