@@ -1,21 +1,23 @@
 <template>
     <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="card shadow p-4" style="width: 350px;">
-        <h3 class="text-center mb-4">Login</h3>
+        <div class="card shadow p-4" style="width: 450px;">
+        <h1 class=" text-center fs-2">សូមស្វាគមន៍មកវិញ</h1>
+        <h4 class="text-center mb-4 fs-5">ចូលគណនីរបស់អ្នក</h4>
             <form @submit.prevent="loginForm" class=" mb-2">
                 <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" placeholder="Enter email" v-model="form.email">
+                    <label class="form-label">អុីមែល</label>
+                    <input type="email" class="form-control" placeholder="បញ្ចូលអុីមែល" v-model="form.email">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-control" placeholder="Enter password" v-model="form.password">
+                    <label class="form-label">ពាក្យសម្ងាត់</label>
+                    <input type="password" class="form-control" placeholder="បញ្ចូលពាក្យសម្ងាត់" v-model="form.password">
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Login</button>
-                <div class="d-felx py-2">
-                    <input type="checkbox" class=" form-check-input" name="" id=""> remember me
-                    <a href="" class="text-dark"  style=" margin-left: 58px;">Forgot Password</a>
+                <button type="submit" class="btn btn-primary w-100">ចូលគណនី</button>
+                <div class="mb-3">
+                    <input class=" form-check-input" type="checkbox" name="" id=""> ចងចាំ
+                    <a href="" class="text-dark"  style=" margin-left: 58px;">ភ្លេចពាក្យសម្ងាត់</a>
                 </div>
+                <a class="text-center text-dark">មិនមានគណនី?<span class=" text-primary">បង្កើតគណនី</span> </a>
             </form>
         </div>
     </div>
