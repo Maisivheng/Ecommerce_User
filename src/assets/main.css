@@ -1,10 +1,114 @@
 @import url('https://fonts.googleapis.com/css2?family=Hanuman:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&family=Kdam+Thmor+Pro&display=swap');
 
 :root {
-  --bs-body-font-family: "Inter", Hanuman, sans-serif, serif;
-
+  --bs-body-font-family: "Inter","Kantumruy Pro", sans-serif, serif;
 }
 body {
   font-family: var(--bs-body-font-family);
   font-size: 15px;
+  background-color: #f6f9fc;
+  color: #333333 !important;
+}
+
+/* ================= Design Navbar ================= */
+.navbar {
+  padding: 10px 100px !important;
+}
+.navbar-brand{
+  color: #3676EA !important;
+  font-size: 28px !important;
+  font-family: "Kdam Thmor Pro", sans-serif;
+  margin-right: 100px !important;
+}
+ 
+/* Container to hold and align the icon relative to the input */
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 300px; /* Adjust width as needed for your layout */
+}
+
+/* The Search Input Box */
+.search-input {
+  width: 100%;
+  background-color: #ffffff;
+  border: 2px solid #333333;
+  border-radius: 6px;
+  padding: 5px 10px 5px 40px;
+  color: #8b8989;
+  font-size: 18px !important;
+  outline: none;
+  box-sizing: border-box;
+}
+.search-input:focus{
+  background-color: white !important;
+  border-color: #3676EA !important;
+  color: #333333 !important;
+}
+
+.nav-link{
+  color: #333333 !important;
+  font-family: "Kantumruy Pro";
+  font-size: 18px !important;
+  background-color: #ffffff;
+}
+.nav-link:hover, .nav-link:focus{
+  color: #3676EA !important;
+  background-color: none !important;
+}
+
+/* Positioning the Icon inside the input */
+.bi-search {
+  position: absolute;
+  left: 16px;
+  top: 44%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: #333333;
+  pointer-events: none;
+}
+
+.btn-item{
+  padding: 4px 10px !important;
+  background-color: #ffffff;
+  border: 2px solid gray !important;
+  border-radius: 6px;
+  font-size: 15px !important;
+}
+
+.bi-person-circle{
+  font-size: 30px !important;
+  color: #a1abbc;
+}
+.cart-link{
+  border: 2px solid #3676EA !important;
+  color: #323030;
+  font-size: 15px !important;
+}
+.cart-link:hover, .cart-link:focus
+.btn-item:hover, .btn-item:focus
+{
+  border: 2px solid #333333;
+  background-color: #3676EA !important;
+  color: #ffffff !important;
+}
+
+
+/* ===================== Design Footer ===================== */
+.Footer{
+  background-color: #E4E5E6;
+  /* padding: 0px 0px !important */
+  ;
+}
+.footer-title, .footer-KHtitle{
+  color: #333333;
+  font-size: 20px;
+}
+.footer-KHtitle{
+  font-family: "Kdam Thmor Pro", sans-serif;
+}
+.Footer .nav-link:hover, .Footer .nav-link:focus{
+  color: #333333 !important;
 }
