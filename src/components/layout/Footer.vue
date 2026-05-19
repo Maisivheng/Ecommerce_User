@@ -34,7 +34,7 @@
 									<router-link class="nav-link" to="/"><i class="bi bi-telephone me-2"></i>+855 XX XXX XXX</router-link>
 								</li>
 								<li class="nav-item">
-									<router-link class="nav-link" to="/"><i class="bi bi-geo-alt me-2"></i>Phnom Penh, Cambodia</router-link>
+									<router-link class="nav-link" to="/"><i class="bi bi-geo-alt me-2"></i>ភ្នំពេញ, កម្ពុជា</router-link>
 								</li>
 							</ul>
 						</div>

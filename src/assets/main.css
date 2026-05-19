@@ -47,11 +47,10 @@ body {
   color: #333333 !important;
 }
 
-.nav-link{
+.navbar .nav-link{
   color: #333333 !important;
   font-family: "Kantumruy Pro";
   font-size: 18px !important;
-  background-color: #ffffff;
 }
 .nav-link:hover, .nav-link:focus{
   color: #3676EA !important;
@@ -95,12 +94,9 @@ body {
   color: #ffffff !important;
 }
 
-
 /* ===================== Design Footer ===================== */
 .Footer{
   background-color: #E4E5E6;
-  /* padding: 0px 0px !important */
-  ;
 }
 .footer-title, .footer-KHtitle{
   color: #333333;
@@ -111,4 +107,9 @@ body {
 }
 .Footer .nav-link:hover, .Footer .nav-link:focus{
   color: #333333 !important;
+}
+.Footer .nav-link{
+  color: #333333 !important;
+  font-family: "Kantumruy Pro";
+  font-size: 18px !important;
 }
