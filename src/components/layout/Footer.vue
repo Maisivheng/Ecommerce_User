@@ -1,7 +1,7 @@
 <template>
     <footer class="py-4 Footer">
 		<div class="container">
-			<div class="row d-flex justify-content-between align-items-center pt-4 mb-4 mb-lg-5">
+			<div class="row d-flex justify-content-between align-items-center">
 				<div class="col-12 col-lg-3 pe-lg-0 mb-4 mb-lg-0">
 					<h1 class="navbar-brand">ពិភពទំនិញ</h1>
 				</div>
@@ -55,15 +55,6 @@
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="border-top d-lg-none"></div>
-			<div class="d-block d-lg-flex justify-content-between py-3 py-lg-2">
-				<div class="small mb-2 mb-lg-0 text-muted">
-					© 2023 FreeFrontend.dev. All rights reserved.
-				</div>
-				<!-- <div class="small">
-					<a class="d-block d-lg-inline text-muted ms-lg-2 mb-2 mb-lg-0" href="">Privacy Policy</a> <a class="d-block d-lg-inline text-muted ms-lg-2" href="">Terms of Service</a>
-				</div> -->
 			</div>
 		</div>
 	</footer>
