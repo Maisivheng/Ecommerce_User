@@ -47,7 +47,7 @@ body {
   color: #333333 !important;
 }
 
-.nav-link{
+.navbar .nav-link{
   color: #333333 !important;
   font-family: "Kantumruy Pro";
   font-size: 18px !important;
@@ -95,12 +95,9 @@ body {
   color: #ffffff !important;
 }
 
-
 /* ===================== Design Footer ===================== */
 .Footer{
   background-color: #E4E5E6;
-  /* padding: 0px 0px !important */
-  ;
 }
 .footer-title, .footer-KHtitle{
   color: #333333;
