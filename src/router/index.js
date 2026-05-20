@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import register from '@/views/register.vue'
 import login from '@/views/login.vue'
 import profile from '@/views/Profile/profile.vue'
+import { useauthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,8 +54,16 @@ const router = createRouter({
   ],
 })
 
-export default router
-router.beforeEach((to, from, next) => {
-  document.title = to.meta.title || 'Ecommerce'
-  next()
+router.beforeEach((to)=>{
+  const auth = useauthStore()
+  document.title = to.meta.title
+  if(!auth.token && to.path !== '/login'){
+    return '/login'
+  }
+  if(auth.token && to.path == '/login'){
+    return '/'
+  }
+  return true
+
 })
+export default router;
