@@ -28,16 +28,16 @@ const activeSection = ref("profile");
               @click.prevent="activeSection = 'profile'"
             >
               <i class="bi bi-person"></i>
-              Profile Info
+              ប្រវត្តិរូប
             </a>
-
+            
             <a
               href="#"
               class="nav-link"
               @click.prevent="activeSection = 'password'"
             >
               <i class="bi bi-lock"></i>
-              Change Password
+              ផ្លាស់ប្តូរពាក្យសម្ងាត់
             </a>
 
             <a
@@ -46,7 +46,7 @@ const activeSection = ref("profile");
               @click.prevent="activeSection = 'cart'"
             >
               <i class="bi bi-cart"></i>
-              My Cart
+              របស់ខ្ញុំ
             </a>
 
             <a
@@ -55,12 +55,12 @@ const activeSection = ref("profile");
               @click.prevent="activeSection = 'purchased'"
             >
               <i class="bi bi-bag"></i>
-              Purchased Products
+              ផលិតផលដែលបានទិញ
             </a>
 
             <a href="#" class="nav-link" @click.prevent="activeSection = 'own'">
               <i class="bi bi-box"></i>
-              Own Products
+              ផលិតផលរបស់ខ្ញុំ
             </a>
 
             <a
@@ -88,14 +88,14 @@ const activeSection = ref("profile");
               <div class="col-md-4 mb-3">
                 <div class="card card-ui stat-card">
                   <h2>20</h2>
-                  <p>Total Products</p>
+                  <p>ផលិតផលសរុប</p>
                 </div>
               </div>
 
               <div class="col-md-4 mb-3">
                 <div class="card card-ui stat-card">
                   <h2>12</h2>
-                  <p>Orders</p>
+                  <p>ផលិតផលដែលបានទិញ</p>
                 </div>
               </div>
 
@@ -114,17 +114,17 @@ const activeSection = ref("profile");
               <div
                 class="d-flex justify-content-between align-items-center mb-4"
               >
-                <h3>Profile Information</h3>
-                <!-- <button class="btn btn-primary">Edit Profile</button> -->
-                <div class="d-flex gap-2">
-                  <button class="btn btn-primary">Edit Profile</button>
-                  <button class="btn btn-danger">Delete Account</button>
-                </div>
+                <h4>ប្រវត្តិរូប</h4>
+              <button class="btn btn-primary">កែប្រែ​ ប្រវត្តិរូប</button>
+                <!-- <div class="d-flex gap-2">
+                  <button class="btn btn-primary">កែប្រែ​ ប្រវត្តិរូប</button>
+                  <button class="btn btn-danger">លុបគណនី</button>
+                </div> -->
               </div>
 
               <div class="row">
                 <div class="col-md-6 mb-3">
-                  <label>Full Name</label>
+                  <label>ឈ្មោះ​</label>
                   <input
                     type="text"
                     class="form-control"
@@ -144,7 +144,7 @@ const activeSection = ref("profile");
                 </div>
 
                 <div class="col-md-6 mb-3">
-                  <label>Phone</label>
+                  <label>លេខទូរសព្ទ</label>
                   <input
                     type="text"
                     class="form-control"
@@ -154,7 +154,7 @@ const activeSection = ref("profile");
                 </div>
 
                 <div class="col-md-6 mb-3">
-                  <label class=""> Profile Image </label>
+                  <label class=""> Profile Image</label>
 
                   <input type="file" class="form-control" accept="image/*" />
                 </div>
@@ -180,25 +180,28 @@ const activeSection = ref("profile");
           <!-- CHANGE PASSWORD -->
           <section v-if="activeSection === 'password'" id="" class="mb-5">
             <div class="card card-ui p-4">
-              <h3 class="mb-4">Change Password</h3>
+              <h3 class="mb-4">ផ្លាស់ប្តូរពាក្យសម្ងាត់</h3>
 
               <div class="mb-3">
-                <label>Current Password</label>
+                <label>ពាក្យសម្ងាត់បច្ចុប្បន្ន</label>
                 <input type="password" class="form-control" />
               </div>
 
               <div class="mb-3">
-                <label>New Password</label>
+                <label>ពាក្យសម្ងាត់ថ្មី</label>
                 <input type="password" class="form-control" />
               </div>
 
               <div class="mb-3">
-                <label>Confirm Password</label>
+                <label>បញ្ជាក់ពាក្យសម្ងាត់</label>
                 <input type="password" class="form-control" />
               </div>
 
-              <button class="btn btn-primary">Update Password</button>
+             <div class="">
+               <button class="btn btn-primary">ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់</button>
+             </div>
             </div>
+            
           </section>
 
           <!-- MY CART -->
@@ -207,8 +210,8 @@ const activeSection = ref("profile");
               <div
                 class="d-flex justify-content-between align-items-center mb-4"
               >
-                <h3>My Cart</h3>
-                <button class="btn btn-success">Checkout</button>
+                <h4>របស់ខ្ញុំ</h4>
+                <button class="btn btn-success">ទូទាត់ប្រាក់</button>
               </div>
 
               <table class="table align-middle">
@@ -286,7 +289,8 @@ const activeSection = ref("profile");
 
           <!-- PURCHASED PRODUCTS -->
           <section v-if="activeSection === 'purchased'" id="" class="mb-5">
-            <div class="section-title">Purchased Products</div>
+            <!-- <div class="section-title">ផលិតផលដែលបានទិញ</div> -->
+          <h4>ផលិតផលដែលបានទិញ</h4>
 
             <div class="row">
               <div class="col-md-4 mb-4">
@@ -319,7 +323,7 @@ const activeSection = ref("profile");
               <div
                 class="d-flex justify-content-between align-items-center mb-4"
               >
-                <h3>Own Products</h3>
+                <h4>ផលិតផលរបស់ខ្ញុំ</h4>
                 <button class="btn btn-primary">Add Product</button>
               </div>
 
@@ -370,7 +374,8 @@ const activeSection = ref("profile");
           <!-- DEVICES -->
           <section v-if="activeSection === 'devices'" id="" class="mb-5">
             <div class="card card-ui p-4">
-              <h3 class="mb-4">Connected Devices</h3>
+              <!-- <h3 class="mb-4">ឧបករណ៍ដែលបានតភ្ជាប់</h3> -->
+              <h4>ឧបករណ៍ដែលបានតភ្ជាប់</h4>
 
               <div class="list-group">
                 <div
@@ -393,9 +398,10 @@ const activeSection = ref("profile");
 </template>
 
 <style scoped>
+
 body {
   background: #f5f7fb;
-  font-family: Arial, sans-serif;
+  /* font-family: Arial, sans-serif; */
 }
 
 .sidebar {
