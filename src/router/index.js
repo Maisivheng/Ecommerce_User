@@ -4,55 +4,65 @@ import register from '@/views/register.vue'
 import login from '@/views/login.vue'
 import profile from '@/views/Profile/profile.vue'
 import { useauthStore } from '@/stores/auth'
+import forgotpassword from '@/views/forgotPassword/forgotPassword.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
+      path: "/",
+      name: "home",
       component: HomeView,
       meta: {
-        title: 'Home',
+        title: "Home",
       },
     },
     {
-      path: '/about',
-      name: 'about',
+      path: "/about",
+      name: "about",
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      component: () => import("../views/AboutView.vue"),
       meta: {
-        title: 'About',
+        title: "About",
       },
     },
     {
-      path: '/register',
-      name: 'register',
+      path: "/register",
+      name: "register",
       component: register,
       meta: {
-        title: 'Register',
+        title: "Register",
       },
     },
     {
-      path: '/login',
-      name: 'login',
+      path: "/login",
+      name: "login",
       component: login,
       meta: {
-        title: 'Login',
+        title: "Login",
       },
     },
     {
-      path: '/profile',
-      name: 'profile',
+      path: "/profile",
+      name: "profile",
       component: profile,
       meta: {
-        title: 'Profile',
+        title: "Profile",
+      },
+    },
+
+    {
+      path: "/forgot-password",
+      name: "forgot-password",
+      component: forgotpassword,
+      meta: {
+        title: "Forgot Password",
       },
     },
   ],
-})
+});
 
 router.beforeEach((to)=>{
   const auth = useauthStore()
