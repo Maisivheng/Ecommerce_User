@@ -44,31 +44,52 @@
 import { createApp } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-const router = (useRouter);
+import api from "@/API/api";
+const router = useRouter();
 const email = ref("");
 const errorMessage = ref("");
-
-const submitForm = () => {
-  // Reset error
+const submitForm = async () => {
   errorMessage.value = "";
-  // Validation
+
   if (!email.value) {
     errorMessage.value = "សូមបញ្ចូលអ៊ីមែល";
     return;
   }
-  // Email Regex
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!emailRegex.test(email.value)) {
     errorMessage.value = "អ៊ីមែលមិនត្រឹមត្រូវ";
     return;
   }
-  // Success
-  alert("Forgot password successful! We sent OTP to your email."); 
-  
-  router.push("/verityOtp");
+
+  try {
+    console.log(email.value);
+    const res = await api.post("/api/forgot/pass", {
+      email: email.value,
+    });
+
+    console.log(res.data);
+
+    alert("OTP sent successfully");
+
+    router.push("/verityOtp");
+
+  } catch (err) {
+    console.log(err);
+
+    if (err.response) {
+      console.log(err.response.data);
+      errorMessage.value = err.response.data.message;
+    } 
+    else if (err.request) {
+      errorMessage.value = "Server not responding";
+    } 
+    else {
+      errorMessage.value = err.message;
+    }
+  }
 };
-  // clear form
 
 </script>
 

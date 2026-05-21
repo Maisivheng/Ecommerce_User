@@ -3,13 +3,10 @@ import HomeView from '../views/HomeView.vue'
 import register from '@/views/register.vue'
 import login from '@/views/login.vue'
 import profile from '@/views/Profile/profile.vue'
-<<<<<<< HEAD
 import forgotPassword from '@/views/forgotPassword/forgotpassword.vue'
 import verityOtp from '@/views/forgotPassword/verityOtp.vue'
 import resetpassword from '@/views/forgotPassword/resetpassword.vue'
-=======
 import { useauthStore } from '@/stores/auth'
->>>>>>> 34d3565572b641ec35a221276ecac12fa5917247
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -91,9 +88,9 @@ const router = createRouter({
 router.beforeEach((to)=>{
   const auth = useauthStore()
   document.title = to.meta.title
-  if(!auth.token && to.path !== '/login'){
-    return '/login'
-  }
+  // if(!auth.token && to.path !== '/login'){
+  //   return '/login'
+  // }
   if(auth.token && to.path == '/login'){
     return '/'
   }

@@ -24,8 +24,7 @@
               <i class="bi bi-lock"></i>
             </div>
             <!-- Input -->
-            <input
-              :type="showPassword ? 'password' :'text' " v-model="password" class="custom-input" placeholder="ពាក្យសម្ងាត់" @input="clearMessage" >
+            <input :type="showPassword ? 'password' :'text' " v-model="password" class="custom-input" placeholder="ពាក្យសម្ងាត់" @input="clearMessage" >
            <!-- Eye -->
             <button type="button" class="eye-btn" @click="showPassword = !showPassword" >
               <i class="bi":class=" showPassword ?'bi-eye' : 'bi-eye-slash' " ></i>
@@ -47,7 +46,7 @@
             >
             <!-- Eye -->
             <button type="button" class= "eye-btn" @click=" showConfirmPassword = !showConfirmPassword" >
-              <i class="bi" :class=" showConfirmPassword ? 'bi-eye' : 'bi-eye-slash'"></i>
+              <i class="bi" :class=" showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
             </button>
           </div>
         </div>
