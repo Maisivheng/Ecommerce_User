@@ -84,7 +84,7 @@
         // console.log(password.value);
         if(!validationForm()) return
             await auth.login(form);
-            // router.push('/');
+            router.push('/');
     }
     
     
