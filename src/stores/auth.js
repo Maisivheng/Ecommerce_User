@@ -19,10 +19,11 @@ export const useauthStore = defineStore('auth', () => {
         token.value = res.data.data.token;
         localStorage.setItem('token', token.value)
         alert('Login Success')
+        return true
       }
       else{
         alert("Incorrect email or password.")
-
+        return false
       }
       
     }catch(err){
