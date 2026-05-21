@@ -1,10 +1,14 @@
 <script setup>
+import Navbar from "@/components/layout/Navbar.vue";
 import { ref } from "vue";
 
 const activeSection = ref("profile");
+
+
 </script>
 <template>
   <body>
+    <Navbar></Navbar>
     <div class="container-fluid">
       <div class="row">
         <!-- SIDEBAR -->
@@ -30,7 +34,7 @@ const activeSection = ref("profile");
               <i class="bi bi-person"></i>
               ប្រវត្តិរូប
             </a>
-            
+
             <a
               href="#"
               class="nav-link"
@@ -115,7 +119,7 @@ const activeSection = ref("profile");
                 class="d-flex justify-content-between align-items-center mb-4"
               >
                 <h4>ប្រវត្តិរូប</h4>
-              <button class="btn btn-primary">កែប្រែ​ ប្រវត្តិរូប</button>
+                <button @click="Editprofile()" class="btn btn-primary">កែប្រែ​ ប្រវត្តិរូប</button>
                 <!-- <div class="d-flex gap-2">
                   <button class="btn btn-primary">កែប្រែ​ ប្រវត្តិរូប</button>
                   <button class="btn btn-danger">លុបគណនី</button>
@@ -129,7 +133,7 @@ const activeSection = ref("profile");
                     type="text"
                     class="form-control"
                     readonly
-                    value="Chandalen"
+                    v-model="name"
                   />
                 </div>
 
@@ -138,7 +142,7 @@ const activeSection = ref("profile");
                   <input
                     type="email"
                     class="form-control"
-                    value="user@gmail.com"
+                    v-model="email"
                     readonly
                   />
                 </div>
@@ -146,9 +150,9 @@ const activeSection = ref("profile");
                 <div class="col-md-6 mb-3">
                   <label>លេខទូរសព្ទ</label>
                   <input
+                  v-model="phone"
                     type="text"
                     class="form-control"
-                    value="+85512345678"
                     readonly
                   />
                 </div>
@@ -156,7 +160,7 @@ const activeSection = ref("profile");
                 <div class="col-md-6 mb-3">
                   <label class=""> Profile Image</label>
 
-                  <input type="file" class="form-control" accept="image/*" />
+                  <input :v-model="images" type="file" class="form-control" accept="image/*" />
                 </div>
                 <div class="col-12">
                   <label class="form-label"> Account Created </label>
@@ -164,13 +168,14 @@ const activeSection = ref("profile");
                   <input
                     type="text"
                     class="form-control"
-                    :value="'2024-01-01 12:00:00'"
+                    v-model="accountCreated"
                     readonly
                   />
                 </div>
                 <div class="col-12 mb-3">
                   <label>Address</label>
-                  <textarea class="form-control" readonly rows="4">Phnom Penh, Cambodia
+                  <textarea class="form-control" readonly rows="4" v-model="address">
+Phnom Penh, Cambodia
                   </textarea>
                 </div>
               </div>
@@ -197,11 +202,12 @@ const activeSection = ref("profile");
                 <input type="password" class="form-control" />
               </div>
 
-             <div class="">
-               <button class="btn btn-primary">ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់</button>
-             </div>
+              <div class="">
+                <button class="btn btn-primary">
+                  ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់
+                </button>
+              </div>
             </div>
-            
           </section>
 
           <!-- MY CART -->
@@ -290,7 +296,7 @@ const activeSection = ref("profile");
           <!-- PURCHASED PRODUCTS -->
           <section v-if="activeSection === 'purchased'" id="" class="mb-5">
             <!-- <div class="section-title">ផលិតផលដែលបានទិញ</div> -->
-          <h4>ផលិតផលដែលបានទិញ</h4>
+            <h4>ផលិតផលដែលបានទិញ</h4>
 
             <div class="row">
               <div class="col-md-4 mb-4">
@@ -398,9 +404,9 @@ const activeSection = ref("profile");
 </template>
 
 <style scoped>
-
 body {
-  background: #f5f7fb;
+  /* background: #f5f7fb; */
+  background: #f6f9fc;
   /* font-family: Arial, sans-serif; */
 }
 
