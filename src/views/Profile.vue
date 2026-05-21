@@ -63,14 +63,14 @@ const activeSection = ref("profile");
               ផលិតផលរបស់ខ្ញុំ
             </a>
 
-            <a
+            <!-- <a
               href="#"
               class="nav-link"
               @click.prevent="activeSection = 'devices'"
             >
               <i class="bi bi-phone"></i>
               Devices
-            </a>
+            </a> -->
 
             <a href="#" class="nav-link text-danger">
               <i class="bi bi-box-arrow-right"></i>
