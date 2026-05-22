@@ -10,6 +10,7 @@
         </div>
       </div>
       <!-- Title -->
+
       <h1 class="title"> កំណត់ពាក្យសម្ងាត់ថ្មី </h1>
       <!-- Description -->
       <p class="description"> សូមបញ្ចូលពាក្យសម្ងាត់ថ្មីរបស់អ្នក </p>
@@ -17,6 +18,7 @@
       <form class="reset-form" @submit.prevent="submitForm">
         <!-- Password -->
         <div class="form-group">
+          
           <label class="form-label"> ពាក្យសម្ងាត់ថ្មី </label>
           <div class="input-wrapper">
             <!-- Icon -->
