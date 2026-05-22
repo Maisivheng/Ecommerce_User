@@ -18,5 +18,19 @@ export const useauthStore = defineStore('auth', () => {
     }
     
   }
-  return {login, token};
+
+   const register = async (data) =>{
+    console.log(data);
+    try{
+      let res =await api.post('/api/register' ,data);
+      // console.log(res);
+      token.value = res.data.data.token;
+      localStorage.setItem('token', token.value)
+    }catch(err){
+      console.error(err);
+    }
+    
+  }
+  
+  return {login, token, register};
 })

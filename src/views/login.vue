@@ -17,7 +17,8 @@
                     <input class=" form-check-input" type="checkbox" name="" id=""> ចងចាំ
                     <a href="" class="text-dark"  style=" margin-left: 58px;">ភ្លេចពាក្យសម្ងាត់</a>
                 </div>
-                <a class="text-center text-dark">មិនមានគណនី?<span class=" text-primary">បង្កើតគណនី</span> </a>
+                <!-- <a class="text-center text-dark">មិនមានគណនី?<span class=" text-primary">បង្កើតគណនី</span> </a> -->
+                <RouterLink to="/register">បង្កើតគណនី</RouterLink>
             </form>
         </div>
     </div>
