@@ -1,4 +1,4 @@
-<template>
+​<template>
   <div class="forgot-wrapper">
     <div class="forgot-card">
       <!-- Back Button -->
