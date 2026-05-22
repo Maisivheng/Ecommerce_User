@@ -29,7 +29,7 @@
             <input :type="showPassword ? 'password' :'text' " v-model="password" class="custom-input" placeholder="ពាក្យសម្ងាត់" @input="clearMessage" >
            <!-- Eye -->
             <button type="button" class="eye-btn" @click="showPassword = !showPassword" >
-              <i class="bi":class=" showPassword ?'bi-eye' : 'bi-eye-slash' " ></i>
+              <i class="bi" :class=" showPassword ?'bi-eye' : 'bi-eye-slash' " ></i>
             </button>
           </div>
         </div>
@@ -57,7 +57,7 @@
           {{ errorMessage }}
         </small>
         <!-- Success -->
-        <small v-if="successMessage"class="success-text">
+        <small v-if="successMessage" class="success-text">
           {{ successMessage }}
         </small>
         <!-- Buttons -->

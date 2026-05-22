@@ -1,17 +1,4 @@
-<template>
-   <h1>Forgot password</h1>
-   <div class="container">
-       <div class="card">
-         
-       </div>
-   </div>
-   
-
-</template>
-
-<script setup>
-
-</script>​<template>
+​<template>
   <div class="forgot-wrapper">
     <div class="forgot-card">
       <!-- Back Button -->
@@ -39,7 +26,7 @@
             <div class="input-icon">
               <i class="bi bi-envelope"></i>
             </div>
-            <input type="email"v-model="email"class="custom-input"placeholder="បញ្ចូលអ៊ីមែលរបស់អ្នក"/>
+            <input type="email" v-model="email" class="custom-input" placeholder="បញ្ចូលអ៊ីមែលរបស់អ្នក"/>
           </div>
           <!-- Error -->
           <small v-if="errorMessage" class="error-text">
