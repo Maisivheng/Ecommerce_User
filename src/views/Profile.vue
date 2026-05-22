@@ -1,7 +1,13 @@
 <script setup>
 import Navbar from "@/components/layout/Navbar.vue";
+import Mycart from "@/components/profiles/Mycart.vue";
 import { ref, onMounted, reactive } from "vue";
 import api from "@/API/api";
+import Purchased from "@/components/profiles/Purchased.vue";
+import Own from "@/components/profiles/Own.vue";
+import Devices from "@/components/profiles/Devices.vue";
+
+
 
 const activeSection = ref("profile");
 
@@ -36,13 +42,7 @@ const form = reactive({
 // get profile
 const getProfile = async () => {
   try {
-    // const response = await api.get("/api/user/profile");
-    // const response = await api.post("/api/user/update-profile", formData);
-    // const response = await api.post("/api/profile/update", formData, {
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    // });
+   
     const response = await api.post("/api/profile/update", formData);
     const user = response.data.data;
 
@@ -222,14 +222,14 @@ onMounted(() => {
               ផលិតផលរបស់ខ្ញុំ
             </a>
 
-            <!-- <a
+            <a
               href="#"
               class="nav-link"
               @click.prevent="activeSection = 'devices'"
             >
               <i class="bi bi-phone"></i>
               Devices
-            </a> -->
+            </a>
 
             <a href="#" class="nav-link text-danger">
               <i class="bi bi-box-arrow-right"></i>
@@ -269,6 +269,7 @@ onMounted(() => {
 
           <!-- PROFILE -->
           <section v-if="activeSection === 'profile'" id="" class="mb-5">
+            <Profileus></Profileus>
             <div class="card card-ui p-4">
               <div
                 class="d-flex justify-content-between align-items-center mb-4"
@@ -395,190 +396,26 @@ Phnom Penh, Cambodia
 
           <!-- MY CART -->
           <section v-if="activeSection == 'cart'" id="" class="mb-5">
-            <div class="card card-ui p-4">
-              <div
-                class="d-flex justify-content-between align-items-center mb-4"
-              >
-                <h4>របស់ខ្ញុំ</h4>
-                <button class="btn btn-success">ទូទាត់ប្រាក់</button>
-              </div>
+            
+            <Mycart></Mycart>
 
-              <table class="table align-middle">
-                <thead>
-                  <tr>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Categories</th>
-                    <th>Price</th>
-                    <th>Qty</th>
-                    <th>Total</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  <tr>
-                    <td>
-                      <img
-                        src="https://i.pinimg.com/736x/a8/5c/d6/a85cd6f4555a80585e33e333523acf79.jpg"
-                        class="product-img"
-                      />
-                    </td>
-
-                    <td>iPhone 17 Promax</td>
-                    <td>Electronics</td>
-                    <td>$900</td>
-                    <td>1</td>
-                    <td>$900</td>
-
-                    <td>
-                      <button class="btn btn-danger btn-sm">Remove</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <img
-                        src="https://i.pinimg.com/1200x/f0/0d/f9/f00df9f9550c347e901ef3ec72be3522.jpg"
-                        class="product-img"
-                      />
-                    </td>
-
-                    <td>Sumsung S26 Ultra</td>
-                    <td>Electronics</td>
-                    <td>$900</td>
-                    <td>1</td>
-                    <td>$900</td>
-
-                    <td>
-                      <button class="btn btn-danger btn-sm">Remove</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <img
-                        src="https://i.pinimg.com/1200x/bd/16/0c/bd160c8a571eecfa20b58612d424d06c.jpg"
-                        class="product-img"
-                      />
-                    </td>
-
-                    <td>Sumsung S26 Ultra</td>
-                    <td>Electronics</td>
-                    <td>$900</td>
-                    <td>1</td>
-                    <td>$900</td>
-
-                    <td>
-                      <button class="btn btn-danger btn-sm">Remove</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
           </section>
 
           <!-- PURCHASED PRODUCTS -->
           <section v-if="activeSection === 'purchased'" id="" class="mb-5">
-            <!-- <div class="section-title">ផលិតផលដែលបានទិញ</div> -->
-            <h4>ផលិតផលដែលបានទិញ</h4>
-
-            <div class="row">
-              <div class="col-md-4 mb-4">
-                <div class="card card-ui overflow-hidden">
-                  <img
-                    src="https://i.pinimg.com/736x/a8/5c/d6/a85cd6f4555a80585e33e333523acf79.jpg"
-                    class="card-img-top"
-                  />
-
-                  <div class="card-body">
-                    <h5>MacBook Pro</h5>
-
-                    <p class="text-muted">Purchased Successfully</p>
-
-                    <RouterLink
-                      to="/detail"
-                      class="btn btn-outline-primary w-100"
-                    >
-                      View Detail
-                    </RouterLink>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Purchased></Purchased>
           </section>
 
           <!-- OWN PRODUCTS -->
           <section v-if="activeSection === 'own'" id="" class="mb-5">
-            <div class="card card-ui p-4">
-              <div
-                class="d-flex justify-content-between align-items-center mb-4"
-              >
-                <h4>ផលិតផលរបស់ខ្ញុំ</h4>
-                <button class="btn btn-primary">Add Product</button>
-              </div>
-
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Date</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  <tr>
-                    <td>#001</td>
-                    <td>Gaming Laptop</td>
-                    <td>Electronics</td>
-                    <td>$1200</td>
-                    <td>2026-05-07</td>
-
-                    <td class="d-flex gap-2">
-                      <button class="btn btn-warning btn-sm px-3">Edit</button>
-
-                      <button class="btn btn-danger btn-sm px-3">Delete</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#001</td>
-                    <td>Gaming Laptop</td>
-                    <td>Electronics</td>
-                    <td>$1200</td>
-                    <td>2026-05-07</td>
-
-                    <td class="d-flex gap-2">
-                      <button class="btn btn-warning btn-sm px-3">Edit</button>
-
-                      <button class="btn btn-danger btn-sm px-3">Delete</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <Own></Own>
+      
           </section>
 
           <!-- DEVICES -->
           <section v-if="activeSection === 'devices'" id="" class="mb-5">
-            <div class="card card-ui p-4">
-              <!-- <h3 class="mb-4">ឧបករណ៍ដែលបានតភ្ជាប់</h3> -->
-              <h4>ឧបករណ៍ដែលបានតភ្ជាប់</h4>
+            <Devices></Devices>
 
-              <div class="list-group">
-                <div
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  <div>
-                    <h6 class="mb-1">Windows Laptop</h6>
-                    <small>Chrome Browser</small>
-                  </div>
-
-                  <button class="btn btn-outline-danger btn-sm">Remove</button>
-                </div>
-              </div>
-            </div>
           </section>
         </div>
       </div>
