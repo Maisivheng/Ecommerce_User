@@ -5,7 +5,7 @@ import api from '@/API/api'
 
 export const useauthStore = defineStore('auth', () => {
   let token = ref(localStorage.getItem('token') || null)
-
+  let success = ref(null)
   const login = async (data) =>{
     console.log(data);
     try{
@@ -18,5 +18,19 @@ export const useauthStore = defineStore('auth', () => {
     }
     
   }
-  return {login, token};
+
+  const register = async (data) =>{
+    console.log(data);
+    try{
+      let res =await api.post('/api/register' ,data);
+      success.value = res.status;
+      console.log(res);
+      token.value = res.data.data.token;
+      localStorage.setItem('token', token.value)
+    }catch(err){
+      console.error(err.response);
+    }
+    
+  }
+  return {login, token, register, success};
 })

@@ -1,3 +1,310 @@
+<template>
+  <div class="signup-container">
+    <div class="signup-card">
+      <div class="signup-header">
+        <h1>បង្កើតគណនី</h1>
+        <p class="subtitle">
+          បញ្ចូលទិន្នន័យផ្ទាល់ខ្លួនដើម្បីបង្កើតគណនីរបស់អ្នក
+        </p>
+      </div>
+
+      <form @submit.prevent="handleSignup" class="signup-form">
+        <div class="form-group" :class="{ 'has-error': errors.name }">
+          <label>ឈ្មោះពេញ</label>
+          <div class="input-icon-wrapper">
+            <i class="bi bi-person-fill input-icon-left"></i>
+            <input
+              type="text"
+              v-model="form.name"
+              placeholder="ឈ្មោះពេញរបស់អ្នក"
+              @blur="validateField('name')"
+              :disabled="loading"
+            />
+          </div>
+          <span v-if="errors.name" class="error-message">
+            <i class="bi bi-exclamation-circle-fill"></i> {{ errors.name }}
+          </span>
+        </div>
+
+        <div class="form-group" :class="{ 'has-error': errors.email }">
+          <label>អុីមែល</label>
+          <div class="input-icon-wrapper">
+            <i class="bi bi-envelope-fill input-icon-left"></i>
+            <input
+              type="email"
+              v-model="form.email"
+              placeholder="បញ្ចូលអុីមែល"
+              @blur="validateField('email')"
+              :disabled="loading"
+            />
+          </div>
+          <span v-if="errors.email" class="error-message">
+            <i class="bi bi-exclamation-circle-fill"></i> {{ errors.email }}
+          </span>
+        </div>
+
+        <div class="form-group" :class="{ 'has-error': errors.password }">
+          <label>ពាក្យសម្ងាត់</label>
+          <div class="input-icon-wrapper password-field">
+            <i class="bi bi-lock-fill input-icon-left"></i>
+            <input
+              :type="passwordVisible ? 'text' : 'password'"
+              v-model="form.password"
+              placeholder="បញ្ចូលពាក្យសម្ងាត់"
+              @blur="validateField('password')"
+              :disabled="loading"
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              @click="passwordVisible = !passwordVisible"
+              :disabled="loading"
+            >
+              <i
+                :class="
+                  passwordVisible ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'
+                "
+              ></i>
+            </button>
+          </div>
+          <span v-if="errors.password" class="error-message">
+            <i class="bi bi-exclamation-circle-fill"></i> {{ errors.password }}
+          </span>
+        </div>
+
+        <div
+          class="form-group"
+          :class="{ 'has-error': errors.password_confirmation }"
+        >
+          <label>បញ្ជាក់ពាក្យសម្ងាត់</label>
+          <div class="input-icon-wrapper password-field">
+            <i class="bi bi-check-circle-fill input-icon-left"></i>
+            <input
+              :type="confirmVisible ? 'text' : 'password'"
+              v-model="form.password_confirmation"
+              placeholder="បញ្ជាក់ពាក្យសម្ងាត់"
+              @blur="validateField('password_confirmation')"
+              :disabled="loading"
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              @click="confirmVisible = !confirmVisible"
+              :disabled="loading"
+            >
+              <i
+                :class="
+                  confirmVisible ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'
+                "
+              ></i>
+            </button>
+          </div>
+          <span v-if="errors.password_confirmation" class="error-message">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ errors.password_confirmation }}
+          </span>
+        </div>
+
+        <div class="terms-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              v-model="formaccept.acceptTerms"
+              :disabled="loading"
+            />
+            <span>ខ្ញុំយល់ព្រមតាម</span>
+            <span class="terms-link" @click.prevent="showTermsModal = true"
+              >លក្ខខណ្ឌ</span
+            >
+            <span>របស់គេហទំព័រ</span>
+          </label>
+          <span v-if="errors.acceptTerms" class="error-message terms-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ errorsaccept.acceptTerms }}
+          </span>
+        </div>
+
+        <button type="submit" class="submit-btn" :disabled="loading">
+          <span v-if="!loading">បង្កើតគណនី</span>
+          <i v-if="!loading" class="bi bi-arrow-right"></i>
+          <span v-if="loading" class="loading-spinner"></span>
+          <span v-if="loading">កំពុងដំណើរការ...</span>
+        </button>
+
+        <div class="signin-link">
+          <span>មានគណនីរួចហើយ?</span>
+          <RouterLink to="/login">ចូលគណនី</RouterLink>
+        </div>
+      </form>
+    </div>
+
+    <div
+      v-if="showTermsModal"
+      class="modal-overlay"
+      @click.self="showTermsModal = false"
+    >
+      <div class="modal-content">
+        <h3><i class="bi bi-file-text-fill"></i> លក្ខខណ្ឌប្រើប្រាស់</h3>
+        <p>
+          ដោយការបង្កើតគណនី អ្នកយល់ព្រមគោរពតាមគោលការណ៍ឯកជនភាព
+          និងលក្ខខណ្ឌសេវាកម្មរបស់យើង។
+          អ្នកទទួលខុសត្រូវចំពោះរាល់សកម្មភាពដែលកើតឡើងលើគណនីរបស់អ្នក។
+        </p>
+        <button class="modal-close" @click="showTermsModal = false">
+          <i class="bi bi-check-lg"></i> យល់ព្រម
+        </button>
+      </div>
+    </div>
+
+    <div v-if="toast.message" class="toast" :class="toast.type">
+      <i
+        :class="
+          toast.type === 'error'
+            ? 'bi bi-x-circle-fill'
+            : 'bi bi-check-circle-fill'
+        "
+      ></i>
+      <span>{{ toast.message }}</span>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { reactive, ref } from 'vue'
+import { useauthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+
+const auth = useauthStore()
+const router = useRouter()
+const loading = ref(false)
+const passwordVisible = ref(false)
+const confirmVisible = ref(false)
+const showTermsModal = ref(false)
+
+const form = reactive({
+  email: '',
+  name: '',
+  password: '',
+  password_confirmation: '',
+})
+
+
+const errors = reactive({
+  name: '',
+  email: '',
+  password: '',
+  password_confirmation: '',
+})
+
+const formaccept = reactive({
+  acceptTerms: false
+})
+
+const errorsaccept = reactive({
+  acceptTerms: ''
+})
+
+const toast = reactive({
+  message: '',
+  type: 'success'
+})
+
+const showToast = (message, type = 'success') => {
+  toast.message = message
+  toast.type = type
+  setTimeout(() => {
+    toast.message = ''
+  }, 3000)
+}
+
+const validateField = (field) => {
+  switch (field) {
+    case 'name':
+      if (!form.name) {
+        errors.name = 'សូមបញ្ចូលឈ្មោះពេញរបស់អ្នក'
+      } else if (form.name.length < 2) {
+        errors.name = 'ឈ្មោះត្រូវមានយ៉ាងហោចណាស់ 2 តួអក្សរ'
+      } else {
+        errors.name = ''
+      }
+      break
+    case 'email':
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!form.email) {
+        errors.email = 'សូមបញ្ចូលអុីមែលរបស់អ្នក'
+      } else if (!emailRegex.test(form.email)) {
+        errors.email = 'សូមបញ្ចូលអុីមែលឲ្យបានត្រឹមត្រូវ'
+      } else {
+        errors.email = ''
+      }
+      break
+    case 'password':
+      if (!form.password) {
+        errors.password = 'សូមបញ្ចូលពាក្យសម្ងាត់'
+      } else if (form.password.length < 6) {
+        errors.password = 'ពាក្យសម្ងាត់ត្រូវមានយ៉ាងហោចណាស់ 6 តួអក្សរ'
+      } else {
+        errors.password = ''
+      }
+      // Also validate password confirmation if it exists
+      if (form.password_confirmation) {
+        validateField('password_confirmation')
+      }
+      break
+    case 'password_confirmation':
+      if (!form.password_confirmation) {
+        errors.password_confirmation = 'សូមបញ្ជាក់ពាក្យសម្ងាត់របស់អ្នក'
+      } else if (form.password !== form.password_confirmation) {
+        errors.password_confirmation = 'ពាក្យសម្ងាត់មិនត្រូវគ្នា'
+      } else {
+        errors.password_confirmation = ''
+      }
+      break
+  }
+}
+
+const validateForm = () => {
+  validateField('name')
+  validateField('email')
+  validateField('password')
+  validateField('password_confirmation')
+  
+  if (!formaccept.acceptTerms) {
+    errorsaccept.acceptTerms = 'សូមយល់ព្រមតាមលក្ខខណ្ឌប្រើប្រាស់'
+  } else {
+    errorsaccept.acceptTerms = ''
+  }
+  
+  return !errors.name && !errors.email && !errors.password && !errors.password_confirmation && !errorsaccept.acceptTerms
+}
+
+const handleSignup = async () => {
+  if (!validateForm()) {
+    showToast('សូមបំពេញទិន្នន័យឲ្យបានត្រឹមត្រូវ', 'error')
+    return
+  }
+  
+  loading.value = true
+
+  try {
+    await auth.register(form);
+    console.log(auth.success);
+    
+    if (auth.success) {
+      showToast('គណនីត្រូវបានបង្កើតដោយជោគជ័យ', 'success')
+      router.push('/login')
+    } else {
+      showToast('មិនអាចបង្កើតគណនីបានទេ សូមព្យាយាមម្តងទៀត', 'error')
+    }
+  } catch (error) {
+    console.error('Signup error:', error)
+    showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ សូមព្យាយាមម្តងទៀត', 'error')
+  } finally {
+    loading.value = false 
+  }
+}
+</script>
+
 <style scoped>
 * {
   margin: 0;
@@ -39,10 +346,10 @@
 }
 
 .subtitle {
-  font-size: 0.90rem;
+  font-size: 0.9rem;
   color: #171818;
   line-height: 1.5;
-  font-family: 'Kantumruy Pro', sans-serif;
+  font-family: "Kantumruy Pro", sans-serif;
 }
 
 .signup-form {
@@ -63,7 +370,7 @@
   color: black;
   display: flex;
   align-items: center;
-  font-family: 'Kantumruy Pro', sans-serif;
+  font-family: "Kantumruy Pro", sans-serif;
   margin-bottom: 2px;
 }
 
@@ -89,7 +396,7 @@
   width: 100%;
   padding: 0.85rem 1rem 0.85rem 2.6rem;
   font-size: 0.95rem;
-  font-family: 'Kantumruy Pro', sans-serif;
+  font-family: "Kantumruy Pro", sans-serif;
   border: 1.5px solid #e2e8f0;
   border-radius: 10px;
   transition: all 0.2s ease;
@@ -128,7 +435,7 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  font-family: 'Kantumruy Pro', sans-serif;
+  font-family: "Kantumruy Pro", sans-serif;
 }
 
 .error-message i {
@@ -173,7 +480,7 @@
   font-size: 0.85rem;
   color: #2c3e4e;
   flex-wrap: wrap;
-  font-family: 'Kantumruy Pro', sans-serif;
+  font-family: "Kantumruy Pro", sans-serif;
 }
 
 .checkbox-label input {
@@ -209,7 +516,7 @@
   cursor: pointer;
   transition: background 0.2s ease;
   gap: 0.75rem;
-  font-family: 'Kantumruy Pro', sans-serif;
+  font-family: "Kantumruy Pro", sans-serif;
   margin-top: 0.5rem;
   display: flex;
   align-items: center;
@@ -236,7 +543,7 @@
   padding-top: 0.5rem;
   border-top: 1px solid #eef2f6;
   margin-top: 0.5rem;
-  font-family: 'Kantumruy Pro', sans-serif;
+  font-family: "Kantumruy Pro", sans-serif;
 }
 
 .signin-link a {
@@ -264,7 +571,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .modal-overlay {
@@ -289,7 +598,7 @@
   border-radius: 28px;
   padding: 2rem;
   animation: fadeInUp 0.2s ease-out;
-  font-family: 'Kantumruy Pro', sans-serif;
+  font-family: "Kantumruy Pro", sans-serif;
 }
 
 .modal-content h3 {
@@ -320,7 +629,7 @@
   border-radius: 40px;
   font-weight: 600;
   cursor: pointer;
-  font-family: 'Kantumruy Pro', sans-serif;
+  font-family: "Kantumruy Pro", sans-serif;
   width: 100%;
   display: flex;
   align-items: center;
@@ -356,7 +665,7 @@
   gap: 0.6rem;
   z-index: 1100;
   animation: fadeInUp 0.2s ease-out;
-  font-family: 'Kantumruy Pro', sans-serif;
+  font-family: "Kantumruy Pro", sans-serif;
 }
 
 .toast.success {
@@ -371,374 +680,9 @@
   .signup-card {
     padding: 1.5rem;
   }
-  
+
   .signup-header h1 {
     font-size: 1.6rem;
   }
-  
 }
 </style>
-
-<template>
-  <div class="signup-container">
-    <div class="signup-card">
-      <div class="signup-header">
-        <h1>បង្កើតគណនី</h1>
-        <p class="subtitle">បញ្ចូលទិន្នន័យផ្ទាល់ខ្លួនដើម្បីបង្កើតគណនីរបស់អ្នក</p>
-      </div>
-
-      <form @submit.prevent="handleSignup" class="signup-form">
-        <div class="form-group" :class="{ 'has-error': errors.fullName }">
-          <label>ឈ្មោះពេញ</label>
-          <div class="input-icon-wrapper">
-            <i class="bi bi-person-fill input-icon-left"></i>
-            <input
-              type="text"
-              v-model="form.fullName"
-              placeholder="ឈ្មោះពេញរបស់អ្នក"
-              @blur="validateField('fullName')"
-              :disabled="loading"
-            />
-          </div>
-          <span v-if="errors.fullName" class="error-message">
-            <i class="bi bi-exclamation-circle-fill"></i> {{ errors.fullName }}
-          </span>
-        </div>
-
-        <div class="form-group" :class="{ 'has-error': errors.email }">
-          <label>អុីមែល</label>
-          <div class="input-icon-wrapper">
-            <i class="bi bi-envelope-fill input-icon-left"></i>
-            <input
-              type="email"
-              v-model="form.email"
-              placeholder="បញ្ចូលអុីមែល"
-              @blur="validateField('email')"
-              :disabled="loading"
-            />
-          </div>
-          <span v-if="errors.email" class="error-message">
-            <i class="bi bi-exclamation-circle-fill"></i> {{ errors.email }}
-          </span>
-        </div>
-
-        <div class="form-group" :class="{ 'has-error': errors.password }">
-          <label>ពាក្យសម្ងាត់</label>
-          <div class="input-icon-wrapper password-field">
-            <i class="bi bi-lock-fill input-icon-left"></i>
-            <input
-              :type="passwordVisible ? 'text' : 'password'"
-              v-model="form.password"
-              placeholder="បញ្ចូលពាក្យសម្ងាត់"
-              @blur="validateField('password')"
-              :disabled="loading"
-            />
-            <button type="button" class="toggle-password" @click="passwordVisible = !passwordVisible" :disabled="loading">
-              <i :class="passwordVisible ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'"></i>
-            </button>
-          </div>
-          <span v-if="errors.password" class="error-message">
-            <i class="bi bi-exclamation-circle-fill"></i> {{ errors.password }}
-          </span>
-        </div>
-
-        <div class="form-group" :class="{ 'has-error': errors.confirmPassword }">
-          <label>បញ្ជាក់ពាក្យសម្ងាត់</label>
-          <div class="input-icon-wrapper password-field">
-            <i class="bi bi-check-circle-fill input-icon-left"></i>
-            <input
-              :type="confirmVisible ? 'text' : 'password'"
-              v-model="form.confirmPassword"
-              placeholder="បញ្ជាក់ពាក្យសម្ងាត់"
-              @blur="validateField('confirmPassword')"
-              :disabled="loading"
-            />
-            <button type="button" class="toggle-password" @click="confirmVisible = !confirmVisible" :disabled="loading">
-              <i :class="confirmVisible ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'"></i>
-            </button>
-          </div>
-          <span v-if="errors.confirmPassword" class="error-message">
-            <i class="bi bi-exclamation-circle-fill"></i> {{ errors.confirmPassword }}
-          </span>
-        </div>
-
-        <div class="terms-group">
-          <label class="checkbox-label">
-            <input type="checkbox" v-model="form.acceptTerms" :disabled="loading">
-            <span>ខ្ញុំយល់ព្រមតាម</span>
-            <span class="terms-link" @click.prevent="showTermsModal = true">លក្ខខណ្ឌ</span>
-            <span>របស់គេហទំព័រ</span>
-          </label>
-          <span v-if="errors.acceptTerms" class="error-message terms-error">
-            <i class="bi bi-exclamation-circle-fill"></i> {{ errors.acceptTerms }}
-          </span>
-        </div>
-
-        <button type="submit" class="submit-btn" :disabled="loading">
-          <span v-if="!loading">បង្កើតគណនី</span>
-          <i v-if="!loading" class="bi bi-arrow-right"></i>
-          <span v-if="loading" class="loading-spinner"></span>
-          <span v-if="loading">កំពុងដំណើរការ...</span>
-        </button>
-
-        <div class="signin-link">
-          <span>មានគណនីរួចហើយ?</span>
-          <a href="#" @click.prevent="simulateLogin">ចូលគណនី</a>
-        </div>
-      </form>
-    </div>
-
-    <div v-if="showTermsModal" class="modal-overlay" @click.self="showTermsModal = false">
-      <div class="modal-content">
-        <h3><i class="bi bi-file-text-fill"></i> លក្ខខណ្ឌប្រើប្រាស់</h3>
-        <p>ដោយការបង្កើតគណនី អ្នកយល់ព្រមគោរពតាមគោលការណ៍ឯកជនភាព និងលក្ខខណ្ឌសេវាកម្មរបស់យើង។ អ្នកទទួលខុសត្រូវចំពោះរាល់សកម្មភាពដែលកើតឡើងលើគណនីរបស់អ្នក។</p>
-        <button class="modal-close" @click="showTermsModal = false">
-          <i class="bi bi-check-lg"></i> យល់ព្រម
-        </button>
-      </div>
-    </div>
-
-    <div v-if="toast.message" class="toast" :class="toast.type">
-      <i :class="toast.type === 'error' ? 'bi bi-x-circle-fill' : 'bi bi-check-circle-fill'"></i>
-      <span>{{ toast.message }}</span>
-    </div>
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'SignupForm',
-  data() {
-    return {
-      form: {
-        fullName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        acceptTerms: false
-      },
-      errors: {
-        fullName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        acceptTerms: ''
-      },
-      passwordVisible: false,
-      confirmVisible: false,
-      showTermsModal: false,
-      loading: false,
-      toast: {
-        message: '',
-        type: 'success'
-      },
-      toastTimer: null
-    }
-  },
-  watch: {
-    'form.password'() {
-      if (this.form.confirmPassword) this.validateField('confirmPassword')
-    },
-    'form.acceptTerms'(val) {
-      if (val) this.errors.acceptTerms = ''
-    }
-  },
-  methods: {
-    validateField(fieldName) {
-      switch(fieldName) {
-        case 'fullName':
-          const full = this.form.fullName.trim()
-          if (!full) this.errors.fullName = 'សូមបញ្ចូលឈ្មោះពេញ'
-          else if (full.length < 4) this.errors.fullName = 'ឈ្មោះពេញត្រូវមានយ៉ាងហោចណាស់ 4 តួអក្សរ'
-          else this.errors.fullName = ''
-          break
-        case 'email':
-          const emailVal = this.form.email.trim()
-          if (!emailVal) this.errors.email = 'សូមបញ្ចូលអុីមែល'
-          else if (!/^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(emailVal)) this.errors.email = 'ទម្រង់អុីមែលមិនត្រឹមត្រូវ'
-          else this.errors.email = ''
-          break
-        case 'password':
-          const pwd = this.form.password
-          if (!pwd) this.errors.password = 'សូមបញ្ចូលពាក្យសម្ងាត់'
-          else if (pwd.length < 6) this.errors.password = 'ពាក្យសម្ងាត់ត្រូវមានយ៉ាងហោចណាស់ 6 តួអក្សរ'
-          else this.errors.password = ''
-          if (this.form.confirmPassword) this.validateField('confirmPassword')
-          break
-        case 'confirmPassword':
-          const confirm = this.form.confirmPassword
-          if (!confirm) this.errors.confirmPassword = 'សូមបញ្ជាក់ពាក្យសម្ងាត់'
-          else if (confirm !== this.form.password) this.errors.confirmPassword = 'ពាក្យសម្ងាត់មិនត្រូវគ្នា'
-          else this.errors.confirmPassword = ''
-          break
-        default:
-          break
-      }
-    },
-    
-    validateAll() {
-      let isValid = true
-      this.validateField('fullName')
-      this.validateField('email')
-      this.validateField('password')
-      this.validateField('confirmPassword')
-      
-      if (!this.form.acceptTerms) {
-        this.errors.acceptTerms = 'អ្នកត្រូវតែយល់ព្រមតាមលក្ខខណ្ឌរបស់គេហទំព័រ'
-        isValid = false
-      } else {
-        this.errors.acceptTerms = ''
-      }
-      
-      if (this.errors.fullName || this.errors.email || this.errors.password || this.errors.confirmPassword) isValid = false
-      
-      return isValid
-    },
-    
-    showToast(message, type = 'success') {
-      if (this.toastTimer) clearTimeout(this.toastTimer)
-      this.toast.message = message
-      this.toast.type = type
-      this.toastTimer = setTimeout(() => { this.toast.message = '' }, 4000)
-    },
-    
-    clearForm() {
-      this.form = {
-        fullName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        acceptTerms: false
-      }
-      this.errors = {
-        fullName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        acceptTerms: ''
-      }
-      this.passwordVisible = false
-      this.confirmVisible = false
-    },
-    
-    async registerWithAPI() {
-      const API_BASE_URL = 'https://api-loukbontor.g2.ant.com.kh'
-      const API_TOKEN = '10|Snt6NunNbh8cSdQiEbwIeDA7ihFq95aYP2MNnuWSf9f849e1'
-      
-      // Try different payload formats
-      const payloads = [
-        // Format 1: Standard Laravel
-        {
-          name: this.form.fullName.trim(),
-          email: this.form.email.trim().toLowerCase(),
-          password: this.form.password,
-          password_confirmation: this.form.confirmPassword
-        },
-        // Format 2: With full_name
-        {
-          full_name: this.form.fullName.trim(),
-          email: this.form.email.trim().toLowerCase(),
-          password: this.form.password,
-          password_confirmation: this.form.confirmPassword
-        },
-        // Format 3: Simple format
-        {
-          fullName: this.form.fullName.trim(),
-          email: this.form.email.trim().toLowerCase(),
-          password: this.form.password,
-          confirmPassword: this.form.confirmPassword
-        }
-      ]
-      
-      const endpoints = [
-        '/api/register',
-        '/api/auth/register',
-        '/api/v1/register',
-        '/register',
-        '/auth/register',
-        '/api/signup',
-        '/signup'
-      ]
-      
-      // Try all combinations
-      for (const endpoint of endpoints) {
-        for (const payload of payloads) {
-          try {
-            const url = `${API_BASE_URL}${endpoint}`
-            console.log('Trying:', url, payload)
-            
-            const response = await fetch(url, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${API_TOKEN}`
-              },
-              body: JSON.stringify(payload)
-            })
-            
-            const data = await response.json()
-            console.log('Response:', response.status, data)
-            
-            if (response.ok && (data.success === true || data.user || data.data || data.token)) {
-              return { success: true, data, endpoint, payload }
-            }
-            
-            if (response.status === 422 && data.errors) {
-              // Validation error - format might be wrong but endpoint exists
-              console.log('Validation error on:', endpoint, data.errors)
-            }
-          } catch (err) {
-            console.log('Error on:', endpoint, err.message)
-          }
-        }
-      }
-      
-      throw new Error('Unable to connect to registration API. Please check the API endpoint.')
-    },
-    
-    async handleSignup() {
-      if (!this.validateAll()) {
-        this.showToast('សូមត្រួតពិនិត្យទិន្នន័យក្នុងទម្រង់ និងធីកលក្ខខណ្ឌ', 'error')
-        return
-      }
-      
-      this.loading = true
-      
-      try {
-        const result = await this.registerWithAPI()
-        
-        if (result.success) {
-          this.showToast('គណនីត្រូវបានបង្កើតដោយជោគជ័យ! សូមស្វាគមន៍', 'success')
-          this.clearForm()
-        } else {
-          throw new Error('Registration failed')
-        }
-        
-      } catch (error) {
-        console.error('Registration error:', error)
-        
-        let errorMessage = 'មិនអាចបង្កើតគណនីបានទេ។ សូមពិនិត្យ៖\n• ការតភ្ជាប់អ៊ីនធឺណិត\n• API endpoint ត្រឹមត្រូវ\n• សាកល្បងម្តងទៀតក្រោយៗ'
-        
-        const errorStr = (error.message || '').toLowerCase()
-        
-        if (errorStr.includes('email') && errorStr.includes('taken')) {
-          errorMessage = 'អុីមែលនេះត្រូវបានប្រើប្រាស់រួចហើយ។'
-        } else if (errorStr.includes('password') && errorStr.includes('confirmation')) {
-          errorMessage = 'ពាក្យសម្ងាត់បញ្ជាក់មិនត្រូវគ្នា។'
-        } else if (errorStr.includes('validation') || errorStr.includes('422')) {
-          errorMessage = 'សូមពិនិត្យទិន្នន័យរបស់អ្នក និងសាកល្បងម្តងទៀត។'
-        }
-        
-        this.showToast(errorMessage, 'error')
-      } finally {
-        this.loading = false
-      }
-    },
-    
-    simulateLogin() {
-      this.showToast('ការចូលគណនីនឹងត្រូវបានអនុវត្តនាពេលខាងមុខ', 'success')
-    }
-  }
-}
-</script>
