@@ -1,10 +1,156 @@
 <script setup>
 import Navbar from "@/components/layout/Navbar.vue";
-import { ref } from "vue";
+import { ref, onMounted, reactive } from "vue";
+import api from "@/API/api";
 
 const activeSection = ref("profile");
 
+// loading
+const loading = ref(false);
 
+// image preview
+const imagePreview = ref("");
+
+// success message
+const successMessage = ref("");
+
+// validation errors
+const errors = reactive({
+  name: "",
+  email: "",
+  phone: "",
+  address: "",
+});
+
+// form data
+const form = reactive({
+  name: "",
+  email: "",
+  phone: "",
+  address: "",
+  verified: false,
+  accountCreated: "",
+  image: null,
+});
+
+// get profile
+const getProfile = async () => {
+  try {
+    // const response = await api.get("/api/user/profile");
+    // const response = await api.post("/api/user/update-profile", formData);
+    // const response = await api.post("/api/profile/update", formData, {
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    // });
+    const response = await api.post("/api/profile/update", formData);
+    const user = response.data.data;
+
+    form.name = user.name || "";
+    form.email = user.email || "";
+    form.phone = user.phone || "";
+    form.address = user.address || "";
+    form.accountCreated = user.created_at || "";
+    form.verified = user.verified || false;
+    imagePreview.value = user.image || "";
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// image upload
+const handleImage = (event) => {
+  const file = event.target.files[0];
+
+  if (file) {
+    form.image = file;
+    imagePreview.value = URL.createObjectURL(file);
+  }
+};
+
+// validation
+const validateForm = () => {
+  let isValid = true;
+
+  errors.name = "";
+  errors.email = "";
+  errors.phone = "";
+  errors.address = "";
+
+  // name
+  if (!form.name) {
+    errors.name = "Name is required";
+    isValid = false;
+  }
+
+  // email
+  if (!form.email) {
+    errors.email = "Email is required";
+    isValid = false;
+  }
+
+  // phone
+  if (!form.phone) {
+    errors.phone = "Phone is required";
+    isValid = false;
+  }
+
+  // address
+  if (!form.address) {
+    errors.address = "Address is required";
+    isValid = false;
+  }
+
+  return isValid;
+};
+
+// update profile
+const Editprofile = async () => {
+  if (!validateForm()) {
+    return;
+  }
+
+  try {
+    loading.value = true;
+
+    const formData = new FormData();
+
+    formData.append("name", form.name);
+    formData.append("email", form.email);
+    formData.append("phone", form.phone);
+    formData.append("address", form.address);
+
+    if (form.image) {
+      formData.append("image", form.image);
+    }
+
+    // const response = await api.post("/api/user/update-profile", formData, {
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    // });
+    const response = await api.post("/api/login", {
+      email,
+      password,
+    });
+
+    localStorage.setItem("token", response.data.token);
+    successMessage.value = "Profile updated successfully";
+
+    console.log(response.data);
+  } catch (error) {
+    console.log(error);
+
+    // alert("Update Failed");
+    alert(error.response?.data?.message || "Update Failed");
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  getProfile();
+});
 </script>
 <template>
   <body>
@@ -15,14 +161,23 @@ const activeSection = ref("profile");
         <div class="col-lg-3 sidebar">
           <div class="text-center mb-4">
             <img
-              src="https://i.pinimg.com/1200x/c2/6b/62/c26b629bb68ddf6ea556d62f13b3b361.jpg"
+              :src="
+                imagePreview ||
+                'https://api-loukbontor.g2.ant.com.kh/storage/avatars/no_photo.jpg'
+              "
               class="profile-img mb-3"
             />
 
-            <h4>Sreng Menglin</h4>
+            <h4>{{ form.name || "Name not available" }}</h4>
 
-            <p class="text-muted">srengmenglin@gmail.com</p>
-            <span class="badge bg-success">Verified</span>
+            <p class="text-muted">{{ form.email || "Email not available" }}</p>
+            <!-- <span class="badge bg-success">Verified</span> -->
+            <span
+              class="badge"
+              :class="form.verified ? 'bg-success' : 'bg-danger'"
+            >
+              {{ form.verified ? "Verified" : "Not Verified" }}
+            </span>
           </div>
 
           <div class="nav flex-column">
@@ -119,11 +274,17 @@ const activeSection = ref("profile");
                 class="d-flex justify-content-between align-items-center mb-4"
               >
                 <h4>ប្រវត្តិរូប</h4>
-                <button @click="Editprofile()" class="btn btn-primary">កែប្រែ​ ប្រវត្តិរូប</button>
-                <!-- <div class="d-flex gap-2">
-                  <button class="btn btn-primary">កែប្រែ​ ប្រវត្តិរូប</button>
-                  <button class="btn btn-danger">លុបគណនី</button>
-                </div> -->
+                <button
+                  @click="Editprofile"
+                  :disabled="loading"
+                  class="btn btn-primary"
+                >
+                  {{ loading ? "កំពុងផ្ទុក..." : "ធ្វើបច្ចុប្បន្នភាព" }}
+                </button>
+              </div>
+              <!-- add alert -->
+              <div v-if="successMessage" class="alert alert-success">
+                {{ successMessage }}
               </div>
 
               <div class="row">
@@ -132,9 +293,12 @@ const activeSection = ref("profile");
                   <input
                     type="text"
                     class="form-control"
-                    readonly
-                    v-model="name"
+                    v-model="form.name"
+                    placeholder="បញ្ចូល​ឈ្មេាះ"
                   />
+                  <small class="text-danger">
+                    {{ errors.name }}
+                  </small>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -142,25 +306,36 @@ const activeSection = ref("profile");
                   <input
                     type="email"
                     class="form-control"
-                    v-model="email"
-                    readonly
+                    v-model="form.email"
+                    placeholder="បញ្ចូលអុីមែល"
                   />
+                  <small class="text-danger">
+                    {{ errors.email }}
+                  </small>
                 </div>
 
                 <div class="col-md-6 mb-3">
                   <label>លេខទូរសព្ទ</label>
                   <input
-                  v-model="phone"
+                    v-model="form.phone"
                     type="text"
                     class="form-control"
-                    readonly
+                    placeholder="បញ្ចូលលេខទូរសព្ទ"
                   />
+                  <small class="text-danger">
+                    {{ errors.phone }}
+                  </small>
                 </div>
 
                 <div class="col-md-6 mb-3">
                   <label class=""> Profile Image</label>
 
-                  <input :v-model="images" type="file" class="form-control" accept="image/*" />
+                  <input
+                    type="file"
+                    class="form-control"
+                    accept="image/*"
+                    @change="handleImage"
+                  />
                 </div>
                 <div class="col-12">
                   <label class="form-label"> Account Created </label>
@@ -168,15 +343,23 @@ const activeSection = ref("profile");
                   <input
                     type="text"
                     class="form-control"
-                    v-model="accountCreated"
+                    v-model="form.accountCreated"
                     readonly
                   />
                 </div>
                 <div class="col-12 mb-3">
                   <label>Address</label>
-                  <textarea class="form-control" readonly rows="4" v-model="address">
+                  <textarea
+                    class="form-control"
+                    rows="4"
+                    v-model="form.address"
+                    placeholder="បញ្ចូលអាសយដ្ឋាន"
+                  >
 Phnom Penh, Cambodia
                   </textarea>
+                  <small class="text-danger">
+                    {{ errors.address }}
+                  </small>
                 </div>
               </div>
             </div>
