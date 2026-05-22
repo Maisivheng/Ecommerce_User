@@ -24,14 +24,10 @@
                     <li class="nav-item me-2"><a class="nav-link text-dark" href="#">ទំនាក់ទំនង</a></li>
                     <li class="nav-item d-flex gap-3 ms-2">
                         <a href="#" class="text-dark fs-5"><i class="bi bi-cart"></i></a>
-<<<<<<< HEAD
                         <!-- <a href="#" class="text-dark fs-5"><i class="bi bi-person"></i></a> -->
-                        <RouterLink class="fs-5 text-dark" to="/profile"><i class="bi bi-person"></i></RouterLink>
                         
                         
-=======
                         <router-link to="/profile" class="text-dark fs-5"><i class="bi bi-person"></i></router-link>
->>>>>>> 4eebd8c9a6fc960540f42e4d21c2edba76e3ca9d
                     </li>
                 </ul>
             </div>
