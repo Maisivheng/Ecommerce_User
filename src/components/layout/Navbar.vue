@@ -24,7 +24,7 @@
                     <li class="nav-item me-2"><a class="nav-link text-dark" href="#">ទំនាក់ទំនង</a></li>
                     <li class="nav-item d-flex gap-3 ms-2">
                         <a href="#" class="text-dark fs-5"><i class="bi bi-cart"></i></a>
-                        <a href="#" class="text-dark fs-5"><i class="bi bi-person"></i></a>
+                        <router-link to="/profile" class="text-dark fs-5"><i class="bi bi-person"></i></router-link>
                     </li>
                 </ul>
             </div>
@@ -32,3 +32,6 @@
     </nav>
     
 </template>
+<script setup>
+import { RouterLink } from 'vue-router';
+</script>

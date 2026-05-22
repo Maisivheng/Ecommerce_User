@@ -38,11 +38,11 @@
                 </div>
                 <div class="text-center">
                     មិនទាន់មានគណនី?
-                    <a href="#" class="text-decoration-none fw-semibold">
+                    <router-link to="/register" class="text-decoration-none fw-semibold">
                     បង្កើតគណនី
-                    </a>
+                    </router-link>
                 </div>
-                <a class="text-center text-dark">មិនមានគណនី?<span class=" text-primary">បង្កើតគណនី</span> </a>
+                <!-- <router-link to="/register" class="text-center text-dark">មិនមានគណនី?<span class=" text-primary">បង្កើតគណនី</span> </router-link> -->
             </form>
         </div>
     </div>
