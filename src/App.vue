@@ -1,9 +1,11 @@
 <script setup>
 import { RouterView } from 'vue-router'
+import ShopPage from './views/shopPage.vue';
+
 </script>
 
 
 <template>
-  <h1 class="text-danger fs-6">title</h1>
   <RouterView />
+  <ShopPage />
 </template>
