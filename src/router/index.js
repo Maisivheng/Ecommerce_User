@@ -57,7 +57,7 @@ const router = createRouter({
 router.beforeEach((to)=>{
   const auth = useauthStore()
   document.title = to.meta.title
-  if(!auth.token && to.path !== '/login'){
+  if(!auth.token && to.path !== '/login' && to.path !=='/register'){
     return '/login'
   }
   if(auth.token && to.path == '/login'){
