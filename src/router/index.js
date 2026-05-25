@@ -90,7 +90,6 @@ const router = createRouter({
         title: "Detail",
       },
     },
-
     {
       path: "/checkout",
       name: "checkout",
@@ -137,6 +136,14 @@ const router = createRouter({
         title: "Reset Password",
       },
     },
+    {
+      path: "/detailpage",
+      name: "detailpage",
+      component: DetailPage,
+      meta: {
+        title: "Detail Page",
+      },
+    },
   ],
 });
 
@@ -149,6 +156,9 @@ router.beforeEach((to) => {
   // Protect routes
   if (to.meta.requiresAuth && !auth.token) {
     return "/login";
+  }
+  if(auth.token && to.path == '/login'){
+    return '/'
   }
 
 

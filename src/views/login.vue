@@ -72,15 +72,20 @@
             form.errors.password = 'សូមបញ្ចូលពាក្យសម្ងាត់របស់អ្នក';
             isvalid.value= false
         }
-        return isvalid
-        
+        return isvalid   
     }
     const loginForm = async() => {   
         // console.log(email.value);
         // console.log(password.value);
         if(!validationForm()) return
             await auth.login(form);
-            router.push('/');
+            // if(alert == 'Login Success'){
+                // router.push('/');
+            //     return true
+            // }else{
+            //     return false
+            // }
+            
     }
 
 </script>

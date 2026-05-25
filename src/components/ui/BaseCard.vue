@@ -28,13 +28,13 @@
                     
                     <div class="exact-card-footer">
                         <span class="exact-stock-text">មានក្នុងស្តុក</span>
-                        <router-link to="/contectUs" class="exact-btn-action">ព័ត៌មានលម្អិត</router-link>
+                        <router-link to="/detailpage" class="exact-btn-action">ព័ត៌មានលម្អិត</router-link>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-    <!-- {{ products }} -->
+    
 </template>
 
 <script setup>
