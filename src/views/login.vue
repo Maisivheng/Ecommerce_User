@@ -162,25 +162,6 @@ Form login
                 loading.value = false;
               }
             };
-            // try{
-            //     showToast('ចូលគណនីបានដោយជោគជ័យ', 'success')         
-            //     // router.push('/')
-            //     await auth.login(form)
-            // }catch(error){
-            //     console.err(error);
-            //     showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ សូមព្យាយាមម្តងទៀត', 'error')
-            // }finally{
-            //   loading.value = false;
-            // }
-            
-            // if(alert == 'Login Success'){
-                // router.push('/');
-            //     return true
-            // }else{
-            //     return false
-            // }
-            
-
 </script>
 
 <style scoped>
