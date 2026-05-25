@@ -58,7 +58,6 @@ const form = reactive({
   image: null,
 });
 
-
 const getProfile = async () => {
   try {
     loading.value = true;
@@ -247,224 +246,234 @@ const deleteAccount = async () => {
 onMounted(() => {
   getProfile();
 });
-
 </script>
 
 <template>
-  
   <Navbar></Navbar>
-<body>
+  <body>
+    <div class="container min-vh-100">
+      <div class="row">
+        <!-- SIDEBAR -->
+        <div class="col-lg-3 sidebar">
+          <div class="text-center mb-4">
+            <img :src="imagePreview" class="profile-img mb-3" />
 
-  <div class="container  min-vh-100">
-    <div class="row">
-      <!-- SIDEBAR -->
-      <div class="col-lg-3 sidebar">
-        <div class="text-center mb-4">
-          <img :src="imagePreview" class="profile-img mb-3" />
+            <h4>
+              {{ form.name }}
+            </h4>
 
-          <h4>
-            {{ form.name }}
-          </h4>
+            <p class="text-muted">
+              {{ form.email }}
+            </p>
 
-          <p class="text-muted">
-            {{ form.email }}
-          </p>
+            <span
+              class="badge"
+              :class="form.verified ? 'bg-success' : 'bg-danger'"
+            >
+              {{ form.verified ? "Verified" : "Not Verified" }}
+            </span>
+          </div>
 
-          <span
-            class="badge"
-            :class="form.verified ? 'bg-success' : 'bg-danger'"
-          >
-            {{ form.verified ? "Verified" : "Not Verified" }}
-          </span>
+          <!-- MENU -->
+          <div class="nav flex-column">
+            <a
+              href="#"
+              class="nav-link"
+              @click.prevent="activeSection = 'profile'"
+            >
+              <i class="bi bi-person"></i>
+              ប្រវត្តិរូប
+            </a>
+
+            <a
+              href="#"
+              class="nav-link"
+              @click.prevent="activeSection = 'password'"
+            >
+              <i class="bi bi-lock"></i>
+              ផ្លាស់ប្តូរពាក្យសម្ងាត់
+            </a>
+
+            <a
+              href="#"
+              class="nav-link"
+              @click.prevent="activeSection = 'cart'"
+            >
+              <i class="bi bi-cart"></i>
+              របស់ខ្ញុំ
+            </a>
+
+            <a
+              href="#"
+              class="nav-link"
+              @click.prevent="activeSection = 'purchased'"
+            >
+              <i class="bi bi-bag"></i>
+              ផលិតផលដែលបានទិញ
+            </a>
+
+            <a href="#" class="nav-link" @click.prevent="activeSection = 'own'">
+              <i class="bi bi-box"></i>
+              ផលិតផលរបស់ខ្ញុំ
+            </a>
+
+            <a
+              href="#"
+              class="nav-link"
+              @click.prevent="activeSection = 'devices'"
+            >
+              <i class="bi bi-phone"></i>
+              Devices
+            </a>
+          </div>
         </div>
 
-        <!-- MENU -->
-        <div class="nav flex-column">
-          <a
-            href="#"
-            class="nav-link"
-            @click.prevent="activeSection = 'profile'"
-          >
-            <i class="bi bi-person"></i>
-            ប្រវត្តិរូប
-          </a>
-
-          <a
-            href="#"
-            class="nav-link"
-            @click.prevent="activeSection = 'password'"
-          >
-            <i class="bi bi-lock"></i>
-            ផ្លាស់ប្តូរពាក្យសម្ងាត់
-          </a>
-
-          <a href="#" class="nav-link" @click.prevent="activeSection = 'cart'">
-            <i class="bi bi-cart"></i>
-            របស់ខ្ញុំ
-          </a>
-
-          <a
-            href="#"
-            class="nav-link"
-            @click.prevent="activeSection = 'purchased'"
-          >
-            <i class="bi bi-bag"></i>
-            ផលិតផលដែលបានទិញ
-          </a>
-
-          <a href="#" class="nav-link" @click.prevent="activeSection = 'own'">
-            <i class="bi bi-box"></i>
-            ផលិតផលរបស់ខ្ញុំ
-          </a>
-
-          <a
-            href="#"
-            class="nav-link"
-            @click.prevent="activeSection = 'devices'"
-          >
-            <i class="bi bi-phone"></i>
-            Devices
-          </a>
-        </div>
-      </div>
-
-      <!-- CONTENT -->
-      <div class="col-lg-9 p-4">
-        <!-- PROFILE -->
-        <section v-if="activeSection === 'profile'">
-          <div class="card card-ui p-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <h4>ប្រវត្តិរូប</h4>
-
-              <button
-                @click="updateProfile"
-                class="btn btn-primary"
-                :disabled="loading"
+        <!-- CONTENT -->
+        <div class="col-lg-9 p-4">
+          <!-- PROFILE -->
+          <section v-if="activeSection === 'profile'">
+            <div class="card card-ui p-4">
+              <div
+                class="d-flex justify-content-between align-items-center mb-4"
               >
-                {{ loading ? "កំពុងផ្ទុក..." : "រក្សាទុក" }}
-              </button>
-            </div>
+                <h4>ប្រវត្តិរូប</h4>
 
-            <!-- success -->
-            <!-- <div v-if="successMessage" class="alert alert-success">
+                <button
+                  @click="updateProfile"
+                  class="btn btn-primary"
+                  :disabled="loading"
+                >
+                  {{ loading ? "កំពុងផ្ទុក..." : "រក្សាទុក" }}
+                </button>
+              </div>
+
+              <!-- success -->
+              <!-- <div v-if="successMessage" class="alert alert-success">
               {{ successMessage }}
             </div> -->
 
-            <div class="row">
-              <!-- name -->
-              <div class="col-md-6 mb-3">
-                <label> ឈ្មោះ </label>
+              <div class="row">
+                <!-- name -->
+                <div class="col-md-6 mb-3">
+                  <label> ឈ្មោះ </label>
 
-                <input v-model="form.name" type="text" class="form-control" />
+                  <input v-model="form.name" type="text" class="form-control" />
 
-                <small class="text-danger">
-                  {{ errors.name }}
-                </small>
+                  <small class="text-danger">
+                    {{ errors.name }}
+                  </small>
+                </div>
+
+                <!-- email -->
+                <div class="col-md-6 mb-3">
+                  <label> Email </label>
+
+                  <input
+                    v-model="form.email"
+                    type="email"
+                    class="form-control"
+                  />
+
+                  <small class="text-danger">
+                    {{ errors.email }}
+                  </small>
+                </div>
+
+                <!-- phone -->
+                <div class="col-md-6 mb-3">
+                  <label> លេខទូរសព្ទ </label>
+
+                  <input
+                    v-model="form.phone"
+                    type="text"
+                    class="form-control"
+                  />
+                </div>
+
+                <!-- location -->
+                <div class="col-md-6 mb-3">
+                  <label> ទីតាំង </label>
+
+                  <input
+                    v-model="form.location"
+                    type="text"
+                    class="form-control"
+                  />
+                </div>
+
+                <!-- created at -->
+                <div class="col-12 mb-3">
+                  <label> Account Created </label>
+
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="form.created_at"
+                    readonly
+                  />
+                </div>
+
+                <!-- image -->
+                <div class="col-12 mb-3">
+                  <label> Profile Image </label>
+
+                  <input
+                    type="file"
+                    class="form-control"
+                    accept="image/*"
+                    @change="handleImage"
+                  />
+                </div>
+
+                <div
+                  class="d-flex justify-content-start gap-3 align-items-center"
+                >
+                  <!-- upload button -->
+                  <div class="">
+                    <button @click="updateProfileImage" class="btn btn-success">
+                      Upload Image
+                    </button>
+                  </div>
+
+                  <!-- delete account -->
+                  <div class="">
+                    <button @click="deleteAccount" class="btn btn-danger">
+                      លុបគណនី
+                    </button>
+                  </div>
+                </div>
               </div>
-
-              <!-- email -->
-              <div class="col-md-6 mb-3">
-                <label> Email </label>
-
-                <input v-model="form.email" type="email" class="form-control" />
-
-                <small class="text-danger">
-                  {{ errors.email }}
-                </small>
-              </div>
-
-              <!-- phone -->
-              <div class="col-md-6 mb-3">
-                <label> លេខទូរសព្ទ </label>
-
-                <input v-model="form.phone" type="text" class="form-control" />
-              </div>
-
-              <!-- location -->
-              <div class="col-md-6 mb-3">
-                <label> ទីតាំង </label>
-
-                <input
-                  v-model="form.location"
-                  type="text"
-                  class="form-control"
-                />
-              </div>
-
-                            <!-- created at -->
-              <div class="col-12 mb-3">
-                <label> Account Created </label>
-
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="form.created_at"
-                  readonly
-                />
-              </div>
-
-
-              <!-- image -->
-              <div class="col-12 mb-3">
-                <label> Profile Image </label>
-
-                <input
-                  type="file"
-                  class="form-control"
-                  accept="image/*"
-                  @change="handleImage"
-                />
-              </div>
-
-             <div class=" d-flex justify-content-start gap-3 align-items-center">
-               <!-- upload button -->
-              <div class="">
-                <button @click="updateProfileImage" class="btn btn-success">
-                  Upload Image
-                </button>
-              </div>
-
-
-              <!-- delete account -->
-              <div class="">
-                <button @click="deleteAccount" class="btn btn-danger">
-                  លុបគណនី
-                </button>
-              </div>
-             </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <!-- PASSWORD -->
-        <section v-if="activeSection === 'password'">
-          <ChangePW />
-        </section>
+          <!-- PASSWORD -->
+          <section v-if="activeSection === 'password'">
+            <ChangePW />
+          </section>
 
-        <!-- CART -->
-        <section v-if="activeSection === 'cart'">
-          <Mycart />
-        </section>
+          <!-- CART -->
+          <section v-if="activeSection === 'cart'">
+            <Mycart />
+          </section>
 
-        <!-- PURCHASED -->
-        <section v-if="activeSection === 'purchased'">
-          <Purchased />
-        </section>
+          <!-- PURCHASED -->
+          <section v-if="activeSection === 'purchased'">
+            <Purchased />
+          </section>
 
-        <!-- OWN -->
-        <section v-if="activeSection === 'own'">
-          <Own />
-        </section>
+          <!-- OWN -->
+          <section v-if="activeSection === 'own'">
+            <Own />
+          </section>
 
-        <!-- DEVICES -->
-        <section v-if="activeSection === 'devices'">
-          <Devices />
-        </section>
+          <!-- DEVICES -->
+          <section v-if="activeSection === 'devices'">
+            <Devices />
+          </section>
+        </div>
       </div>
     </div>
-  </div>
-</body>
-
+  </body>
 </template>
 
 <style scoped>
