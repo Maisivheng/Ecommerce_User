@@ -54,14 +54,10 @@ const form = reactive({
   phone: "",
   location: "",
   created_at: "",
-  verified: false,
+  verified: true,
   image: null,
 });
 
-// ===========================
-// GET PROFILE
-// API => /api/me
-// ===========================
 
 const getProfile = async () => {
   try {
@@ -96,10 +92,6 @@ const getProfile = async () => {
     loading.value = false;
   }
 };
-
-// ===========================
-// HANDLE IMAGE
-// ===========================
 
 const handleImage = (event) => {
   const file = event.target.files[0];
@@ -255,12 +247,15 @@ const deleteAccount = async () => {
 onMounted(() => {
   getProfile();
 });
+
 </script>
 
 <template>
-  <Navbar />
+  
+  <Navbar></Navbar>
+<body>
 
-  <div class="container-fluid bg-light min-vh-100">
+  <div class="container  min-vh-100">
     <div class="row">
       <!-- SIDEBAR -->
       <div class="col-lg-3 sidebar">
@@ -468,10 +463,13 @@ onMounted(() => {
       </div>
     </div>
   </div>
+</body>
+
 </template>
 
 <style scoped>
 body {
+  font-family: "Kantumruy Pro", sans-serif;
   background: #f6f9fc;
 }
 

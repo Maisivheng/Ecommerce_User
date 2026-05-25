@@ -349,18 +349,84 @@ onMounted(() => {
 <template>
   <div class="card card-ui p-4">
     <!-- HEADER -->
+     
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h4 class="">ផលិតផលរបស់ខ្ញុំ</h4>
 
       <button @click="openAddModal" class="btn btn-primary">
-        + Add Product
+        បន្ថែមផលិតផល
       </button>
     </div>
 
     <!-- LOADING -->
-    <div v-if="loading" class="text-center py-5">Loading...</div>
 
-    <!-- TABLE -->
+    <!-- LOADING SKELETON -->
+    <div v-if="loading">
+      <!-- header skeleton -->
+      <!-- <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="skeleton skeleton-title"></div>
+
+        <div class="skeleton skeleton-btn"></div>
+      </div> -->
+
+      <!-- table skeleton -->
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- skeleton rows -->
+          <tr v-for="i in 5" :key="i">
+            <td>
+              <div class="skeleton skeleton-id"></div>
+            </td>
+
+            <td>
+              <div class="skeleton skeleton-image"></div>
+            </td>
+
+            <td>
+              <div class="skeleton skeleton-text"></div>
+            </td>
+
+            <td>
+              <div class="">
+                <!-- <div class="skeleton skeleton-badge"></div> -->
+
+                <div class="skeleton skeleton-badge"></div>
+              </div>
+            </td>
+
+            <td>
+              <div class="skeleton skeleton-price"></div>
+            </td>
+
+            <td>
+              <div class="skeleton skeleton-date"></div>
+            </td>
+
+            <td>
+              <div class="d-flex gap-2">
+                <div class="skeleton skeleton-action"></div>
+
+                <div class="skeleton skeleton-action"></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- REAL TABLE -->
     <div v-else class="table-responsive">
       <table class="table table-hover align-middle">
         <thead>
@@ -378,7 +444,7 @@ onMounted(() => {
         <tbody>
           <!-- EMPTY -->
           <tr v-if="products.length === 0">
-            <td colspan="7" class="text-center text-muted py-4">No Products</td>
+            <td colspan="7" class="text-center text-muted py-4">គ្មានផលិតផលទេ</td>
           </tr>
 
           <!-- PRODUCTS -->
@@ -436,13 +502,15 @@ onMounted(() => {
         </tbody>
       </table>
     </div>
+
+    <!-- under -->
   </div>
 
   <!-- =========================
         MODAL
   ========================== -->
 
-  <div v-if="showModal" class="modal-overlay">
+  <div v-if="showModal" class="modal-overlay z-index-999">
     <div class="modal-box">
       <!-- HEADER -->
       <div class="d-flex justify-content-between align-items-center mb-4">
@@ -642,6 +710,93 @@ onMounted(() => {
 
   object-fit: cover;
 
+  border-radius: 10px;
+}
+
+/* =========================
+SKELETON LOADING
+========================= */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e9ecef;
+  border-radius: 10px;
+}
+
+.skeleton::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: -150px;
+
+  width: 150px;
+  height: 100%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.7),
+    transparent
+  );
+
+  animation: loading 1s infinite;
+}
+
+@keyframes loading {
+  100% {
+    left: 100%;
+  }
+}
+
+.skeleton-title {
+  width: 200px;
+  height: 35px;
+}
+
+.skeleton-btn {
+  width: 130px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.skeleton-id {
+  width: 40px;
+  height: 20px;
+}
+
+.skeleton-image {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+}
+
+.skeleton-text {
+  width: 160px;
+  height: 20px;
+}
+
+.skeleton-badge {
+  width: 70px;
+  height: 25px;
+  border-radius: 30px;
+}
+
+.skeleton-price {
+  width: 70px;
+  height: 20px;
+}
+
+.skeleton-date {
+  width: 140px;
+  height: 20px;
+}
+
+.skeleton-action {
+  width: 70px;
+  height: 35px;
   border-radius: 10px;
 }
 </style>
