@@ -7,16 +7,13 @@ import profile from "@/views/Profile.vue";
 import DetailPage from "../components/DetailPage.vue";
 
 import { useauthStore } from "@/stores/auth";
-import forgotpassword from '@/views/forgotPassword/forgotpassword.vue'
-import resetpassword from '@/views/forgotPassword/resetpassword.vue'
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import register from '@/views/register.vue'
-import login from '@/views/login.vue'
+import forgotpassword from '@/views/forgotPass/forgotpassword.vue'
+import resetpassword from '@/views/forgotPass/resetpassword.vue'
 
 
-import profile from '@/views/Profile/profile.vue'
-import verityOtp from '@/views/forgotPassword/verityOtp.vue'
+
+// import profile from '@/views/Profile/profile.vue'
+import verityOtp from '@/views/forgotPass/verityOtp.vue'
 // import resetpassword from '@/views/forgotPassword/resetpassword.vue'
 // import resetPassword from '@/views/forgotPassword/resetPassword.vue'
 
