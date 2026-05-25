@@ -112,9 +112,9 @@ body {
 /* HERO BANNER STYLE (Responsive កែសម្រួលថ្មី) */
 /* -------------------------------------------------- */
 .hero-banner-full {
+    background-color: #e2ecfd;
     width: 100%;
-    padding: 2% 5%;
-    /* padding: 2%; */
+    padding: 1%;
 }
 /* កូដដោះស្រាយ៖ ពេល Screen តូច (Mobile) ឱ្យអត្ថបទនៅចំកណ្តាល និងបន្ថែមគម្លាតខាងក្រោម 35px ទៅរូបភាព */
 .hero-text-content {
