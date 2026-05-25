@@ -44,7 +44,7 @@ body {
 
 /* Links on Navbar */
 .navbar-nav .nav-link {
-    font-size: 16px !important;
+    font-size: 18px !important;
     font-weight: 500;
     color: var(--text-dark) !important;
     transition: color 0.2s ease;
@@ -101,7 +101,7 @@ body {
     border: none;
     background: transparent;
     padding: 6px 8px;
-    font-size: 14px;
+    font-size: 18px;
     width: 100%;
 }
 

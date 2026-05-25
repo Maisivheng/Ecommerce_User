@@ -1,5 +1,5 @@
 <template>
-        <nav class="navbar navbar-expand-lg top-navbar sticky-top py-3">
+    <nav class="navbar navbar-expand-lg top-navbar sticky-top py-3">
         <div class="container-fluid custom-padding-container d-flex align-items-center justify-content-between flex-nowrap">
             
             <div class="d-flex align-items-center gap-3">
@@ -13,7 +13,7 @@
                 </div>
             </div>
 
-            <div class="extra-nav-buttons d-flex gap-2">
+            <div class="extra-nav-buttons gap-3 collapse navbar-collapse navbar-nav-links flex-grow-0" id="navbarNav">
                 <router-link to="/" class="btn-nav-action"><i class="bi bi-cart"></i> ទិញ</router-link>
                 <router-link to="/" class="btn-nav-action"><i class="bi bi-shop"></i> លក់</router-link>
             </div>
@@ -22,10 +22,10 @@
                 <ul class="navbar-nav gap-3 align-items-center">
                     <li class="nav-item"><router-link to="/" class="nav-link">ទំព័រដើម</router-link></li>
                     <li class="nav-item"><router-link to="/" class="nav-link">អំពីយើង</router-link></li>
-                    <li class="nav-item"><router-link to="/" class="nav-link">ផលិតផល</router-link></li>
                     <li class="nav-item"><router-link to="/" class="nav-link">ទំនាក់ទំនង</router-link></li>
                     <li class="nav-item ms-2"><router-link to="/" class="nav-link p-1"><i class="bi bi-cart3 fs-5"></i></router-link></li>
                     <li class="nav-item"><router-link to="/profile" class="nav-link p-1"><i class="bi bi-person fs-5"></i></router-link></li>
+                    <li class="nav-item"><router-link to="/profile" class="nav-link p-1"><i class="bi bi-box-arrow-right"></i></router-link></li>
                 </ul>
             </div>
 
@@ -38,10 +38,6 @@
             <span>ទំព័រដើម</span>
         </router-link>
         <router-link to="/" class="nav-item">
-            <i class="bi bi-grid"></i>
-            <span>ប្រភេទ</span>
-        </router-link>
-        <router-link to="/" class="nav-item">
             <i class="bi bi-cart3"></i>
             <span>ទិញ</span>
         </router-link>
@@ -49,7 +45,6 @@
             <i class="bi bi-shop"></i>
             <span>លក់</span>
         </router-link>
-
         <router-link to="/" class="nav-item">
             <i class="bi bi-cart3 fs-5"></i>
             <span>កន្ត្រក</span>
@@ -57,6 +52,8 @@
         <router-link to="/profile" class="nav-item">
             <i class="bi bi-person"></i>
             <span>គណនី</span>
+        </router-link><router-link to="/profile" class="nav-item">
+            <i class="bi bi-box-arrow-right"></i>
         </router-link>
     </div>
     
