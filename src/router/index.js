@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import register from '@/views/register.vue'
 import login from '@/views/login.vue'
+import Logout from '@/views/Logout.vue'
 import profile from '@/views/Profile/profile.vue'
 import { useauthStore } from '@/stores/auth'
 
@@ -44,6 +45,14 @@ const router = createRouter({
       },
     },
     {
+      path: '/Logout',
+      name: 'Logout',
+      component: Logout,
+      meta: {
+        title: 'Logout',
+      },
+    },
+    {
       path: '/profile',
       name: 'profile',
       component: profile,
@@ -57,13 +66,13 @@ const router = createRouter({
 router.beforeEach((to)=>{
   const auth = useauthStore()
   document.title = to.meta.title
-  if(!auth.token && to.path !== '/login'){
-    return '/login'
-  }
-  if(auth.token && to.path == '/login'){
-    return '/'
-  }
-  return true
+  // if(!auth.token && to.path !== '/login'){
+  //   return '/login'
+  // }
+  // if(auth.token && to.path == '/login'){
+  //   return '/'
+  // }
+  // return true
 
 })
 export default router;

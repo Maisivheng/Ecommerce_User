@@ -278,6 +278,17 @@ const validateForm = () => {
   return !errors.name && !errors.email && !errors.password && !errors.password_confirmation && !errorsaccept.acceptTerms
 }
 
+const resetform = () => {
+  email.form = "";
+  password.form = '';
+  email.form = '';
+  password_confirmation = '';
+  acceptTerms.errorsaccept = '';
+
+  return resetform();
+}
+
+
 const handleSignup = async () => {
   if (!validateForm()) {
     showToast('សូមបំពេញទិន្នន័យឲ្យបានត្រឹមត្រូវ', 'error')
@@ -292,7 +303,8 @@ const handleSignup = async () => {
     
     if (auth.success) {
       showToast('គណនីត្រូវបានបង្កើតដោយជោគជ័យ', 'success')
-      router.push('/');
+      router.push('/login');
+      resetform();
     } else {
       showToast('គណនីធ្លាប់មានពីមុនមក សូមបង្កើតគណនីថ្មី', 'error')
     }

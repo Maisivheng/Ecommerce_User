@@ -38,7 +38,7 @@
         // console.log(email.value);
         // console.log(password.value);
         await auth.login(form);
-        router.push('/')
+        router.push('/Logout')
     }
     
     

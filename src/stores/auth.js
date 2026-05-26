@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import api from '@/API/api'
+import Logout from '@/views/Logout.vue'
 
 export const useauthStore = defineStore('auth', () => {
   let token = ref(localStorage.getItem('token') || null)
@@ -18,7 +19,7 @@ export const useauthStore = defineStore('auth', () => {
     }
     
   }
-
+// register
   const register = async (data) =>{
     console.log(data);
     try{
@@ -32,5 +33,29 @@ export const useauthStore = defineStore('auth', () => {
     }
     
   }
-  return {login, token, register, success};
-})
+  // logout
+  const Logout = () => {
+    token.value = null
+    localStorage.removeItem('g7_token')
+}
+
+  return {login, Logout, register, token, success};
+  })
+//   const Logout = async (data) => {
+//     try {
+//         await api.delete('/api/logout', {
+//             headers: {
+//                 Accept: 'application/json',
+//                 Authorization: Bearer `${token.value}`
+//             }
+//         })
+
+//         token.value = null
+//         localStorage.removeItem('token')
+
+//     } catch (err) {
+//         console.error(err.response)
+//     }
+// }
+  
+
