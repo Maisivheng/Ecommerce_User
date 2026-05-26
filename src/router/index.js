@@ -71,30 +71,8 @@ const router = createRouter({
         title: "Profile",
       },
     },
-    {
-      path: "/detail",
-      name: "detail",
-      component: DetailPage,
-      meta: {
-        title: "Detail",
-      },
-    },
-    {
-      path: "/success",
-      name: "success",
-      component: Success,
-      meta: {
-        title: "Success",
-      },
-    },
-    {
-      path: "/checkout",
-      name: "checkout",
-      component: Checkout,
-      meta: {
-        title: "Checkout",
-      },
-    },
+    
+   
     {
       path: "/forgotpassword",
       name: "forgotPassword",
