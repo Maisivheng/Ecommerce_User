@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/API/api";
 
@@ -13,7 +13,6 @@ const cartItems = ref([]);
 
 const loading = ref(false);
 
-// selected items
 const selectedItems = ref([]);
 
 // =========================
@@ -25,13 +24,26 @@ const getCart = async () => {
   try {
     loading.value = true;
 
-    const response = await api.get("/api/profile/carts");
+    // const response = await api.get("/api/profile/carts");
+
+    const response = await api.post("/api/profile/product/create", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
     console.log(response.data);
+    console.log(error);
+
+    console.log(error.response);
+
+    console.log(error.response?.data);
 
     cartItems.value = response.data.data.items || [];
   } catch (error) {
     console.log(error);
+
+    alert(error.response?.data?.message || "Get Cart Failed");
   } finally {
     loading.value = false;
   }
@@ -50,7 +62,7 @@ const toggleSelectAll = (event) => {
 };
 
 // =========================
-// CHECK IF SELECTED
+// CHECK SELECTED
 // =========================
 
 const isSelected = (id) => {
@@ -77,16 +89,32 @@ const grandTotal = computed(() => {
 // =========================
 
 const removeCart = async (id) => {
-  try {
-    await api.delete(`/api/cart/remove/${id}`);
+  const confirmDelete = confirm("តើអ្នកប្រាកដថាចង់លុបផលិតផលនេះមែនទេ?");
 
-    // remove ui
+  if (!confirmDelete) {
+    return;
+  }
+
+  try {
+    loading.value = true;
+
+    const response = await api.delete(`/api/cart/remove/${id}`);
+
+    console.log(response.data);
+
+    // remove from ui
     cartItems.value = cartItems.value.filter((item) => item.id !== id);
 
     // remove selected
     selectedItems.value = selectedItems.value.filter((itemId) => itemId !== id);
+
+    alert(response.data.message || "Remove Success");
   } catch (error) {
     console.log(error);
+
+    alert(error.response?.data?.message || "Remove Failed");
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -101,8 +129,19 @@ const checkout = () => {
     return;
   }
 
+  // selected products
+  const selectedProducts = cartItems.value.filter((item) =>
+    selectedItems.value.includes(item.id),
+  );
+
+  console.log(selectedProducts);
+
   router.push("/checkout");
 };
+
+// =========================
+// MOUNTED
+// =========================
 
 onMounted(() => {
   getCart();
@@ -266,7 +305,6 @@ onMounted(() => {
               </button>
             </td>
           </tr>
-          
         </tbody>
       </table>
     </div>

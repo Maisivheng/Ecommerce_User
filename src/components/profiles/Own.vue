@@ -10,14 +10,12 @@ const products = ref([]);
 const loading = ref(false);
 
 const showModal = ref(false);
-
 const isEdit = ref(false);
 
 const currentProductId = ref(null);
 
 const saving = ref(false);
 
-// image preview
 const imagePreview = ref("");
 
 // ==============================
@@ -49,6 +47,20 @@ const errors = reactive({
 });
 
 // ==============================
+// FORMAT DATE
+// ==============================
+
+const formatDate = (date) => {
+  if (!date) return "-";
+
+  return new Date(date).toLocaleDateString("km-KH", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
+
+// ==============================
 // GET PRODUCTS
 // ==============================
 
@@ -64,7 +76,7 @@ const getProducts = async () => {
   } catch (error) {
     console.log(error);
 
-    alert("Get Products Failed");
+    alert(error.response?.data?.message || "Get Products Failed");
   } finally {
     loading.value = false;
   }
@@ -125,9 +137,7 @@ const validateForm = () => {
 const handleImage = (event) => {
   const file = event.target.files[0];
 
-  if (!file) {
-    return;
-  }
+  if (!file) return;
 
   form.image = file;
 
@@ -183,19 +193,19 @@ const openEditModal = (product) => {
 
   currentProductId.value = product.id;
 
-  form.title = product.title;
-  form.price = product.price;
-  form.condition = product.condition;
-  form.description = product.description;
-  form.detail = product.detail;
-  form.story = product.story;
+  form.title = product.title || "";
+  form.price = product.price || "";
+  form.condition = product.condition || "";
+  form.description = product.description || "";
+  form.detail = product.detail || "";
+  form.story = product.story || "";
 
   // category
   if (product.categories?.length > 0) {
     form.category_id = product.categories[0].id;
   }
 
-  imagePreview.value = product.image;
+  imagePreview.value = product.image || "";
 
   showModal.value = true;
 };
@@ -216,17 +226,11 @@ const saveProduct = async () => {
     const formData = new FormData();
 
     formData.append("title", form.title);
-
     formData.append("price", form.price);
-
     formData.append("condition", form.condition);
-
     formData.append("description", form.description);
-
     formData.append("detail", form.detail);
-
     formData.append("story", form.story);
-
     formData.append("category_id", form.category_id);
 
     // image
@@ -241,6 +245,9 @@ const saveProduct = async () => {
     // ==========================
 
     if (!isEdit.value) {
+      // IMPORTANT:
+      // Replace endpoint below with your real POST API
+
       response = await api.post("/api/profile/product/create", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -254,6 +261,8 @@ const saveProduct = async () => {
     // UPDATE PRODUCT
     // ==========================
     else {
+      formData.append("_method", "PUT");
+
       response = await api.post(
         `/api/profile/product/update/${currentProductId.value}`,
         formData,
@@ -349,27 +358,16 @@ onMounted(() => {
 <template>
   <div class="card card-ui p-4">
     <!-- HEADER -->
-     
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h4 class="">ផលិតផលរបស់ខ្ញុំ</h4>
+      <h4>ផលិតផលរបស់ខ្ញុំ</h4>
 
       <button @click="openAddModal" class="btn btn-primary">
         បន្ថែមផលិតផល
       </button>
     </div>
 
-    <!-- LOADING -->
-
     <!-- LOADING SKELETON -->
     <div v-if="loading">
-      <!-- header skeleton -->
-      <!-- <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="skeleton skeleton-title"></div>
-
-        <div class="skeleton skeleton-btn"></div>
-      </div> -->
-
-      <!-- table skeleton -->
       <table class="table align-middle">
         <thead>
           <tr>
@@ -384,40 +382,16 @@ onMounted(() => {
         </thead>
 
         <tbody>
-          <!-- skeleton rows -->
           <tr v-for="i in 5" :key="i">
-            <td>
-              <div class="skeleton skeleton-id"></div>
-            </td>
-
-            <td>
-              <div class="skeleton skeleton-image"></div>
-            </td>
-
-            <td>
-              <div class="skeleton skeleton-text"></div>
-            </td>
-
-            <td>
-              <div class="">
-                <!-- <div class="skeleton skeleton-badge"></div> -->
-
-                <div class="skeleton skeleton-badge"></div>
-              </div>
-            </td>
-
-            <td>
-              <div class="skeleton skeleton-price"></div>
-            </td>
-
-            <td>
-              <div class="skeleton skeleton-date"></div>
-            </td>
-
+            <td><div class="skeleton skeleton-id"></div></td>
+            <td><div class="skeleton skeleton-image"></div></td>
+            <td><div class="skeleton skeleton-text"></div></td>
+            <td><div class="skeleton skeleton-badge"></div></td>
+            <td><div class="skeleton skeleton-price"></div></td>
+            <td><div class="skeleton skeleton-date"></div></td>
             <td>
               <div class="d-flex gap-2">
                 <div class="skeleton skeleton-action"></div>
-
                 <div class="skeleton skeleton-action"></div>
               </div>
             </td>
@@ -444,7 +418,9 @@ onMounted(() => {
         <tbody>
           <!-- EMPTY -->
           <tr v-if="products.length === 0">
-            <td colspan="7" class="text-center text-muted py-4">គ្មានផលិតផលទេ</td>
+            <td colspan="7" class="text-center text-muted py-4">
+              គ្មានផលិតផលទេ
+            </td>
           </tr>
 
           <!-- PRODUCTS -->
@@ -453,13 +429,15 @@ onMounted(() => {
 
             <!-- IMAGE -->
             <td>
-              <img :src="product.image" class="product-img" />
+              <img
+                :src="product.image"
+                class="product-img"
+                :alt="product.title"
+              />
             </td>
 
             <!-- TITLE -->
-            <td>
-              {{ product.title }}
-            </td>
+            <td>{{ product.title }}</td>
 
             <!-- CATEGORY -->
             <td>
@@ -475,10 +453,8 @@ onMounted(() => {
             <!-- PRICE -->
             <td>${{ product.price }}</td>
 
-            <!-- DATE -->
-            <td>
-              {{ product.created_at }}
-            </td>
+            <!-- DATE — FIX: format ISO timestamp -->
+            <td>{{ formatDate(product.created_at) }}</td>
 
             <!-- ACTION -->
             <td>
@@ -502,15 +478,13 @@ onMounted(() => {
         </tbody>
       </table>
     </div>
-
-    <!-- under -->
   </div>
 
   <!-- =========================
         MODAL
   ========================== -->
 
-  <div v-if="showModal" class="modal-overlay z-index-999">
+  <div v-if="showModal" class="modal-overlay">
     <div class="modal-box">
       <!-- HEADER -->
       <div class="d-flex justify-content-between align-items-center mb-4">
@@ -523,88 +497,67 @@ onMounted(() => {
 
       <!-- TITLE -->
       <div class="mb-3">
-        <label class="form-label"> Product Title </label>
-
+        <label class="form-label">Product Title</label>
         <input
           v-model="form.title"
           type="text"
           class="form-control"
           placeholder="Enter product title"
         />
-
-        <small class="text-danger">
-          {{ errors.title }}
-        </small>
+        <small class="text-danger">{{ errors.title }}</small>
       </div>
 
       <!-- PRICE -->
       <div class="mb-3">
-        <label class="form-label"> Price </label>
-
+        <label class="form-label">Price</label>
         <input
           v-model="form.price"
           type="number"
           class="form-control"
           placeholder="Enter price"
         />
-
-        <small class="text-danger">
-          {{ errors.price }}
-        </small>
+        <small class="text-danger">{{ errors.price }}</small>
       </div>
 
       <!-- CATEGORY -->
       <div class="mb-3">
-        <label class="form-label"> Category ID </label>
-
+        <label class="form-label">Category ID</label>
         <input
           v-model="form.category_id"
           type="number"
           class="form-control"
           placeholder="Enter category id"
         />
-
-        <small class="text-danger">
-          {{ errors.category_id }}
-        </small>
+        <small class="text-danger">{{ errors.category_id }}</small>
       </div>
 
       <!-- CONDITION -->
       <div class="mb-3">
-        <label class="form-label"> Condition </label>
-
+        <label class="form-label">Condition</label>
         <input
           v-model="form.condition"
           type="text"
           class="form-control"
           placeholder="Example: New / Old"
         />
-
-        <small class="text-danger">
-          {{ errors.condition }}
-        </small>
+        <small class="text-danger">{{ errors.condition }}</small>
       </div>
 
       <!-- DESCRIPTION -->
       <div class="mb-3">
-        <label class="form-label"> Description </label>
-
+        <label class="form-label">Description</label>
         <textarea
           v-model="form.description"
           rows="3"
           class="form-control"
           placeholder="Enter description"
         ></textarea>
-
-        <small class="text-danger">
-          {{ errors.description }}
-        </small>
+        <small class="text-danger">{{ errors.description }}</small>
       </div>
 
       <!-- DETAIL -->
       <div class="mb-3">
-        <label class="form-label"> Detail </label>
-
+        <label class="form-label">Detail</label>
         <textarea
           v-model="form.detail"
           rows="3"
@@ -615,8 +568,7 @@ onMounted(() => {
 
       <!-- STORY -->
       <div class="mb-3">
-        <label class="form-label"> Story </label>
-
+        <label class="form-label">Story</label>
         <textarea
           v-model="form.story"
           rows="3"
@@ -627,23 +579,19 @@ onMounted(() => {
 
       <!-- IMAGE -->
       <div class="mb-3">
-        <label class="form-label"> Product Image </label>
-
+        <label class="form-label">Product Image</label>
         <input
           type="file"
           class="form-control"
           accept="image/*"
           @change="handleImage"
         />
-
-        <small class="text-danger">
-          {{ errors.image }}
-        </small>
+        <small class="text-danger">{{ errors.image }}</small>
       </div>
 
       <!-- PREVIEW -->
       <div v-if="imagePreview" class="mb-3">
-        <img :src="imagePreview" class="preview-img" />
+        <img :src="imagePreview" class="preview-img" alt="Preview" />
       </div>
 
       <!-- BUTTONS -->
@@ -679,42 +627,32 @@ onMounted(() => {
 .modal-overlay {
   position: fixed;
   inset: 0;
-
   background: rgba(0, 0, 0, 0.5);
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   z-index: 999;
 }
 
 .modal-box {
   background: white;
-
   width: 100%;
   max-width: 650px;
-
   max-height: 90vh;
-
   overflow-y: auto;
-
   border-radius: 20px;
-
   padding: 25px;
 }
 
 .preview-img {
   width: 120px;
   height: 120px;
-
   object-fit: cover;
-
   border-radius: 10px;
 }
 
 /* =========================
-SKELETON LOADING
+   SKELETON LOADING
 ========================= */
 
 .skeleton {
@@ -726,22 +664,17 @@ SKELETON LOADING
 
 .skeleton::before {
   content: "";
-
   position: absolute;
-
   top: 0;
   left: -150px;
-
   width: 150px;
   height: 100%;
-
   background: linear-gradient(
     90deg,
     transparent,
     rgba(255, 255, 255, 0.7),
     transparent
   );
-
   animation: loading 1s infinite;
 }
 
@@ -751,49 +684,32 @@ SKELETON LOADING
   }
 }
 
-.skeleton-title {
-  width: 200px;
-  height: 35px;
-}
-
-.skeleton-btn {
-  width: 130px;
-  height: 42px;
-  border-radius: 12px;
-}
-
 .skeleton-id {
   width: 40px;
   height: 20px;
 }
-
 .skeleton-image {
   width: 70px;
   height: 70px;
   border-radius: 12px;
 }
-
 .skeleton-text {
   width: 160px;
   height: 20px;
 }
-
 .skeleton-badge {
   width: 70px;
   height: 25px;
   border-radius: 30px;
 }
-
 .skeleton-price {
   width: 70px;
   height: 20px;
 }
-
 .skeleton-date {
   width: 140px;
   height: 20px;
 }
-
 .skeleton-action {
   width: 70px;
   height: 35px;

@@ -251,7 +251,7 @@ onMounted(() => {
 <template>
   <Navbar></Navbar>
   <body>
-    <div class="container min-vh-100">
+    <div class="container-fluid min-vh-100">
       <div class="row">
         <!-- SIDEBAR -->
         <div class="col-lg-3 sidebar">
@@ -430,7 +430,7 @@ onMounted(() => {
                 <div class="col-md-6 mb-3">
                   <label> ឈ្មោះ </label>
 
-                  <input v-model="form.name" type="text" class="form-control" />
+                  <input v-model="form.name" type="text" class="form-control" placeholder="បញ្ចូលឈ្មោះ"/>
 
                   <small class="text-danger">
                     {{ errors.name }}
@@ -445,6 +445,7 @@ onMounted(() => {
                     v-model="form.email"
                     type="email"
                     class="form-control"
+                    placeholder="បញ្ចូលអ៊ីមែល"
                   />
 
                   <small class="text-danger">
@@ -460,6 +461,8 @@ onMounted(() => {
                     v-model="form.phone"
                     type="text"
                     class="form-control"
+
+                    placeholder="បញ្ចូលលេខទូរសព្ទ"
                   />
                 </div>
 
@@ -471,6 +474,7 @@ onMounted(() => {
                     v-model="form.location"
                     type="text"
                     class="form-control"
+                    placeholder="បញ្ចូលទីតាំង"
                   />
                 </div>
 

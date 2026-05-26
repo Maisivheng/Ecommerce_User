@@ -121,7 +121,7 @@ const changePassword = async () => {
 };
 </script>
 <template>
-  <div class="container mt-5">
+  <div class="container">
     <div class="row justify-content-center">
       <div class="col-12">
         <div class="card card-ui p-4">
