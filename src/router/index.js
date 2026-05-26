@@ -57,13 +57,13 @@ const router = createRouter({
 router.beforeEach((to)=>{
   const auth = useauthStore()
   document.title = to.meta.title
-  if(!auth.token && to.path !== '/login'){
-    return '/login'
-  }
-  if(auth.token && to.path == '/login'){
-    return '/'
-  }
-  return true
+  // if(!auth.token && to.path !== '/login'){
+  //   return '/login'
+  // }
+  // if(auth.token && to.path == '/login'){
+  //   return '/'
+  // }
+  // return true
 
 })
 export default router;
