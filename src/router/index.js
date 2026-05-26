@@ -4,7 +4,6 @@ import register from '@/views/register.vue'
 import login from '@/views/login.vue'
 import profile from '@/views/Profile/profile.vue'
 import { useauthStore } from '@/stores/auth'
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
