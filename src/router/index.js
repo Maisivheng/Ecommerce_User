@@ -6,7 +6,7 @@ import login from "@/views/login.vue";
 import DetailPage from "../components/DetailPage.vue";
 import Checkout from "@/views/Checkout.vue";
 import Success from "@/views/Success.vue";
-import { useauthStore } from "@/stores/auth";
+import { useauthStore } from "@/stores/auth.js";
 import forgotpassword from '@/views/forgotPass/forgotpassword.vue'
 import resetpassword from '@/views/forgotPass/resetpassword.vue'
 import verityOtp from '@/views/forgotPass/verityOtp.vue'
@@ -123,17 +123,15 @@ const router = createRouter({
 });
 
 router.beforeEach((to)=>{
-  // const auth = useauthStore()
+  const auth = useauthStore()
   document.title = to.meta.title
-  router.beforeEach((to, from) => {
-  let auth = useauthStore();
-    if(!auth.token && to.path !== '/login' && to.path !=='/register'){
-      return '/login'
-    }
-    if(auth.token && to.path == '/login'){
-      return '/'
-    }
-    return true;
-  })
+  // if(!auth.token && to.path !== '/login' && to.path !=='/register'){
+  //   return '/login'
+  // }
+  // if(auth.token && to.path == '/login'){
+  //   return '/'
+  // }
+  // return true
+
 })
 export default router;

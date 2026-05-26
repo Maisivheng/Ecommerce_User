@@ -1,5 +1,4 @@
-<template>
-      
+<template>  
     <footer class="py-5 border-top">
         <div class="container">
             <div class="row g-4">
@@ -27,9 +26,9 @@
                 <div class="col-md-4 col-lg-3">
                     <h6 class="fw-bold text-dark mb-3">Follow us</h6>
                     <div class="d-flex gap-3">
-                        <router-link to="anttraining2023@gmail.com" class="text-dark fs-5"><i class="bi bi-facebook"></i></router-link>
-                        <router-link to="anttraining2023@gmail.com" class="text-dark fs-5"><i class="bi bi-youtube"></i></router-link>
-                        <router-link to="/" class="text-dark fs-5"><i class="bi bi-instagram"></i></router-link>
+                        <a to="anttraining2023@gmail.com" class="text-dark fs-5"><i class="bi bi-facebook"></i></a>
+                        <a to="anttraining2023@gmail.com" class="text-dark fs-5"><i class="bi bi-youtube"></i></a>
+                        <a to="/" class="text-dark fs-5"><i class="bi bi-instagram"></i></a>
                     </div>
                 </div>
             </div>

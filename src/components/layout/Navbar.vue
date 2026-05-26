@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="d-flex gap-2 my-2 my-lg-0 me-auto">
-                    <a href="#" class="btn-nav-outline"><i class="bi bi-cart"></i> ចង់ទិញ</a>
+                    <router-link to="/" class="btn-nav-outline"><i class="bi bi-cart"></i> ចង់ទិញ</router-link>
                     <a href="#" class="btn-nav-outline"><i class="bi bi-shop"></i> ចង់លក់</a>
                 </div>
 
