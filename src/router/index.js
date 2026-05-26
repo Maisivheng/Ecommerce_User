@@ -1,15 +1,18 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import register from '@/views/register.vue'
-import login from '@/views/login.vue'
 
-
-import profile from '@/views/Profile/profile.vue'
-import forgotPassword from '@/views/forgotPassword/forgotpassword.vue'
-import verityOtp from '@/views/forgotPassword/verityOtp.vue'
-import resetpassword from '@/views/forgotPassword/resetpassword.vue'
-import { useauthStore } from '@/stores/auth'
-
+import { createRouter, createWebHistory } from "vue-router";
+import HomeView from "../views/HomeView.vue";
+import register from "@/views/register.vue";
+import login from "@/views/login.vue";
+import DetailPage from "../components/DetailPage.vue";
+import Checkout from "@/views/Checkout.vue";
+import Success from "@/views/Success.vue";
+import { useauthStore } from "@/stores/auth";
+import forgotpassword from '@/views/forgotPass/forgotpassword.vue'
+import resetpassword from '@/views/forgotPass/resetpassword.vue'
+import verityOtp from '@/views/forgotPass/verityOtp.vue'
+import profile from '@/views/Profile.vue'
+// import resetpassword from '@/views/forgotPassword/resetpassword.vue'
+// import resetPassword from '@/views/forgotPassword/resetPassword.vue'
 
 
 const router = createRouter({
@@ -32,6 +35,16 @@ const router = createRouter({
       component: () => import("../views/AboutView.vue"),
       meta: {
         title: "About",
+      },
+    },{
+      path: '/contactUS',
+      name: 'contactUS',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/AboutView.vue'),
+      meta: {
+        title: 'contactUS',
       },
     },
     {
@@ -58,11 +71,34 @@ const router = createRouter({
         title: "Profile",
       },
     },
-
+    {
+      path: "/detail",
+      name: "detail",
+      component: DetailPage,
+      meta: {
+        title: "Detail",
+      },
+    },
+    {
+      path: "/success",
+      name: "success",
+      component: Success,
+      meta: {
+        title: "Success",
+      },
+    },
+    {
+      path: "/checkout",
+      name: "checkout",
+      component: Checkout,
+      meta: {
+        title: "Checkout",
+      },
+    },
     {
       path: "/forgotpassword",
       name: "forgotPassword",
-      component: forgotPassword,
+      component: forgotpassword,
       meta: {
         title: "forgot-Password",
       },
@@ -89,15 +125,17 @@ const router = createRouter({
 });
 
 router.beforeEach((to)=>{
-  const auth = useauthStore()
+  // const auth = useauthStore()
   document.title = to.meta.title
-  // if(!auth.token && to.path !== '/login'){
-  //   return '/login'
-  // }
-  if(auth.token && to.path == '/login'){
+  router.beforeEach((to, from) => {
+  let auth = useauthStore();
+  if(!auth.success && !to.path == '/login'){
+    return {name : 'login'}
+  }
+  if(auth.success && to.path == '/login'){
     return '/'
   }
-  return true
-
+  return true;
+})
 })
 export default router;
