@@ -17,7 +17,6 @@
           <i class="bi bi-question-lg"></i>
         </div>
       </div>
-
       <!-- Title -->
       <h1 class="title">ភ្លេចពាក្យសម្ងាត់</h1>
 

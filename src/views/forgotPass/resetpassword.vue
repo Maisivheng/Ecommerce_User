@@ -435,7 +435,7 @@ const submitForm = async () => {
   background: transparent;
   color: #777;
   font-size: 20px;
-  /* cursor: pointer; */
+  /* cursor: pointer; */ 
 }
 /* Error */
 .error-text {
