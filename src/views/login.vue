@@ -83,8 +83,5 @@
             await auth.login(form);
             router.push('/');
     }
-    
-    
-
 
 </script>

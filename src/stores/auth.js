@@ -24,7 +24,6 @@ export const useauthStore = defineStore('auth', () => {
         alert("Incorrect email or password.")
         return false
       }
-      
     }catch(err){
       console.error(err);
     }

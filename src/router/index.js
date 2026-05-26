@@ -13,8 +13,6 @@ import verityOtp from '@/views/forgotPass/verityOtp.vue'
 import profile from '@/views/Profile.vue'
 // import resetpassword from '@/views/forgotPassword/resetpassword.vue'
 // import resetPassword from '@/views/forgotPassword/resetPassword.vue'
-
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -129,13 +127,13 @@ router.beforeEach((to)=>{
   document.title = to.meta.title
   router.beforeEach((to, from) => {
   let auth = useauthStore();
-  if(!auth.success && !to.path == '/login'){
-    return {name : 'login'}
-  }
-  if(auth.success && to.path == '/login'){
-    return '/'
-  }
-  return true;
-})
+    if(!auth.token && to.path !== '/login' && to.path !=='/register'){
+      return '/login'
+    }
+    if(auth.token && to.path == '/login'){
+      return '/'
+    }
+    return true;
+  })
 })
 export default router;
