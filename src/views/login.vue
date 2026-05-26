@@ -17,7 +17,7 @@
                     <input type="password" class="form-control" placeholder="បញ្ចូលពាក្យសម្ងាត់" v-model="form.password">
                     <small class="text-danger">{{ form.errors.password }}</small>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">ចូលគណនី</button>
+                <!-- <button type="submit" class="btn btn-primary w-100">ចូលគណនី</button> -->
                 <div class="mb-3">
                     <input class=" form-check-input" type="checkbox" name="" id=""> ចងចាំ
                     <router-link  to="/forgotpassword" class="text-dark"  style=" margin-left: 58px;">ភ្លេចពាក្យសម្ងាត់</router-link>

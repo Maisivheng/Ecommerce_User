@@ -3,9 +3,9 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import register from "@/views/register.vue";
 import login from "@/views/login.vue";
-import DetailPage from "../components/DetailPage.vue";
-import Checkout from "@/views/Checkout.vue";
-import Success from "@/views/Success.vue";
+// import DetailPage from "../components/DetailPage.vue";
+// import Checkout from "@/views/Checkout.vue";
+// import Success from "@/views/Success.vue";
 import { useauthStore } from "@/stores/auth";
 import forgotpassword from '@/views/forgotPass/forgotpassword.vue'
 import resetpassword from '@/views/forgotPass/resetpassword.vue'
