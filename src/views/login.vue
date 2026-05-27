@@ -82,7 +82,13 @@
         // console.log(password.value);
         if(!validationForm()) return
             await auth.login(form);
-            router.push('/');
+            // if(alert == 'Login Success'){
+                // router.push('/');
+            //     return true
+            // }else{
+            //     return false
+            // }
+            
     }
 
 </script>

@@ -142,6 +142,9 @@ router.beforeEach((to) => {
   if (to.meta.requiresAuth && !auth.token) {
     return "/login";
   }
+  if(auth.token && to.path == '/login'){
+    return '/'
+  }
 
 
   return true;
