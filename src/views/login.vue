@@ -75,8 +75,7 @@
             form.errors.password = 'សូមបញ្ចូលពាក្យសម្ងាត់របស់អ្នក';
             isvalid.value= false
         }
-        return isvalid
-        
+        return isvalid   
     }
     const loginForm = async() => {   
         // console.log(email.value);

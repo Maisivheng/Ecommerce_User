@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import api from "@/API/api";
 
 export const useProductStore = defineStore('product', () => {
-
     const products = ref([]);
     async function fetchProduct(params = {}) { 
         // let res = await api.get('/api/products?page=1&per_page=20&search=');

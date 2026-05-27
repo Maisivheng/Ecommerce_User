@@ -83,6 +83,7 @@ const router = createRouter({
       component: Success,
       meta: {
         title: "Success",
+        requiresauth: true,
       },
     },
     {
@@ -91,6 +92,7 @@ const router = createRouter({
       component: Checkout,
       meta: {
         title: "Checkout",
+        requiresauth: true,
       },
     },
     {
@@ -131,7 +133,12 @@ router.beforeEach((to)=>{
   // if(auth.token && to.path == '/login'){
   //   return '/'
   // }
-  // return true
-
+  if(to.meta.requiresauth && !auth.token){
+    return '/login'
+  }
+  // else{
+  //   return '/'
+  // }
+  return true
 })
 export default router;
