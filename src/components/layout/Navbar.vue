@@ -1,41 +1,83 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand me-4" href="#">ពិភពទំនិញ</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top py-3">
+        <div class="container">
+
+            <!-- Logo -->
+            <router-link to="/" class="navbar-brand fw-bold fs-4 text-primary">
+                ពិភពទំនិញ
+            </router-link>
+
+
+            <!-- Navbar -->
             <div class="collapse navbar-collapse" id="navbarNav">
-                
-                <div class="search-wrapper col-12 col-lg-3 my-2 my-lg-0 me-3">
-                    <i class="bi bi-search"></i>
-                    <input class="form-control" type="search" placeholder="ស្វែងរក" aria-label="Search">
+
+                <!-- Buy / Sell -->
+                <div class="d-flex gap-2 my-3 my-lg-0">
+
+                    <router-link to="/" class="btn btn-primary rounded-pill px-4">
+                        <i class="bi bi-cart me-1"></i>
+                        ចង់ទិញ
+                    </router-link>
+
+                    <router-link to="/sell" class="btn btn-outline-primary rounded-pill px-4">
+                        <i class="bi bi-shop me-1"></i>
+                        ចង់លក់
+                    </router-link>
+
                 </div>
 
-                <div class="d-flex gap-2 my-2 my-lg-0 me-auto">
-                    <router-link to="/" class="btn-nav-outline"><i class="bi bi-cart"></i> ចង់ទិញ</router-link>
-                    <a href="#" class="btn-nav-outline"><i class="bi bi-shop"></i> ចង់លក់</a>
-                </div>
+                <!-- Menu -->
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3 mt-3 mt-lg-0">
 
-                <ul class="navbar-nav align-items-center gap-3">
-                    <li class="nav-item"><a class="nav-link text-dark" href="#">ទំព័រដើម</a></li>
-                    <li class="nav-item"><a class="nav-link text-dark" href="#">អំពីយើង</a></li>
-                    <li class="nav-item"><a class="nav-link text-dark" href="#">ផលិតផល</a></li>
-                    <li class="nav-item me-2"><a class="nav-link text-dark" href="#">ទំនាក់ទំនង</a></li>
-                    <li class="nav-item d-flex gap-3 ms-2">
-                        <a href="#" class="text-dark fs-5"><i class="bi bi-cart"></i></a>
-                        
-                        
-                        <router-link to="/profile" class="text-dark fs-5"><i class="bi bi-person"></i></router-link>
-                        
-                        <router-link to="/profile" class="text-dark fs-5"><i class="bi bi-person"></i></router-link>
+                    <li class="nav-item">
+                        <router-link to="/" class="nav-link">
+                            ទំព័រដើម
+                        </router-link>
                     </li>
+
+                    <li class="nav-item">
+                        <router-link to="/about" class="nav-link">
+                            អំពីយើង
+                        </router-link>
+                    </li>
+
+                    <li class="nav-item">
+                        <router-link to="/contact" class="nav-link">
+                            ទំនាក់ទំនង
+                        </router-link>
+                    </li>
+
+                    <!-- Right Side -->
+                    <li class="nav-item d-flex align-items-center gap-2 ms-lg-3">
+
+                        <!-- Cart -->
+                        <router-link to="/cart" class="icon-link">
+                            <i class="bi bi-cart3"></i>
+                        </router-link>
+
+                        <!-- Wishlist -->
+                        <router-link to="/wishlist" class="icon-link">
+                            <i class="bi bi-heart"></i>
+                        </router-link>
+
+                        <router-link v-if="auth.token" to="/profile" class="icon-link">
+                            <i class="bi bi-person-circle"></i>
+                        </router-link>
+                        
+                        <!-- Login -->
+                        <router-link v-else to="/login" class="btn btn-outline-primary rounded-pill px-4">
+                            Login
+                        </router-link>
+                    </li>
+
                 </ul>
             </div>
         </div>
     </nav>
-    
 </template>
+
 <script setup>
-import { RouterLink } from 'vue-router';
+import { RouterLink } from 'vue-router'
+import { useauthStore } from '@/stores/auth';
+const auth = useauthStore();
 </script>
