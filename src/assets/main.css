@@ -44,6 +44,7 @@ body {
 
 /* Links on Navbar */
 .navbar-nav .nav-link {
+    font-family: 'Kantumruy Pro', sans-serif;
     font-size: 18px !important;
     font-weight: 500;
     color: var(--text-dark) !important;
@@ -51,7 +52,9 @@ body {
 }
 
 .navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus,
 .btn-nav-action:hover,
+.btn-nav-action:focus,
 .navbar-nav .nav-link.active-page {
     color: var(--primary-blue) !important;
 }
@@ -62,6 +65,7 @@ body {
 }
 
 .btn-nav-action {
+    font-family: 'Kantumruy Pro', sans-serif;
     border: 1px solid #e5e7eb;
     border-radius: 6px;
     padding: 4px 12px;
@@ -98,10 +102,11 @@ body {
 }
 
 .search-wrapper .search-input {
+    font-family: 'Kantumruy Pro', sans-serif;
+    font-size: 18px !important;
     border: none;
     background: transparent;
     padding: 6px 8px;
-    font-size: 18px;
     width: 100%;
 }
 
@@ -112,7 +117,7 @@ body {
 /* HERO BANNER STYLE (Responsive កែសម្រួលថ្មី) */
 /* -------------------------------------------------- */
 .hero-banner-full {
-    background-color: #e2ecfd;
+    background-color: #e5e7eb;
     width: 100%;
     padding: 1%;
 }
@@ -174,6 +179,7 @@ body {
 }
 
 .badge-red-exact {
+    font-family: 'Kantumruy Pro', sans-serif;
     background-color: #dc2626;
     color: #ffffff;
     font-size: 10px;
@@ -204,6 +210,7 @@ body {
 }
 
 .exact-info-brand {
+    font-family: 'Kantumruy Pro', sans-serif;
     font-size: 13px;
     color: var(--text-muted);
     margin-bottom: 2px;
@@ -256,11 +263,13 @@ body {
 }
 
 .exact-stock-text {
+    font-family: 'Kantumruy Pro', sans-serif;
     font-size: 13px;
     color: var(--text-muted);
 }
 
 .exact-btn-action {
+    font-family: 'Kantumruy Pro', sans-serif;
     background-color: var(--primary-blue);
     color: #ffffff;
     border: none;
@@ -277,7 +286,7 @@ body {
     color: #ffffff;
 }
 
-.footer-column { padding-right: 45px; }
+/* .footer-column { padding-right: 45px; } */
 
 /* Mobile App Bottom Navbar */
 .aeon-bottom-nav {
@@ -293,6 +302,7 @@ body {
 }
 
 .aeon-bottom-nav .nav-item {
+    font-family: 'Kantumruy Pro', sans-serif;
     text-align: center;
     padding: 10px 0;
     flex: 1;
@@ -304,6 +314,7 @@ body {
 }
 
 .aeon-bottom-nav .nav-item i {
+    font-family: 'Kantumruy Pro', sans-serif;
     font-size: 22px;
     display: block;
     margin-bottom: 2px;
@@ -333,3 +344,4 @@ body {
         max-width: 100%;
     }
 }
+

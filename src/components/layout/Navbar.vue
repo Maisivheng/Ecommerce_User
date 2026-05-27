@@ -14,14 +14,14 @@
             </div>
 
             <div class="extra-nav-buttons gap-3 collapse navbar-collapse navbar-nav-links flex-grow-0" id="navbarNav">
-                <router-link to="/" class="btn-nav-action"><i class="bi bi-cart"></i> ទិញ</router-link>
+                <router-link to="/" class="btn-nav-action"><i class="bi bi-basket"></i> ទិញ</router-link>
                 <router-link to="/" class="btn-nav-action"><i class="bi bi-shop"></i> លក់</router-link>
             </div>
 
             <div class="collapse navbar-collapse navbar-nav-links flex-grow-0" id="navbarNav">
                 <ul class="navbar-nav gap-3 align-items-center">
                     <li class="nav-item"><router-link to="/" class="nav-link">ទំព័រដើម</router-link></li>
-                    <li class="nav-item"><router-link to="/" class="nav-link">អំពីយើង</router-link></li>
+                    <li class="nav-item"><router-link to="/about" class="nav-link">អំពីយើង</router-link></li>
                     <li class="nav-item"><router-link to="/" class="nav-link">ទំនាក់ទំនង</router-link></li>
                     <li class="nav-item ms-2"><router-link to="/" class="nav-link p-1"><i class="bi bi-cart3 fs-5"></i></router-link></li>
                     <li class="nav-item"><router-link to="/profile" class="nav-link p-1"><i class="bi bi-person fs-5"></i></router-link></li>

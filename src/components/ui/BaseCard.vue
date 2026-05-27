@@ -1,7 +1,7 @@
 <template>
     <main class="container-fluid custom-padding-container py-5" style="background-color: #ffffff !important;">
         <div class="mb-4">
-            <h2 class="section-title text-dark mb-1">ផលិតផលពិសេស</h2>
+            <h2 class="section-title text-dark mb-1" style="font-family: 'Kantumruy Pro', sans-serif; ">ផលិតផល</h2>
             <!-- <p class="text-muted small m-0 " style="font-size: 18px;">ឧបករណ៍អេឡិចត្រូនិចដែលបានជ្រើសរើសសម្រាប់ជីវិតកាន់តែទំនើប</p> -->
         </div>
 
@@ -28,7 +28,7 @@
                     
                     <div class="exact-card-footer">
                         <span class="exact-stock-text">មានក្នុងស្តុក</span>
-                        <router-link to="/contectUs" class="exact-btn-action">ព័ត៌មានលម្អិត</router-link>
+                        <router-link :to="`/detail/${product.id}`" class="exact-btn-action">ព័ត៌មានលម្អិត</router-link>
                     </div>
                 </div>
             </div>
@@ -38,18 +38,16 @@
 </template>
 
 <script setup>
-    import { onMounted } from 'vue';
+    import { onMounted, ref, watch } from 'vue';
     import { storeToRefs } from 'pinia'; // ជួយរក្សាភាព Reactive ពេលទាញយក state មកប្រើ
     import { useProductStore } from '@/stores/products';
-
+    
     const productStore = useProductStore();
-
     // ទាញយក products state ពី store មកប្រើដោយប្រើ storeToRefs
     const { products } = storeToRefs(productStore);
-
     onMounted(async () => {
-    // ហៅ function ទៅទាញទិន្នន័យពី API នៅពេល component ចាប់ផ្តើមដំណើរការ (mounted)
+        // ហៅ function ទៅទាញទិន្នន័យពី API នៅពេល component ចាប់ផ្តើមដំណើរការ (mounted)
         await productStore.fetchProduct();
     });console.log(products)
-
+    
 </script> 

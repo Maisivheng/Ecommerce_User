@@ -4,6 +4,7 @@ import HomeView from "../views/HomeView.vue";
 import register from "@/views/register.vue";
 import login from "@/views/login.vue";
 import DetailPage from "../components/DetailPage.vue";
+import AddtoCart from "@/components/AddtoCart.vue";
 import Checkout from "@/views/Checkout.vue";
 import Success from "@/views/Success.vue";
 import { useauthStore } from "@/stores/auth";
@@ -70,11 +71,19 @@ const router = createRouter({
       },
     },
     {
-      path: "/detail",
+      path: "/detail/:id",
       name: "detail",
       component: DetailPage,
       meta: {
         title: "Detail",
+      },
+    },
+    {
+      path: "/AddtoCart",
+      name: "AddtoCart",
+      component: AddtoCart,
+      meta: {
+        title: "AddtoCart",
       },
     },
     {

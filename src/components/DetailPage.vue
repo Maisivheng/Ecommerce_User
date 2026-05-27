@@ -1,87 +1,54 @@
 <template>
-  <section class="container py-4">
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-      <div class="row g-0">
-        <!-- Image -->
-        <div class="col-lg-5">
-          <img
-            src="https://i.pinimg.com/736x/a8/5c/d6/a85cd6f4555a80585e33e333523acf79.jpg"
-            class="w-100 h-100 object-fit-cover"
-            style="min-height: 500px"
-          />
+  <Navbar></Navbar>
+  <main class="container-fluid custom-padding-container pt-4 pb-5" >
+    <div class="card border-0 rounded-4 overflow-hidden shadow-lg" style="background-color: #bddaf6;">
+      
+      <div class="row p-4 g-4">
+        
+        <div class="col-md-6">
+          <div class="bg-light rounded-4 p-4 d-flex align-items-center justify-content-center h-100">
+            <img :src="productDetail.image" class="w-100 rounded-4" style="max-height: 400px; object-fit: contain;" alt="Product Image" />
+          </div>
         </div>
-
-        <!-- Detail -->
-        <div class="col-lg-7">
-          <div class="p-4">
-            <!-- Category -->
-            <span class="badge bg-primary mb-3"> Book </span>
-
+        
+        <div class="col-md-6">
+          <div class="bg-light rounded-4 p-4 d-flex flex-column justify-content-between h-100">   
             <!-- Title -->
-            <h2 class="fw-bold mb-3">Computer</h2>
+            <h2 class="fw-bold mb-3">{{ productDetail?.title }}</h2>
 
             <!-- Price -->
-            <h3 class="text-primary fw-bold mb-4">$20.5</h3>
-
-            <!-- Condition -->
-            <div class="mb-3">
-              <strong>Condition:</strong>
-              Super Old
-            </div>
+            <h5>Price</h5>
+            <h5 class="text-primary fw-bold mb-3">${{ productDetail?.price }}</h5>
 
             <!-- Description -->
-            <div class="mb-4">
-              <h5 class="fw-bold">Description</h5>
-
-              <p class="text-muted">This is description</p>
+            <div class="mb-3">
+              <p class="text-muted">{{productDetail?.description}}</p>
             </div>
 
             <!-- Detail -->
-            <div class="mb-4">
-              <h5 class="fw-bold">Product Detail</h5>
+            <div class="mb-3">
+              <p class="text-muted">{{productDetail?.detail}}</p>
+            </div>
 
-              <p class="text-muted">This is detail</p>
+            <!-- Condition -->
+            <div class="mb-3">
+              <h6>Condition</h6>
+              <span>{{productDetail?.condition}}</span>
             </div>
 
             <!-- Story -->
             <div class="mb-4">
-              <h5 class="fw-bold">Story</h5>
-
-              <p class="text-muted">No story</p>
-            </div>
-
-            <!-- Creator -->
-            <div class="d-flex align-items-center border rounded-4 p-3 mb-4">
-              <img
-                src="https://api-loukbontor.g2.ant.com.kh/storage/avatars/no_photo.jpg"
-                width="60"
-                height="60"
-                class="rounded-circle me-3"
-              />
-
-              <div>
-                <h6 class="fw-bold mb-1">Sreng menghlin</h6>
-
-                <small class="text-muted d-block"> srengmenghlin@gmail.com </small>
-
-                <small class="text-muted"> 2026-05-07 </small>
-              </div>
+              <h6 class="text-muted">Story</h6>
+              <span>{{ productDetail?.story }}</span>
             </div>
 
             <!-- Buttons -->
-            <div class="d-flex justify-content-between gap-3">
-              <div class="gap-2 d-flex">
-                <button class="btn btn-primary btn-sm">
-                  <i class="bi bi-cart-plus"></i>
-                  Add to Cart
-                </button>
-
-                <!-- <button class="btn btn-warning px-4 text-light">
-                  <i class="bi bi-pencil"></i>
-                  Edit
-                </button> -->
-              </div>
-              <button class="btn btn-secondary px-4 btn-sm" @click="$router.back()">
+            <div class="d-flex justify-content-between">
+              <router-link to="/AddtoCart" class="btn btn-primary btn-sm">
+                <i class="bi bi-cart-plus"></i>
+                Add to Cart
+              </router-link>
+              <button class="btn btn-secondary px-4 btn-sm" @click="$router.go(-1)">
                 <i class="bi bi-arrow-left"></i>
                 Back
               </button>
@@ -90,5 +57,23 @@
         </div>
       </div>
     </div>
-  </section>
+  </main>
+  <!-- <BaseCard></BaseCard> -->
+  <Footer></Footer>
 </template>
+
+<script setup>
+  import Footer from './layout/Footer.vue';
+  import BaseCard from './ui/BaseCard.vue';
+  import { onMounted, ref } from 'vue';
+  import { useRoute } from 'vue-router';
+  import api from "@/API/api";
+  const route = useRoute();
+  let productDetail = ref({})
+  // get id from route
+  let id = route.params.id;
+  onMounted( async() =>{
+      let res = await api.get('api/products/'+ id);
+      productDetail.value = res.data.data;
+  })
+</script>
