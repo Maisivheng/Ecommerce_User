@@ -250,6 +250,7 @@ const submitForm = async () => {
     return;
   }
   try {
+    
     loading.value = true;
     console.log("EMAIL:", email);
     console.log("OTP:", otp);
