@@ -1,3 +1,4 @@
+
 <template>
     <div class="container min-vh-100 d-flex justify-content-center align-items-center">
         <div class="card shadow-lg border-0 rounded-5 p-4 w-100" style="max-width: 520px;">
@@ -12,15 +13,21 @@
                     <input type="email" class="form-control" placeholder="បញ្ចូលអុីមែល" v-model="form.email">
                     <small class="text-danger">{{ form.errors.email }}</small>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 position-relative">
                     <label class="form-label">ពាក្យសម្ងាត់</label>
                     <input type="password" class="form-control" placeholder="បញ្ចូលពាក្យសម្ងាត់" v-model="form.password">
                     <small class="text-danger">{{ form.errors.password }}</small>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">ចូលគណនី</button>
-                <div class="mb-3">
-                    <input class=" form-check-input" type="checkbox" name="" id=""> ចងចាំ
-                    <router-link  to="/forgotpassword" class="text-dark"  style=" margin-left: 58px;">ភ្លេចពាក្យសម្ងាត់</router-link>
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">  
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox">
+                        <label class="form-check-label">
+                            ចងចាំ
+                        </label>
+                    </div>
+                    <router-link to="/forgotpassword" class="text-decoration-none">
+                    ភ្លេចពាក្យសម្ងាត់?
+                    </router-link>
                 </div>
                 <button class="btn btn-primary w-100 py-2">
                     ចូលគណនី
@@ -36,12 +43,10 @@
                     បង្កើតគណនី
                     </router-link>
                 </div>
-                <!-- <router-link to="/register" class="text-center text-dark">មិនមានគណនី?<span class=" text-primary">បង្កើតគណនី</span> </router-link> -->
             </form>
         </div>
     </div>
 </template>
-
 <script setup>
     import {reactive,ref} from 'vue';
     import router from '@/router';
@@ -80,8 +85,5 @@
             await auth.login(form);
             router.push('/');
     }
-    
-    
-
 
 </script>

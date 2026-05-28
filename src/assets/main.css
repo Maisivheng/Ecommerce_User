@@ -4,6 +4,13 @@
 :root {
   --bs-body-font-family: "Inter","Kantumruy Pro", sans-serif, serif;
 }
+:root {
+    --primary-blue: #0066cc; 
+    --text-dark: #1f2937;
+    --text-muted: #6b7280;
+    --search-focus-blue: rgba(0, 102, 204, 0.15);
+    --search-focus-border: #0066cc;
+}
 body {
   font-family: var(--bs-body-font-family);
   font-size: 15px;
@@ -11,129 +18,369 @@ body {
   color: #333333 !important;
 }
 
-/* កំណត់ទំហំអក្សរតាមកម្រិតស្តង់ដារដែលអ្នកបានជ្រើសរើស */
-p, .text-muted, .description {
-    font-size: 18px !important;
-}
-.btn, .nav-link, .navbar-nav {
-    font-size: 18px !important;
+
+
+/* Container Responsive Fluid */
+.custom-padding-container {
+    padding-left: 5%;
+    padding-right: 5%;
+    width: 100%;
 }
 
-/* 1. NAVBAR STYLE */
-@media (min-width: 992px) {
-    .navbar {
-        padding: 15px 100px !important;
+@media (min-width: 1400px) {
+    .custom-padding-container {
+        padding-left: 100px !important;
+        padding-right: 100px !important;
     }
 }
+
+/* Logo Font */
 .navbar-brand {
-    font-weight: 700;
-    color: #333;
-    font-size: 24px;
+    font-family: 'Kdam Thmor Pro', sans-serif;
+    font-size: 24px !important;
+    font-weight: 400;
+    white-space: nowrap;
 }
 
-.search-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-.search-wrapper input {
-    padding-left: 40px !important;
-    border-radius: 6px;
-    font-size: 16px;
-    height: 40px;
-}
-.search-wrapper .bi-search {
-    position: absolute;
-    left: 15px;
-    /* កំណត់ទីតាំងឱ្យចំកណ្តាលប្រអប់បញ្ឈរ */
-    top: 50%;
-    transform: translateY(-50%);
-    color: #a0a0a0;
-    font-size: 16px;
-    pointer-events: none; /* ការពារកុំឱ្យទើសពេលចុចលើប្រអប់ */
+/* Links on Navbar */
+.navbar-nav .nav-link {
+    font-size: 16px !important;
+    font-weight: 500;
+    color: var(--text-dark) !important;
+    transition: color 0.2s ease;
 }
 
-/* ប៊ូតុង ចង់ទិញ និង ចង់លក់ */
-.btn-nav-outline {
-    border: 1px solid #ccc;
+.navbar-nav .nav-link:hover,
+.btn-nav-action:hover,
+.navbar-nav .nav-link.active-page {
+    color: var(--primary-blue) !important;
+}
+
+.top-navbar {
+    background-color: #fffffff4;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.btn-nav-action {
+    border: 1px solid #e5e7eb;
     border-radius: 6px;
     padding: 4px 12px;
-    color: #555;
-    background: #fff;
-    font-size: 16px !important;
+    font-size: 14px;
+    color: var(--text-dark);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    height: 40px;
-}
-.btn-nav-outline:hover {
-    background-color: #f0f0f0;
-    color: #000;
+    gap: 6px;
+    background: #fff;
 }
 
-/* 2. HERO BANNER STYLE */
-.hero-full-width {
-    background-color: #fff;
-    padding: 100px 0;
-    width: 100%;
-    border-bottom: 1px solid #eee;
+/* Search Box */
+.search-container-wrapper {
+    flex-grow: 1;
+    max-width: 450px;
+    margin: 0 20px;
 }
-@media (max-width: 768px) {
-    .hero-full-width {
-        padding: 50px 0;
+
+.search-wrapper {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding-left: 12px;
+    transition: all 0.2s ease;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.search-wrapper:focus-within {
+    border-color: var(--search-focus-border);
+    box-shadow: 0 0 0 3px var(--search-focus-blue);
+}
+
+.search-wrapper .search-input {
+    border: none;
+    background: transparent;
+    padding: 6px 8px;
+    font-size: 14px;
+    width: 100%;
+}
+
+.search-wrapper .search-input:focus { outline: none; }
+.search-wrapper i { color: var(--text-muted); font-size: 16px; }
+
+/* -------------------------------------------------- */
+/* HERO BANNER STYLE (Responsive កែសម្រួលថ្មី) */
+/* -------------------------------------------------- */
+.hero-banner-full {
+    width: 100%;
+    padding: 2% 5%;
+    /* padding: 2%; */
+}
+/* កូដដោះស្រាយ៖ ពេល Screen តូច (Mobile) ឱ្យអត្ថបទនៅចំកណ្តាល និងបន្ថែមគម្លាតខាងក្រោម 35px ទៅរូបភាព */
+.hero-text-content {
+    text-align: center;
+    margin-bottom: 35px; 
+}
+
+/* ពេល Screen ធំ (Desktop - 992px ឡើងទៅ) ឱ្យអត្ថបទរត់ទៅខាងឆ្វេងវិញ និងដកគម្លាតខាងក្រោមចេញ */
+@media (min-width: 992px) {
+    .hero-text-content {
+        text-align: left;
+        margin-bottom: 0;
+        padding-right: 30px;
     }
 }
-.hero-title {
-    color: #0d6efd;
-    font-weight: bold;
-    font-size: 2.5rem;
+
+.hero-image-wrapper {
+    /* text-align: contain; */
+    object-fit: cover !important;
 }
 
-/* PRODUCT CARD STYLE */
-.product-section-title {
-    font-size: 20px !important;
-    font-weight: 700;
+.hero-image-wrapper img {
+    max-height: 400px;
+    object-fit: cover;
+    width: 100%;
 }
-.product-card {
-    border: 1px solid #eee;
-    border-radius: 10px;
-    transition: transform 0.2s;
-    background: #fff;
+
+/* -------------------------------------------------- */
+/* PRODUCT CARD STYLE */
+/* -------------------------------------------------- */
+.product-card-exact {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card-exact:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
+}
+
+.badge-container {
+    position: relative;
+    opacity: 1; 
+    top: 5px;
+    left: 10px;
+    z-index: 3; 
+    transition: all 0.3s ease-in-out;
+}
+
+.badge-red-exact {
+    background-color: #dc2626;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.exact-img-wrapper {
+    width: 100%;
+    height: 200px;
+    position: relative;
+}
+
+.exact-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-top-left-radius: 11px;
+    border-top-right-radius: 11px;
+}
+
+.card-body-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.exact-info-brand {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+}
+
+.exact-info-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
 }
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-}
-.product-title {
-    font-size: 20px !important;
-    font-weight: 700;
-}
-.badge-discount {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: #dc3545;
-    color: white;
-    padding: 2px 8px;
+
+.exact-rating-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-size: 12px;
-    border-radius: 3px;
-}
-.product-img {
-    height: 180px;
-    object-fit: contain;
-    padding: 15px;
+    color: #f59e0b;
+    margin-bottom: 8px;
 }
 
-/* 3. FOOTER STYLE */
-footer {
-    background-color: #e9ecef;
-    color: #495057;
-    padding: 60px 0; /* បង្កើន padding លើក្រោមឱ្យមើលទៅទូលាយ */
-    margin-top: 50px;
+.exact-price-box {
+    font-family: 'Inter', sans-serif;
 }
-.footer-title {
-    font-size: 20px !important;
+
+.exact-price-current {
+    font-size: 16px;
     font-weight: 700;
-}  
+    color: var(--text-dark);
+}
+
+.exact-price-old {
+    font-size: 13px;
+    color: #9ca3af;
+    text-decoration: line-through;
+    margin-left: 6px;
+}
+
+.exact-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #f3f4f6;
+    padding: 12px 16px;
+    background-color: #ffffff;
+}
+
+.exact-stock-text {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.exact-btn-action {
+    background-color: var(--primary-blue);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.exact-btn-action:hover {
+    background-color: #0052a3;
+    color: #ffffff;
+}
+
+.footer-column { padding-right: 45px; }
+
+/* Mobile App Bottom Navbar */
+.aeon-bottom-nav {
+    display: none; 
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+    z-index: 1040;
+    border-top: 1px solid #e5e7eb;
+}
+
+.aeon-bottom-nav .nav-item {
+    text-align: center;
+    padding: 10px 0;
+    flex: 1;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.aeon-bottom-nav .nav-item i {
+    font-size: 22px;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.aeon-bottom-nav .nav-item.active {
+    color: var(--primary-blue);
+}
+/* ====================NaveBar=================== */
+.navbar-brand {
+  letter-spacing: 1px;
+}
+
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+}
+
+.search-input {
+  padding-left: 42px;
+  border-radius: 50px;
+  height: 45px;
+  border: 1px solid #ddd;
+}
+
+.search-input:focus {
+  box-shadow: none;
+  border-color: #0d6efd;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: gray;
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.nav-link:hover {
+  color: #0d6efd !important;
+}
+
+.icon-link {
+  font-size: 1.3rem;
+  color: #333;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.icon-link:hover {
+  color: #0d6efd;
+  transform: translateY(-2px);
+}
+/* ============================================== */
+/* Responsive Breakpoint 991.98px */
+@media (max-width: 991.98px) {
+    body {
+        padding-bottom: 75px; 
+    }
+    .custom-padding-container {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+    .navbar-nav-links, .extra-nav-buttons { 
+        display: none !important; 
+    }
+    .aeon-bottom-nav {
+        display: flex; 
+    }
+    .search-container-wrapper {
+        margin: 0 0 0 15px;
+        max-width: 100%;
+    }
+}
