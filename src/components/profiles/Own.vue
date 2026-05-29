@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import api from "@/API/api";
 
 // =====================================
@@ -231,10 +231,11 @@ const openEditModal = (product) => {
   form.detail = product.detail || "";
   form.story = product.story || "";
 
-  // category
+  // FIX: Force category ID to be a Number so it matches the <select> <option> value
   if (product.categories?.length > 0) {
-    // form.category_ids = [String(product.categories[0].id)];
-    form.category_ids = [product.categories[0].id];
+    form.category_ids = [Number(product.categories[0].id)];
+  } else {
+    form.category_ids = [""];
   }
 
   // image preview
@@ -270,7 +271,6 @@ const saveProduct = async () => {
       JSON.stringify([Number(form.category_ids[0])]),
     );
 
-    
     // image
     if (form.image) {
       formData.append("image", form.image);
@@ -298,61 +298,41 @@ const saveProduct = async () => {
     // =====================================
     // UPDATE PRODUCT
     // =====================================
-    // else {
-    //   formData.append("_method", "PUT");
-
-    //   response = await api.post(
-    //     `/api/products/${currentProductId.value}`,
-    //     formData,
-    //     {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //       },
-    //     },
-    //   );
-
-    //   alert(response.data.message || "Update Product Success");
-    // }
-
     else {
+      const updateData = new FormData();
 
-  const updateData = new FormData();
+      updateData.append("_method", "PUT");
 
-  updateData.append("_method", "PUT");
+      updateData.append("title", form.title);
+      updateData.append("price", form.price);
+      updateData.append("condition", form.condition);
+      updateData.append("description", form.description);
+      updateData.append("detail", form.detail);
+      updateData.append("story", form.story);
 
-  updateData.append("title", form.title);
-  updateData.append("price", form.price);
-  updateData.append("condition", form.condition);
-  updateData.append("description", form.description);
-  updateData.append("detail", form.detail);
-  updateData.append("story", form.story);
+      // FIX: Ensure category_ids is converted to a Number array for backend consistency
+      updateData.append(
+        "category_ids",
+        JSON.stringify([Number(form.category_ids[0])]),
+      );
 
-  // category
-  updateData.append(
-    "category_ids",
-    JSON.stringify(form.category_ids)
-  );
+      // image optional
+      if (form.image) {
+        updateData.append("image", form.image);
+      }
 
-  // image optional
-  if (form.image) {
-    updateData.append("image", form.image);
-  }
+      response = await api.post(
+        `/api/products/${currentProductId.value}`,
+        updateData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
 
-  response = await api.post(
-    `/api/products/${currentProductId.value}`,
-    updateData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      alert(response.data.message || "Update Product Success");
     }
-  );
-
-  alert(
-    response.data.message ||
-    "Update Product Success"
-  );
-}
 
     // close modal
     showModal.value = false;
@@ -426,6 +406,28 @@ const deleteProduct = async (id) => {
   }
 };
 
+//==============Pagination===========
+
+const currentPage = ref(1);
+const perPage = 6;
+
+/* pagination products */
+const paginatedProducts = computed(() => {
+  const start = (currentPage.value - 1) * perPage;
+  const end = start + perPage;
+
+  return products.value.slice(start, end);
+});
+
+/* total pages */
+const totalPages = computed(() => {
+  return Math.ceil(products.value.length / perPage);
+});
+
+/* change page */
+const changePage = (page) => {
+  currentPage.value = page;
+};
 // =====================================
 // MOUNTED
 // =====================================
@@ -523,9 +525,9 @@ onMounted(() => {
               គ្មានផលិតផលទេ
             </td>
           </tr>
-
-          <tr v-for="product in products" :key="product.id">
-            <td>#{{ product.id }}</td>
+          <tr v-for="product in paginatedProducts" :key="product.id">
+            <!-- <tr v-for="product in products" :key="product.id"> -->
+            <td>{{ product.id }}</td>
 
             <!-- IMAGE -->
 
@@ -584,6 +586,38 @@ onMounted(() => {
             </td>
           </tr>
         </tbody>
+        <div class="d-flex justify-content-center mt-4 gap-2">
+          <!-- PREV -->
+          <button
+            class="btn btn-outline-primary"
+            :disabled="currentPage === 1"
+            @click="currentPage--"
+          >
+            Prev
+          </button>
+
+          <!-- PAGE NUMBER -->
+          <button
+            v-for="page in totalPages"
+            :key="page"
+            @click="changePage(page)"
+            class="btn"
+            :class="
+              currentPage === page ? 'btn-primary' : 'btn-outline-primary'
+            "
+          >
+            {{ page }}
+          </button>
+
+          <!-- NEXT -->
+          <button
+            class="btn btn-outline-primary"
+            :disabled="currentPage === totalPages"
+            @click="currentPage++"
+          >
+            Next
+          </button>
+        </div>
       </table>
     </div>
   </div>
@@ -591,7 +625,7 @@ onMounted(() => {
   <!-- MODAL -->
 
   <div v-if="showModal" class="modal-overlay">
-    <div class="modal-box">
+    <div class="modal-box h-75">
       <!-- HEADER -->
 
       <div class="d-flex justify-content-between align-items-center mb-4">
@@ -636,30 +670,7 @@ onMounted(() => {
         </small>
       </div>
 
-      <!-- CATEGORY SELECT -->
-
-      <!-- <div class="mb-3">
-        <label class="form-label">Category</label>
-
-        <select v-model="form.category_ids" class="form-select" multiple>
-          <option disabled value="">Select category</option>
-
-          <option
-            v-for="category in categories"
-            :key="category.id"
-            :value="String(category.id)"
-          >
-            {{ category.name }}
-          </option>
-        </select>
-
-        <small class="text-danger">
-          {{ errors.category_ids }}
-        </small>
-      </div> -->
-      <!-- CATEGORY -->
-
-      <!-- <div class="mb-3">
+      <div class="mb-3">
         <label class="form-label">Category</label>
 
         <select v-model="form.category_ids[0]" class="form-select">
@@ -677,50 +688,7 @@ onMounted(() => {
         <small class="text-danger">
           {{ errors.category_ids }}
         </small>
-      </div> -->
-
-      <!-- CATEGORY -->
-
-<div class="mb-3">
-  <label class="form-label">Category</label>
-
-  <!-- <select
-    v-model="form.category_ids[0]"
-    class="form-select"
-  >
-    <option disabled value="">
-      Select category
-    </option>
-
-    <option
-      v-for="category in categories"
-      :key="category.id"
-      :value="String(category.id)"
-    >
-      {{ category.name }}
-    </option>
-  </select> -->
-  <select
-  v-model="form.category_ids[0]"
-  class="form-select"
->
-  <option disabled value="">
-    Select category
-  </option>
-
-  <option
-    v-for="category in categories"
-    :key="category.id"
-    :value="category.id"
-  >
-    {{ category.name }}
-  </option>
-</select>
-
-  <small class="text-danger">
-    {{ errors.category_ids }}
-  </small>
-</div>
+      </div>
 
       <!-- CONDITION -->
 
@@ -731,7 +699,7 @@ onMounted(() => {
           v-model="form.condition"
           type="text"
           class="form-control"
-          placeholder="Example: New / Old"
+          placeholder="New / Old"
         />
 
         <small class="text-danger">

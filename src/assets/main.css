@@ -312,7 +312,58 @@ body {
 .aeon-bottom-nav .nav-item.active {
     color: var(--primary-blue);
 }
+/* ====================NaveBar=================== */
+.navbar-brand {
+  letter-spacing: 1px;
+}
 
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+}
+
+.search-input {
+  padding-left: 42px;
+  border-radius: 50px;
+  height: 45px;
+  border: 1px solid #ddd;
+}
+
+.search-input:focus {
+  box-shadow: none;
+  border-color: #0d6efd;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: gray;
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.nav-link:hover {
+  color: #0d6efd !important;
+}
+
+.icon-link {
+  font-size: 1.3rem;
+  color: #333;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.icon-link:hover {
+  color: #0d6efd;
+  transform: translateY(-2px);
+}
+/* ============================================== */
 /* Responsive Breakpoint 991.98px */
 @media (max-width: 991.98px) {
     body {
