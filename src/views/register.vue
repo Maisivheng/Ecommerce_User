@@ -133,7 +133,7 @@
 
         <div class="signin-link">
           <span>មានគណនីរួចហើយ?</span>
-          <RouterLink to="/login" >ចូលគណនី</RouterLink>
+          <RouterLink to="/login">ចូលគណនី</RouterLink>
         </div>
       </form>
     </div>
@@ -187,14 +187,13 @@ const form = reactive({
   password: '',
   password_confirmation: '',
 })
-
-
 const errors = reactive({
   name: '',
   email: '',
   password: '',
   password_confirmation: '',
 })
+
 
 const formaccept = reactive({
   acceptTerms: false
@@ -268,7 +267,7 @@ const validateForm = () => {
   validateField('email')
   validateField('password')
   validateField('password_confirmation')
-  
+
   if (!formaccept.acceptTerms) {
     errorsaccept.acceptTerms = 'សូមយល់ព្រមតាមលក្ខខណ្ឌប្រើប្រាស់'
   } else {
@@ -286,13 +285,18 @@ const handleSignup = async () => {
   
   loading.value = true
 
+  const success = await auth.register(form)
+  if (success) {
+      alertSuccess('គណនីត្រូវបានបង្កើតដោយជោគជ័យ!')
+      router.push('/');
+  }
   try {
     await auth.register(form);
     // console.log(auth.success);
     
     if (auth.success) {
       showToast('គណនីត្រូវបានបង្កើតដោយជោគជ័យ', 'success')
-      router.push('/login')
+      router.push('/')
     } else {
       showToast('មិនអាចបង្កើតគណនីបានទេ សូមព្យាយាមម្តងទៀត', 'error')
     }
@@ -302,6 +306,22 @@ const handleSignup = async () => {
   } finally {
     loading.value = false 
   }
+  
+  // try {
+  //   const success = await authStore.register(form)
+  //   if (success) {
+  //     alertSuccess('គណនីត្រូវបានបង្កើតដោយជោគជ័យ!')
+  //     router.push('/login')
+  //   } else {
+  //     showToast('មិនអាចបង្កើតគណនីបានទេ សូមព្យាយាមម្តងទៀត', 'error')
+  //   }
+  // } catch (error) {
+  //   console.error('Signup error:', error)
+  //   showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ សូមព្យាយាមម្តងទៀត', 'error')
+  // } finally {
+  //   loading.value = false
+  // }
+
 }
 </script>
 

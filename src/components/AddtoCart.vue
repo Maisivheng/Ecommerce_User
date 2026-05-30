@@ -1,8 +1,3 @@
-<script setup lang="ts">
-import Navbar from './layout/Navbar.vue';
-
-</script>
-
 <template>
     <Navbar></Navbar>
     <div class="container-fluid layout-wrapper py-4">
@@ -98,7 +93,7 @@ import Navbar from './layout/Navbar.vue';
 
         <div id="productCarousel" class="carousel slide recommendations-carousel d-flex align-items-center justify-content-between gap-2" data-bs-ride="false">
             <button class="custom-nav-arrow border-0" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                <i class="bi bi-chevron-left border-0"></i>
+                <i class="bi bi-chevron-left p-2 rounded-pill"></i>
             </button>
             <div class="carousel-inner">
                 <div class="carousel-item active">
@@ -108,21 +103,21 @@ import Navbar from './layout/Navbar.vue';
                             <span class="rec-category">SMART PHONE</span>
                             <h4 class="rec-name">Samsung Galaxy S24 Ultra Titanium Violet</h4>
                             <div class="rec-price">$ 1,329.00</div>
-                            <button class="view-more-btn bg-primary">មើលបន្ថែម</button>
+                            <button class="view-more-btn bg-primary">ព័ត៌មានលម្អិត</button>
                         </div>
                         <div class="rec-card">
                             <img src="https://via.placeholder.com/120x120?text=S24+Ultra" alt="S24 Ultra">
                             <span class="rec-category">SMART PHONE</span>
                             <h4 class="rec-name">Samsung Galaxy S24 Ultra</h4>
                             <div class="rec-price">$ 1,099.99</div>
-                            <button class="view-more-btn bg-primary">មើលបន្ថែម</button>
+                            <button class="view-more-btn bg-primary">ព័ត៌មានលម្អិត</button>
                         </div>
                         <div class="rec-card">
                             <img src="https://via.placeholder.com/120x120?text=PC+Gaming" alt="PC Gaming">
                             <span class="rec-category">PC</span>
                             <h4 class="rec-name">iphone 16PC Gaming Case pro max</h4>
                             <div class="rec-price">$ 499.00</div>
-                            <button class="view-more-btn bg-primary">មើលបន្ថែម</button>
+                            <button class="view-more-btn bg-primary">ព័ត៌មានលម្អិត</button>
                         </div>
                     </div>
                 </div>
@@ -134,38 +129,49 @@ import Navbar from './layout/Navbar.vue';
                             <span class="rec-category">LAPTOP</span>
                             <h4 class="rec-name">MacBook Pro M3 Max 14-inch</h4>
                             <div class="rec-price">$ 2,499.00</div>
-                            <button class="view-more-btn bg-primary">មើលបន្ថែម</button>
+                            <button class="view-more-btn bg-primary">ព័ត៌មានលម្អិត</button>
                         </div>
                         <div class="rec-card">
                             <img src="https://via.placeholder.com/120x120?text=Keyboard" alt="Keyboard">
                             <span class="rec-category">ACCESSORIES</span>
                             <h4 class="rec-name">Mechanical Gaming Keyboard RGB</h4>
                             <div class="rec-price">$ 89.00</div>
-                            <button class="view-more-btn bg-primary">មើលបន្ថែម</button>
+                            <button class="view-more-btn bg-primary">ព័ត៌មានលម្អិត</button>
                         </div>
                         <div class="rec-card">
                             <img src="https://via.placeholder.com/120x120?text=Headset" alt="Headset">
                             <span class="rec-category">AUDIO</span>
                             <h4 class="rec-name">Wireless Noise Cancelling Headset</h4>
                             <div class="rec-price">$ 199.00</div>
-                            <button class="view-more-btn bg-primary">មើលបន្ថែម</button>
+                            <button class="view-more-btn bg-primary">ព័ត៌មានលម្អិត</button>
                         </div>
                     </div>
                 </div>
             </div>
             
             <button class="custom-nav-arrow border-0" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                <i class="bi bi-chevron-right"></i>
+                <i class="bi bi-chevron-right p-2 rounded-pill"></i>
             </button>
         </div>
 
-        <div class="btn-shopping-action">
-            <button class="continue-shopping-btn bg-primary">បន្តការទិញទំនិញ</button>
+        <div class="btn-shopping-action d-flex justify-content-between">
+            <router-link to="/" class="continue-shopping-btn bg-primary text-decoration-none">មើលផលិតផលផ្សេងទៀត</router-link>
+        
+            <button class="continue-shopping-btn bg-primary" @click="$router.go(-1)">ថយក្រោយ</button>
         </div> 
     </div>
+
+    <Footer></Footer>
 </template>
 
-<style>
+<script setup>
+    import Footer from './layout/Footer.vue';
+</script>
+
+<style scoped>
+    :global(:root){
+        --bg-btn-color: linear-gradient(to top, #6eb1f5 0%, #9bafc8 100%);
+    }
     body{
         font-family: "Inter","Kantumruy Pro", sans-serif, serif;
         font-size: 18px;
@@ -187,7 +193,7 @@ import Navbar from './layout/Navbar.vue';
 
     /* --- Split Layout Grid --- */
     .cart-layout {
-        background-color: #fff;
+        background-image: var(--bg-detail);
         border: 2px solid #EAEAEA;
         display: grid;
         grid-template-columns: 1fr 320px;
@@ -302,7 +308,8 @@ import Navbar from './layout/Navbar.vue';
         font-size: 14px;
     }
     .btn-delete-all{
-        font-size: 14px;
+        font-size: 15px;
+        font-weight: 500;
         background-color: #fff;
         padding: 10px;
         border-radius: 8px;
@@ -310,12 +317,9 @@ import Navbar from './layout/Navbar.vue';
         color: #DC3545;
     }
     .btn-delete-all:hover{
-        font-size: 14px;
-        background-color: #c0c1c2;
-        padding: 10px;
+        background: var(--bg-btn-color);
         border-radius: 8px;
-        border: 1px solid #c0c1c2;
-        color: #DC3545;
+        color: white;
     }
 
     .item-price {
@@ -367,7 +371,7 @@ import Navbar from './layout/Navbar.vue';
 
     /* --- Bootstrap Slider Wrapper --- */
     .recommendations-carousel {
-        background-color: #EAEAEA;
+        background-image: var(--bg-detail);
         border-radius: 8px;
         padding: 20px 15px;
         position: relative;
@@ -425,19 +429,30 @@ import Navbar from './layout/Navbar.vue';
         border-radius: 8px;
         padding: 6px 14px;
         font-size: 18px;
+        transition: 0.8s;
     }
 
     /* Custom positioning for Bootstrap slider controls */
-    .custom-nav-arrow {
+    /* .custom-nav-arrow {
         background: transparent !important;
         background-color: transparent !important;
-    }
-    .bi-chevron-right, .bi-chevron-left{
+    } */
+    .custom-nav-arrow{
         -webkit-text-stroke: 1px #002855;
-        width: 100px !important;
+        font-size: 1.2rem;
+        width: 35px;
+        height: 35px;
         text-align: center;
-        background-color: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #bfc1c338;
         border-radius: 100%;
+    }
+
+    .custom-nav-arrow:hover{
+        background: var(--bg-btn-color);
+        -webkit-text-stroke: 1px #f3f5f8;
     }
 
     .carousel-control-prev { left: 16px; }
@@ -446,17 +461,24 @@ import Navbar from './layout/Navbar.vue';
     /* --- shopping Action Elements --- */
     .-btn-shopping-action {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         margin-top: 24px;
     }
 
     .continue-shopping-btn {
-        width: 300px;
+        font-size: 16px;
         color: white;
         border: none;
         border-radius: 8px;
-        padding: 6px 14px;
+        padding: 10px 15px !important; 
         margin-top: 10px;
+    }
+
+    /* ======btn hover====== */
+    .view-more-btn:hover,
+    .continue-shopping-btn:hover,
+    .checkout-btn:hover {
+        background: var(--bg-btn-color);
     }
 
     /* --- Viewport Responsiveness --- */

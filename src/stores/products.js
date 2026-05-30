@@ -14,8 +14,22 @@ export const useProductStore = defineStore('product', () => {
         products.value = res.data?.data;
     }
 
+    let product = ref([])
+    async function fetchCatchID(params) {
+        if (!params) {
+            console.error("Error: ID របស់ផលិតផលគឺ undefined មិនអាចហៅ API បានទេ!");
+            return;
+        }
+        console.log(params)
+        let res = await api.get(`/api/products/${params}`);  
+        console.log(ref)      
+        product.value = res.data?.data;
+    }
+
     return {
         products,
+        product,
         fetchProduct,
+        fetchCatchID
     };
 });

@@ -562,7 +562,7 @@ body {
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #0d6efd;
+  border: 2px solid #0d6efd;
 }
 
 .nav-link {
@@ -576,7 +576,7 @@ body {
 
 .nav-link:hover {
   background: #0d6efd;
-  color: white;
+  color: white !important;
 }
 
 .card-ui {

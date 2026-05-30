@@ -1,7 +1,7 @@
 <template>
   <Navbar></Navbar>
   <main class="container-fluid custom-padding-container pt-4 pb-5" >
-    <div class="card border-0 rounded-4 overflow-hidden shadow-lg" style="background-color: #bddaf6;">
+    <div class="card border-0 rounded-4 overflow-hidden shadow-lg Detail">
       
       <div class="row p-4 g-4">
         
@@ -44,14 +44,8 @@
 
             <!-- Buttons -->
             <div class="d-flex justify-content-between">
-              <router-link to="/AddtoCart" class="btn btn-primary btn-sm">
-                <i class="bi bi-cart-plus"></i>
-                Add to Cart
-              </router-link>
-              <button class="btn btn-secondary px-4 btn-sm" @click="$router.go(-1)">
-                <i class="bi bi-arrow-left"></i>
-                Back
-              </button>
+              <router-link :to="`/addtoCart`" class="exact-btn-action">ដាក់ចូលកន្ត្រក់</router-link>
+              <button class="btn btn-secondary px-4 btn-sm" @click="$router.go(-1)">ថយក្រោយ</button>
             </div>
           </div>
         </div>
@@ -77,3 +71,13 @@
       productDetail.value = res.data.data;
   })
 </script>
+
+<style scoped>
+  :global(:root){
+    --bg-detail: linear-gradient(to bottom, #b8c4d3 0%, #043774 100%);
+  }
+
+  .Detail{
+    background-image: var(--bg-detail);
+  }
+</style>
