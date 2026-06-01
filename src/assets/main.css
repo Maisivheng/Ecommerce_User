@@ -8,8 +8,11 @@
     --primary-blue: #0066cc; 
     --text-dark: #1f2937;
     --text-muted: #6b7280;
-    --search-focus-blue: rgba(0, 102, 204, 0.15);
+    --search-focus-blue: #0066cc26;
     --search-focus-border: #0066cc;
+    --bg-navbar:  linear-gradient(to top, #b8c4d3 0%, transparent 100%);
+    --bg-footer:  linear-gradient(to bottom, #cfd9e5 0%, #9bafc8 100%);
+    --bg-card:  linear-gradient(to top, #6eb1f5 0%, #9bafc8 100%);
 }
 body {
   font-family: var(--bs-body-font-family);
@@ -34,6 +37,9 @@ body {
     }
 }
 
+.navbar{
+    background-image: var(--bg-navbar);
+}
 /* Logo Font */
 .navbar-brand {
     font-family: 'Kdam Thmor Pro', sans-serif;
@@ -42,17 +48,23 @@ body {
     white-space: nowrap;
 }
 
+.navbar .btn-outline-primary:focus{
+    background: var(--primary-color);
+    color: white;
+}
+
 /* Links on Navbar */
 .navbar-nav .nav-link {
-    font-size: 16px !important;
+    font-size: 18px !important;
     font-weight: 500;
     color: var(--text-dark) !important;
     transition: color 0.2s ease;
 }
 
-.navbar-nav .nav-link:hover,
-.btn-nav-action:hover,
-.navbar-nav .nav-link.active-page {
+/* .navbar-nav .nav-link:hover, */
+.navbar-nav .nav-link:focus
+/* .btn-nav-action:hover,
+.btn-nav-action:focus, */{
     color: var(--primary-blue) !important;
 }
 
@@ -74,79 +86,83 @@ body {
     background: #fff;
 }
 
-/* Search Box */
+/* =========btn shearch======== */
+.search{
+    background-image: none;
+    top: 100px;
+    position: sticky;
+    z-index: 1000;
+}
 .search-container-wrapper {
     flex-grow: 1;
-    max-width: 450px;
-    margin: 0 20px;
+    max-width: 500px;
+    padding: 15px 30px;
+    background-color: #9fb3caa5;
+    border-radius: 8px;
 }
 
 .search-wrapper {
     background-color: #ffffff;
     border: 1px solid #d1d5db;
     border-radius: 6px;
-    padding-left: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 8px;     /* បន្ថយគម្លាតខាងលើ */
+    padding-bottom: 8px;  /* បន្ថយគម្លាតខាងក្រោម */
+    height: 40px;         /* កំណត់កម្ពស់ប្រអប់ឱ្យតូចល្មម (អាចដូរជា 32px ឬ 40px តាមចិត្ត) */
+    box-sizing: border-box; /* ធានាថាគម្លាត padding មិនធ្វើឱ្យប្រអប់រីកធំជាងកម្ពស់ height */
+    
     transition: all 0.2s ease;
-    width: 100%;
+    width: 500px;
+    max-width: 100% !important;
     display: flex;
     align-items: center;
 }
 
-.search-wrapper:focus-within {
+.search-wrapper:focus-within{
     border-color: var(--search-focus-border);
-    box-shadow: 0 0 0 3px var(--search-focus-blue);
+    /* box-shadow: 0 0 0 3px var(--search-focus-blue); */
 }
 
 .search-wrapper .search-input {
+    font-size: 18px !important;
     border: none;
     background: transparent;
-    padding: 6px 8px;
-    font-size: 14px;
+    padding: 8px 8px;
     width: 100%;
 }
 
 .search-wrapper .search-input:focus { outline: none; }
-.search-wrapper i { color: var(--text-muted); font-size: 16px; }
+.search-wrapper i { color: var(--text-muted); font-size: 15px; }
 
-/* -------------------------------------------------- */
-/* HERO BANNER STYLE (Responsive កែសម្រួលថ្មី) */
-/* -------------------------------------------------- */
-.hero-banner-full {
-    width: 100%;
-    padding: 2% 5%;
-    /* padding: 2%; */
-}
-/* កូដដោះស្រាយ៖ ពេល Screen តូច (Mobile) ឱ្យអត្ថបទនៅចំកណ្តាល និងបន្ថែមគម្លាតខាងក្រោម 35px ទៅរូបភាព */
-.hero-text-content {
-    text-align: center;
-    margin-bottom: 35px; 
+.search-wrapper .bi-x-lg:hover{
+    color: red !important;
 }
 
-/* ពេល Screen ធំ (Desktop - 992px ឡើងទៅ) ឱ្យអត្ថបទរត់ទៅខាងឆ្វេងវិញ និងដកគម្លាតខាងក្រោមចេញ */
-@media (min-width: 992px) {
-    .hero-text-content {
-        text-align: left;
-        margin-bottom: 0;
-        padding-right: 30px;
-    }
+.search-container-wrapper .btn-cancel{
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 8px; 
+    padding-bottom: 8px;
+}
+.btn-cancel:hover {
+    border: 1px solid red;
+    color: red;
 }
 
-.hero-image-wrapper {
-    /* text-align: contain; */
-    object-fit: cover !important;
-}
-
-.hero-image-wrapper img {
-    max-height: 400px;
-    object-fit: cover;
-    width: 100%;
+/* ===hero banner=== */
+.hero-section {
+  transform: translateY(-10%);
 }
 
 /* -------------------------------------------------- */
 /* PRODUCT CARD STYLE */
 /* -------------------------------------------------- */
 .product-card-exact {
-    background: #ffffff;
+    background: #e7f2fe;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
     height: 100%;
@@ -167,8 +183,8 @@ body {
 .badge-container {
     position: relative;
     opacity: 1; 
-    top: 5px;
-    left: 10px;
+    top: 12px;
+    left: 16px;
     z-index: 3; 
     transition: all 0.3s ease-in-out;
 }
@@ -184,7 +200,7 @@ body {
 
 .exact-img-wrapper {
     width: 100%;
-    height: 200px;
+    height: 230px;
     position: relative;
 }
 
@@ -215,7 +231,7 @@ body {
     color: var(--text-dark);
     margin-bottom: 6px;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    /* -webkit-line-clamp: 2; */
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -227,10 +243,6 @@ body {
     font-size: 12px;
     color: #f59e0b;
     margin-bottom: 8px;
-}
-
-.exact-price-box {
-    font-family: 'Inter', sans-serif;
 }
 
 .exact-price-current {
@@ -252,10 +264,11 @@ body {
     justify-content: space-between;
     border-top: 1px solid #f3f4f6;
     padding: 12px 16px;
-    background-color: #ffffff;
+    background: var(--bg-card);
 }
 
 .exact-stock-text {
+    font-family: 'Kantumruy Pro', sans-serif;
     font-size: 13px;
     color: var(--text-muted);
 }
@@ -277,7 +290,7 @@ body {
     color: #ffffff;
 }
 
-.footer-column { padding-right: 45px; }
+/* .footer-column { padding-right: 45px; } */
 
 /* Mobile App Bottom Navbar */
 .aeon-bottom-nav {
@@ -296,9 +309,9 @@ body {
     text-align: center;
     padding: 10px 0;
     flex: 1;
-    color: var(--text-muted);
+    color: var(--text-dark);
     text-decoration: none;
-    font-size: 12px;
+    font-size: 18px !important;
     font-weight: 500;
     transition: color 0.2s ease;
 }
@@ -312,7 +325,58 @@ body {
 .aeon-bottom-nav .nav-item.active {
     color: var(--primary-blue);
 }
+/* ====================NaveBar=================== */
+.navbar-brand {
+  letter-spacing: 1px;
+}
 
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+}
+
+.search-input {
+  padding-left: 42px;
+  border-radius: 50px;
+  height: 45px;
+  border: 1px solid #ddd;
+}
+
+.search-input:focus {
+  box-shadow: none;
+  border-color: #0d6efd;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: gray;
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.nav-link:hover {
+  color: #0d6efd !important;
+}
+
+.icon-link {
+  font-size: 1.3rem;
+  color: #333;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.icon-link:hover {
+  color: #0d6efd;
+  transform: translateY(-2px);
+}
+/* ============================================== */
 /* Responsive Breakpoint 991.98px */
 @media (max-width: 991.98px) {
     body {
@@ -329,7 +393,7 @@ body {
         display: flex; 
     }
     .search-container-wrapper {
-        margin: 0 0 0 15px;
-        max-width: 100%;
+        margin: auto;
+        max-width: 80%;
     }
 }

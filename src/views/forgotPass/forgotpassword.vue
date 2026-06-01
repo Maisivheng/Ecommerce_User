@@ -1,10 +1,16 @@
-​<template>
+
+<template>
   <div class="forgot-wrapper">
+    <!-- Background -->
+    <div class="bg-circle bg-one"></div>
+    <div class="bg-circle bg-two"></div>
+
     <div class="forgot-card">
       <!-- Back Button -->
-      <button class="back-btn">
+      <button class="back-btn" @click="goLogin">
         <i class="bi bi-chevron-left"></i>
       </button>
+
       <!-- Icon -->
       <div class="icon-box">
         <div class="icon-circle">
@@ -13,81 +19,165 @@
       </div>
       <!-- Title -->
       <h1 class="title">ភ្លេចពាក្យសម្ងាត់</h1>
+
       <!-- Description -->
       <p class="description">
-        សូមបញ្ចូលអ៊ីមែលរបស់អ្នកដើម្បីទទួលបានការកំណត់ពាក្យសម្ងាត់ថ្មី
+        សូមបញ្ចូលអ៊ីមែលរបស់អ្នក ដើម្បីទទួលបាន ការកំណត់ពាក្យសម្ងាត់ថ្មី
       </p>
+
       <!-- Form -->
       <form class="forgot-form" @submit.prevent="submitForm">
         <!-- Email -->
         <div class="form-group">
           <label class="form-label"> អ៊ីមែល </label>
+
           <div class="input-wrapper">
+            <!-- Icon -->
             <div class="input-icon">
               <i class="bi bi-envelope"></i>
             </div>
-            <input type="email" v-model="email" class="custom-input" placeholder="បញ្ចូលអ៊ីមែលរបស់អ្នក"/>
+
+            <!-- Input -->
+            <input
+              type="email"
+              v-model="email"
+              class="custom-input"
+              placeholder="បញ្ចូលអ៊ីមែលរបស់អ្នក"
+              @input="clearMessage"
+            />
           </div>
+
           <!-- Error -->
-          <small v-if="errorMessage" class="error-text">
-            {{ errorMessage }}
-          </small>
+          <transition name="fade">
+            <small v-if="errorMessage" class="error-text">
+              <i class="bi bi-exclamation-circle-fill"></i>
+
+              {{ errorMessage }}
+            </small>
+          </transition>
+
+          <!-- Success -->
+          <transition name="fade">
+            <small v-if="successMessage" class="success-text">
+              <i class="bi bi-check-circle-fill"></i>
+
+              {{ successMessage }}
+            </small>
+          </transition>
         </div>
+
         <!-- Button -->
-        <button type="submit" class="submit-btn">បន្ត</button>
+        <button type="submit" class="submit-btn" :disabled="loading">
+          <!-- Loading -->
+          <span v-if="loading" class="loading-content">
+            <span class="loader"></span>
+
+            កំពុងផ្ញើ...
+          </span>
+
+          <!-- Normal -->
+          <span v-else> បន្ត </span>
+        </button>
       </form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { createApp } from "vue";
+
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/API/api";
+
+/* -----------------------
+   ROUTER
+----------------------- */
 const router = useRouter();
+/* -----------------------
+   GO LOGIN
+----------------------- */
+const goLogin = () => {
+  router.push({
+    path: "/login",
+  });
+};
+/* -----------------------
+   STATES
+----------------------- */
 const email = ref("");
 const errorMessage = ref("");
-const submitForm = async () => {
-  errorMessage.value = "";
+const successMessage = ref("");
+const loading = ref(false);
+/* -----------------------
+   CLEAR MESSAGE
+----------------------- */
 
+const clearMessage = () => {
+  errorMessage.value = "";
+  successMessage.value = "";
+};
+/* -----------------------
+   SUBMIT FORM
+----------------------- */
+const submitForm = async () => {
+  clearMessage();
+  // Validation
   if (!email.value) {
     errorMessage.value = "សូមបញ្ចូលអ៊ីមែល";
     return;
   }
-
+  // Email Regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!emailRegex.test(email.value)) {
     errorMessage.value = "អ៊ីមែលមិនត្រឹមត្រូវ";
+
     return;
   }
 
   try {
-    console.log(email.value);
-    const res = await api.post("/api/forgot/pass", {
+    loading.value = true;
+
+    const response = await api.post("/api/forgot/pass", {
       email: email.value,
     });
 
-    console.log(res.data);
+    console.log(response.data);
 
-    alert("OTP sent successfully");
+    // Save Email
+    localStorage.setItem("email", email.value);
 
-    router.push("/verityOtp");
+    // Success
+    successMessage.value = response.data.message || "OTP sent successfully";
 
+    // Redirect OTP
+    setTimeout(() => {
+      router.push("/verityOtp");
+    }, 1500);
   } catch (err) {
     console.log(err);
 
-    if (err.response) {
-      console.log(err.response.data);
-      errorMessage.value = err.response.data.message;
-    } 
+    // Timeout
+    if (err.code === "ECONNABORTED") {
+      errorMessage.value = "Request timeout";
+    }
+
+    // API Error
+    else if (err.response) {
+      errorMessage.value = err.response.data.message || "Something went wrong";
+    }
+
+    // Server Error
     else if (err.request) {
       errorMessage.value = "Server not responding";
-    } 
+    }
+
+    // Other Error
     else {
       errorMessage.value = err.message;
     }
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -162,8 +252,8 @@ const submitForm = async () => {
 /* Title */
 .title {
   text-align: center;
-  font-size: 52px;
-  font-weight: 700;
+  font-size: 42px;
+  font-weight: 600;
   color: #111111;
   margin-top: 45px;
 }
@@ -187,7 +277,7 @@ const submitForm = async () => {
 .form-label {
   display: block;
   font-size: 25px;
-  font-weight: 600;
+  font-weight: 400;
   color: #222222;
   margin-bottom: 14px;
 }

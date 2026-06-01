@@ -1,56 +1,267 @@
 <template>
   <div class="otp-wrapper">
+    <!-- Background -->
+    <div class="bg-circle bg-one"></div>
+    <div class="bg-circle bg-two"></div>
     <div class="otp-card">
-      <!-- Back -->
-      <div class="back-btn">
-        <i class="bi bi-chevron-left"></i>
+      <!-- Top -->
+      <div class="top-section">
+        <button class="back-btn" @click="router.back()">
+          <i class="bi bi-chevron-left"></i>
+        </button>
       </div>
 
       <!-- Icon -->
       <div class="icon-wrapper">
         <div class="icon-circle">
-          <i class="bi bi-envelope"></i>
+          <i class="bi bi-shield-lock-fill"></i>
         </div>
       </div>
 
       <!-- Title -->
-      <h1 class="title">លេខកូដផ្ទៀងផ្ទាត់ OTP</h1>
+      <h1 class="title">ផ្ទៀងផ្ទាត់ OTP</h1>
 
       <!-- Description -->
-      <p class="description">លេខកូដត្រូវបានផ្ញើទៅកាន់ *****12345</p>
+      <p class="description">
+        សូមបញ្ចូលលេខកូដ OTP 6 ខ្ទង់ ដែលបានផ្ញើទៅ Email របស់អ្នក
+      </p>
 
       <!-- OTP Inputs -->
       <div class="otp-inputs">
-        <input type="text" maxlength="1" value="l" />
-        <input type="text" maxlength="1" value="K" />
-        <input type="text" maxlength="1" value="O" />
-        <input type="text" maxlength="1" value="9" />
-        <input type="text" maxlength="1" value="R" />
-        <input type="text" maxlength="1" value="2" />
+        <input
+          v-for="(item, index) in otp"
+          :key="index"
+          ref="otpInputs"
+          type="text"
+          maxlength="1"
+          class="otp-input"
+          v-model="otp[index]"
+          @input="handleInput($event, index)"
+          @keydown.backspace="handleBackspace($event, index)"
+          @paste="handlePaste"
+        />
       </div>
 
-      <!-- Button -->
-      <button class="verify-btn">ផ្ទៀងផ្ទាត់</button>
+      <!-- Message -->
+      <div class="message-box">
+        <transition name="fade">
+          <small v-if="errorMessage" class="error-text">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ errorMessage }}
+          </small>
+        </transition>
 
-      <!-- Resend -->
-      <p class="resend-text">បញ្ជូនម្តងទៀត</p>
+        <transition name="fade">
+          <small v-if="successMessage" class="success-text">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ successMessage }}
+          </small>
+        </transition>
+      </div>
+
+      <!-- Verify Button -->
+      <button class="verify-btn" @click="verifyOtp" :disabled="loading">
+        <span v-if="loading" class="loading-content">
+          <span class="loader"></span>
+          កំពុងផ្ទៀងផ្ទាត់...
+        </span>
+
+        <span v-else> ផ្ទៀងផ្ទាត់ </span>
+      </button>
+
+      <!-- Bottom -->
+      <div class="bottom-section">
+        <p class="resend-text">
+          មិនទាន់ទទួលបាន OTP?
+
+          <span :class="{ disabled: countdown > 0 }" @click="resendOtp">
+            {{
+              countdown > 0 ? `បញ្ជូនឡើងវិញ (${countdown}s)` : "បញ្ជូនម្តងទៀត"
+            }}
+          </span>
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { createApp } from 'vue';
-
-
-
-
+import { ref, nextTick, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import api from "@/API/api";
+const router = useRouter();
+/* -------------------------
+   STATES
+------------------------- */
+const otp = ref(["", "", "", "", "", ""]);
+const otpInputs = ref([]);
+const loading = ref(false);
+const errorMessage = ref("");
+const successMessage = ref("");
+const countdown = ref(0);
+const email = localStorage.getItem("email");
+/* -------------------------
+   AUTO FOCUS
+------------------------- */
+onMounted(() => {
+  nextTick(() => {
+    otpInputs.value[0]?.focus();
+  });
+});
+/* -------------------------
+   CLEAR MESSAGE
+------------------------- */
+const clearMessages = () => {
+  errorMessage.value = "";
+  successMessage.value = "";
+};
+/* -------------------------
+   HANDLE INPUT
+------------------------- */
+const handleInput = (event, index) => {
+  const value = event.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+  otp.value[index] = value;
+  if (value && index < otp.value.length - 1) {
+    otpInputs.value[index + 1]?.focus();
+  }
+  clearMessages();
+};
+/* -------------------------
+   BACKSPACE
+------------------------- */
+const handleBackspace = (event, index) => {
+  if (!otp.value[index] && index > 0) {
+    otpInputs.value[index - 1]?.focus();
+  }
+};
+/* -------------------------
+   PASTE OTP
+------------------------- */
+const handlePaste = (event) => {
+  event.preventDefault();
+  const pastedData = event.clipboardData
+    .getData("text")
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .slice(0, 6)
+    .split("");
+  pastedData.forEach((char, index) => {
+    otp.value[index] = char;
+  });
+  nextTick(() => {
+    const nextIndex = pastedData.length >= 6 ? 5 : pastedData.length;
+    otpInputs.value[nextIndex]?.focus();
+  });
+};
+/* -------------------------
+   VERIFY OTP
+------------------------- */
+const verifyOtp = async () => {
+  clearMessages();
+  // Join OTP
+  const otpCode = otp.value.join("");
+  /* ---------------------
+     VALIDATION
+  --------------------- */
+  if (!email) {
+    errorMessage.value = "Email មិនមាន";
+    return;
+  }
+  if (otpCode.length !== 6) {
+    errorMessage.value = "សូមបញ្ចូល OTP 6 ខ្ទង់";
+    return;
+  }
+  try {
+    loading.value = true;
+    console.log("EMAIL:", email);
+    console.log("OTP:", otpCode);
+    /* ---------------------
+       API
+    --------------------- */
+    const response = await api.post("/api/forgot/verify-otp", {
+      email,
+      otp: otpCode,
+    });
+    console.log(response.data);
+    /* ---------------------
+       SAVE OTP
+    --------------------- */
+    localStorage.setItem("otp", otpCode);
+    /* ---------------------
+       SUCCESS MESSAGE
+    --------------------- */
+    successMessage.value = response.data.message || "OTP ត្រឹមត្រូវ";
+    /* ---------------------
+       REDIRECT
+    --------------------- */
+    setTimeout(() => {
+      router.push("/resetpassword");
+    }, 1500);
+  } catch (err) {
+    console.log(err);
+    /* ---------------------
+       TIMEOUT
+    --------------------- */
+    if (err.code === "ECONNABORTED") {
+      errorMessage.value = "Request timeout";
+    } else if (err.response) {
+      /* ---------------------
+       API ERROR
+    --------------------- */
+      errorMessage.value = err.response.data.message || "OTP មិនត្រឹមត្រូវ";
+    } else if (err.request) {
+      /* ---------------------
+       NO RESPONSE
+    --------------------- */
+      errorMessage.value = "Server មិនឆ្លើយតប";
+    } else {
+      /* ---------------------
+       OTHER ERROR
+    --------------------- */
+      errorMessage.value = err.message;
+    }
+  } finally {
+    loading.value = false;
+  }
+};
+/* -------------------------
+   RESEND OTP
+------------------------- */
+const resendOtp = async () => {
+  clearMessages();
+  if (countdown.value > 0) return;
+  try {
+    loading.value = true;
+    const response = await api.post("/api/forgot/resend-otp", {
+      email,
+    });
+    successMessage.value = response.data.message || "បានផ្ញើ OTP ម្តងទៀត";
+    startCountdown();
+  } catch (err) {
+    console.log(err);
+    if (err.response) {
+      errorMessage.value = err.response.data.message;
+    } else {
+      errorMessage.value = "មិនអាចផ្ញើ OTP បាន";
+    }
+  } finally {
+    loading.value = false;
+  }
+};
+/* -------------------------
+   COUNTDOWN
+------------------------- */
+const startCountdown = () => {
+  countdown.value = 30;
+  const timer = setInterval(() => {
+    countdown.value--;
+    if (countdown.value <= 0) {
+      clearInterval(timer);
+    }
+  }, 1000);
+};
 </script>
 
-
-
 <style scoped>
-/* Google Font */
-@import url("https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap");
 * {
   margin: 0;
   padding: 0;
@@ -79,6 +290,8 @@ import { createApp } from 'vue';
   color: #333;
   cursor: pointer;
   transition: 0.3s;
+  border: none;
+  background-color: #fff;
 }
 .back-btn:hover {
   transform: translateX(-4px);
@@ -105,15 +318,22 @@ import { createApp } from 'vue';
 /* Title */
 .title {
   text-align: center;
-  font-size: 52px;
-  font-weight: 700;
+  font-size: 42px;
+  font-weight: 600;
   margin-top: 45px;
   color: #111;
+}
+
+.error-text {
+  display: block;
+  color: #e53935;
+  font-size: 15px;
+  margin-top: 10px;
 }
 /* Description */
 .description {
   text-align: center;
-  font-size: 25px;
+  font-size: 20px;
   color: #555;
   margin-top: 45px;
 }
@@ -145,7 +365,7 @@ import { createApp } from 'vue';
   border: none;
   border-radius: 12px;
   color: white;
-  font-size: 24px;
+  font-size: 20px;
   display: block;
   margin: 60px auto 0;
   cursor: pointer;
@@ -163,7 +383,7 @@ import { createApp } from 'vue';
 .resend-text {
   text-align: center;
   margin-top: 18px;
-  font-size: 24px;
+  font-size: 20px;
   color: #333;
   cursor: pointer;
   font-family: "Kantumruy Pro", sans-serif;

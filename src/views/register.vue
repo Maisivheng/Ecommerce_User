@@ -240,8 +240,8 @@ const validateField = (field) => {
     case 'password':
       if (!form.password) {
         errors.password = 'សូមបញ្ចូលពាក្យសម្ងាត់'
-      } else if (form.password.length < 6) {
-        errors.password = 'ពាក្យសម្ងាត់ត្រូវមានយ៉ាងហោចណាស់ 6 តួអក្សរ'
+      } else if (form.password.length < 8) {
+        errors.password = 'ពាក្យសម្ងាត់ត្រូវមានយ៉ាងហោចណាស់ 8 តួអក្សរ'
       } else {
         errors.password = ''
       }
@@ -277,6 +277,17 @@ const validateForm = () => {
   return !errors.name && !errors.email && !errors.password && !errors.password_confirmation && !errorsaccept.acceptTerms
 }
 
+const resetform = () => {
+  email.form = "";
+  password.form = '';
+  email.form = '';
+  password_confirmation = '';
+  acceptTerms.errorsaccept = '';
+
+  return resetform();
+}
+
+
 const handleSignup = async () => {
   if (!validateForm()) {
     showToast('សូមបំពេញទិន្នន័យឲ្យបានត្រឹមត្រូវ', 'error')
@@ -288,7 +299,7 @@ const handleSignup = async () => {
   const success = await auth.register(form)
   if (success) {
       alertSuccess('គណនីត្រូវបានបង្កើតដោយជោគជ័យ!')
-      router.push('/login');
+      router.push('/');
   }
   try {
     await auth.register(form);
@@ -296,16 +307,18 @@ const handleSignup = async () => {
     
     if (auth.success) {
       showToast('គណនីត្រូវបានបង្កើតដោយជោគជ័យ', 'success')
-      router.push('/login')
+      router.push('/')
     } else {
       showToast('មិនអាចបង្កើតគណនីបានទេ សូមព្យាយាមម្តងទៀត', 'error')
     }
-  } catch (error) {
+    } catch (error) {
     console.error('Signup error:', error)
     showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ សូមព្យាយាមម្តងទៀត', 'error')
-  } finally {
+    } finally {
     loading.value = false 
+    }
   }
+
   
   // try {
   //   const success = await authStore.register(form)
@@ -322,7 +335,6 @@ const handleSignup = async () => {
   //   loading.value = false
   // }
 
-}
 </script>
 
 <style scoped>
@@ -678,20 +690,33 @@ const handleSignup = async () => {
 }
 
 .toast {
-  width: 300px;
   position: fixed;
   bottom: 20px;
   left: 88%;
   transform: translateX(-50%);
-  padding: 10px 20px 10px 55px;
-  border-radius: 50px;
+  padding: 12px 15px;
+  border-radius: 48px;
   color: white;
   display: flex;
-  align-items: center;
-  gap: 0.2rem;
+  justify-content: center;
+  gap: 10px;
   z-index: 1100;
-  animation: fadeInUp 0.2s ease-out;
+  animation: fadeInUp 0.3s ease;
   font-family: "Kantumruy Pro", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 90%;
+  white-space: nowrap;
+}
+
+@media (max-width: 550px) {
+  .toast {
+    white-space: normal;
+    text-align: center;
+    padding: 10px 20px;
+    max-width: 85%;
+  }
 }
 
 .toast.success {
@@ -702,13 +727,7 @@ const handleSignup = async () => {
   background: #ef4444;
 }
 
-@media (max-width: 550px) {
-  .signup-card {
-    padding: 1.5rem;
-  }
-
-  .signup-header h1 {
-    font-size: 1.6rem;
-  }
+.toast i {
+  font-size: 1.2rem;
 }
 </style>
