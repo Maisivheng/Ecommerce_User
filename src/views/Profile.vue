@@ -8,6 +8,7 @@ import ChangePW from "@/components/profiles/ChangePW.vue";
 
 import { ref, reactive, onMounted } from "vue";
 import api from "@/API/api";
+import Footer from "@/components/layout/Footer.vue";
 
 // ===========================
 // ACTIVE SECTION
@@ -135,8 +136,14 @@ const validateForm = () => {
 // UPDATE PROFILE INFO
 // API => /api/profile/info
 // ===========================
-
+const isEditing = ref(false);
 const updateProfile = async () => {
+  // first click => enable edit
+  if (!isEditing.value) {
+    isEditing.value = true;
+    return;
+  }
+
   if (!validateForm()) {
     return;
   }
@@ -156,6 +163,9 @@ const updateProfile = async () => {
     successMessage.value = response.data.message || "Update Success";
 
     alert(response.data.message || "Profile Updated");
+
+    // back to normal button
+    isEditing.value = false;
   } catch (error) {
     console.log(error);
 
@@ -164,11 +174,6 @@ const updateProfile = async () => {
     loading.value = false;
   }
 };
-
-// ===========================
-// UPDATE PROFILE IMAGE
-// API => /api/profile/image
-// ===========================
 
 const updateProfileImage = async () => {
   if (!form.image) {
@@ -252,6 +257,7 @@ onMounted(() => {
   <Navbar></Navbar>
   <body>
     <div class="container min-vh-100">
+     
       <div class="row">
         <!-- SIDEBAR -->
         <div class="col-lg-3 sidebar">
@@ -279,6 +285,7 @@ onMounted(() => {
             <a
               href="#"
               class="nav-link"
+              :class="{ active: activeSection === 'profile' }"
               @click.prevent="activeSection = 'profile'"
             >
               <i class="bi bi-person"></i>
@@ -288,6 +295,7 @@ onMounted(() => {
             <a
               href="#"
               class="nav-link"
+              :class="{ active: activeSection === 'password' }"
               @click.prevent="activeSection = 'password'"
             >
               <i class="bi bi-lock"></i>
@@ -297,6 +305,7 @@ onMounted(() => {
             <a
               href="#"
               class="nav-link"
+              :class="{ active: activeSection === 'cart' }"
               @click.prevent="activeSection = 'cart'"
             >
               <i class="bi bi-cart"></i>
@@ -306,6 +315,7 @@ onMounted(() => {
             <a
               href="#"
               class="nav-link"
+              :class="{ active: activeSection === 'purchased' }"
               @click.prevent="activeSection = 'purchased'"
             >
               <i class="bi bi-bag"></i>
@@ -320,6 +330,7 @@ onMounted(() => {
             <a
               href="#"
               class="nav-link"
+              :class="{ active: activeSection === 'devices' }"
               @click.prevent="activeSection = 'devices'"
             >
               <i class="bi bi-phone"></i>
@@ -357,12 +368,25 @@ onMounted(() => {
               >
                 <h4>ប្រវត្តិរូប</h4>
 
-                <button
+                <!-- <button
                   @click="updateProfile"
                   class="btn btn-primary"
                   :disabled="loading"
                 >
                   រក្សាទុក
+                </button> -->
+                <button
+                  @click="updateProfile"
+                  class="btn btn-primary"
+                  :disabled="loading"
+                >
+                  {{
+                    loading
+                      ? "Loading..."
+                      : isEditing
+                        ? "រក្សាទុកការផ្លាស់ប្តូរ"
+                        : "កែប្រែ"
+                  }}
                 </button>
               </div>
 
@@ -430,7 +454,12 @@ onMounted(() => {
                 <div class="col-md-6 mb-3">
                   <label> ឈ្មោះ </label>
 
-                  <input v-model="form.name" type="text" class="form-control" />
+                  <input
+                    v-model="form.name"
+                    type="text"
+                    class="form-control"
+                    placeholder="បញ្ចូលឈ្មោះ"
+                  />
 
                   <small class="text-danger">
                     {{ errors.name }}
@@ -445,6 +474,7 @@ onMounted(() => {
                     v-model="form.email"
                     type="email"
                     class="form-control"
+                    placeholder="បញ្ចូលអ៊ីមែល"
                   />
 
                   <small class="text-danger">
@@ -460,6 +490,7 @@ onMounted(() => {
                     v-model="form.phone"
                     type="text"
                     class="form-control"
+                    placeholder="បញ្ចូលលេខទូរសព្ទ"
                   />
                 </div>
 
@@ -471,6 +502,7 @@ onMounted(() => {
                     v-model="form.location"
                     type="text"
                     class="form-control"
+                    placeholder="បញ្ចូលទីតាំង"
                   />
                 </div>
 
@@ -541,12 +573,14 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    <Footer></Footer>
   </body>
 </template>
 
 <style scoped>
 body {
   font-family: "Kantumruy Pro", sans-serif;
+  /* font-family: "Hanuman", sans-serif; */
   background: #f6f9fc;
 }
 
@@ -566,7 +600,7 @@ body {
 }
 
 .nav-link {
-  color: #333;
+  color: #212529;
   padding: 14px 18px;
   border-radius: 12px;
   margin-bottom: 10px;
@@ -574,9 +608,24 @@ body {
   font-weight: 500;
 }
 
+/* hover */
 .nav-link:hover {
   background: #0d6efd;
   color: white !important;
+}
+
+/* active */
+.nav-link.active {
+  background: #0d6efd;
+  color: white !important;
+}
+
+.nav-link:hover *,
+.nav-link.active * {
+  color: white !important;
+
+  /* background: #0d6dfd; */
+/* ======= */
 }
 
 .card-ui {

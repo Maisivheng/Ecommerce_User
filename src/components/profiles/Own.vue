@@ -1,28 +1,29 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import api from "@/API/api";
 
-// ==============================
+// =====================================
 // STATES
-// ==============================
+// =====================================
 
 const products = ref([]);
+const categories = ref([]);
+
 const loading = ref(false);
+const categoryLoading = ref(false);
 
 const showModal = ref(false);
-
 const isEdit = ref(false);
 
 const currentProductId = ref(null);
 
 const saving = ref(false);
 
-// image preview
 const imagePreview = ref("");
 
-// ==============================
+// =====================================
 // FORM
-// ==============================
+// =====================================
 
 const form = reactive({
   title: "",
@@ -31,26 +32,40 @@ const form = reactive({
   description: "",
   detail: "",
   story: "",
-  category_id: "",
+  category_ids: [""],
   image: null,
 });
 
-// ==============================
+// =====================================
 // ERRORS
-// ==============================
+// =====================================
 
 const errors = reactive({
   title: "",
   price: "",
   condition: "",
   description: "",
-  category_id: "",
+  category_ids: "",
   image: "",
 });
 
-// ==============================
+// =====================================
+// FORMAT DATE
+// =====================================
+
+const formatDate = (date) => {
+  if (!date) return "-";
+
+  return new Date(date).toLocaleDateString("km-KH", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
+
+// =====================================
 // GET PRODUCTS
-// ==============================
+// =====================================
 
 const getProducts = async () => {
   try {
@@ -58,21 +73,43 @@ const getProducts = async () => {
 
     const response = await api.get("/api/profile/products?page=1&per_page=20");
 
-    console.log(response.data);
+    console.log("PRODUCTS:", response.data);
 
     products.value = response.data.data || [];
   } catch (error) {
     console.log(error);
 
-    alert("Get Products Failed");
+    alert(error.response?.data?.message || "Get Products Failed");
   } finally {
     loading.value = false;
   }
 };
 
-// ==============================
+// =====================================
+// GET CATEGORIES
+// =====================================
+
+const getCategories = async () => {
+  try {
+    categoryLoading.value = true;
+
+    const response = await api.get("/api/categories");
+
+    console.log("CATEGORIES:", response.data);
+
+    categories.value = response.data.data || [];
+  } catch (error) {
+    console.log(error);
+
+    alert(error.response?.data?.message || "Get Categories Failed");
+  } finally {
+    categoryLoading.value = false;
+  }
+};
+
+// =====================================
 // VALIDATE FORM
-// ==============================
+// =====================================
 
 const validateForm = () => {
   let isValid = true;
@@ -82,7 +119,7 @@ const validateForm = () => {
   errors.price = "";
   errors.condition = "";
   errors.description = "";
-  errors.category_id = "";
+  errors.category_ids = "";
   errors.image = "";
 
   // title
@@ -110,33 +147,37 @@ const validateForm = () => {
   }
 
   // category
-  if (!form.category_id) {
-    errors.category_id = "Category ID is required";
+  if (!form.category_ids[0]) {
+    errors.category_ids = "Category is required";
+    isValid = false;
+  }
+
+  // image
+  if (!isEdit.value && !form.image) {
+    errors.image = "Image is required";
     isValid = false;
   }
 
   return isValid;
 };
 
-// ==============================
+// =====================================
 // HANDLE IMAGE
-// ==============================
+// =====================================
 
 const handleImage = (event) => {
   const file = event.target.files[0];
 
-  if (!file) {
-    return;
-  }
+  if (!file) return;
 
   form.image = file;
 
   imagePreview.value = URL.createObjectURL(file);
 };
 
-// ==============================
+// =====================================
 // RESET FORM
-// ==============================
+// =====================================
 
 const resetForm = () => {
   form.title = "";
@@ -145,7 +186,7 @@ const resetForm = () => {
   form.description = "";
   form.detail = "";
   form.story = "";
-  form.category_id = "";
+  form.category_ids = [""];
   form.image = null;
 
   imagePreview.value = "";
@@ -154,13 +195,13 @@ const resetForm = () => {
   errors.price = "";
   errors.condition = "";
   errors.description = "";
-  errors.category_id = "";
+  errors.category_ids = "";
   errors.image = "";
 };
 
-// ==============================
+// =====================================
 // OPEN ADD MODAL
-// ==============================
+// =====================================
 
 const openAddModal = () => {
   resetForm();
@@ -172,9 +213,9 @@ const openAddModal = () => {
   showModal.value = true;
 };
 
-// ==============================
+// =====================================
 // OPEN EDIT MODAL
-// ==============================
+// =====================================
 
 const openEditModal = (product) => {
   resetForm();
@@ -183,29 +224,31 @@ const openEditModal = (product) => {
 
   currentProductId.value = product.id;
 
-  form.title = product.title;
-  form.price = product.price;
-  form.condition = product.condition;
-  form.description = product.description;
-  form.detail = product.detail;
-  form.story = product.story;
+  form.title = product.title || "";
+  form.price = product.price || "";
+  form.condition = product.condition || "";
+  form.description = product.description || "";
+  form.detail = product.detail || "";
+  form.story = product.story || "";
 
-  // category
+  // FIX: Force category ID to be a Number so it matches the <select> <option> value
   if (product.categories?.length > 0) {
-    form.category_id = product.categories[0].id;
+    form.category_ids = [Number(product.categories[0].id)];
+  } else {
+    form.category_ids = [""];
   }
 
-  imagePreview.value = product.image;
+  // image preview
+  imagePreview.value = product.image || "";
 
   showModal.value = true;
 };
 
-// ==============================
+// =====================================
 // SAVE PRODUCT
-// ==============================
+// =====================================
 
 const saveProduct = async () => {
-  // validate
   if (!validateForm()) {
     return;
   }
@@ -216,47 +259,71 @@ const saveProduct = async () => {
     const formData = new FormData();
 
     formData.append("title", form.title);
-
     formData.append("price", form.price);
-
     formData.append("condition", form.condition);
-
     formData.append("description", form.description);
-
     formData.append("detail", form.detail);
-
     formData.append("story", form.story);
 
-    formData.append("category_id", form.category_id);
+    // category_ids
+    formData.append(
+      "category_ids",
+      JSON.stringify([Number(form.category_ids[0])]),
+    );
 
     // image
     if (form.image) {
       formData.append("image", form.image);
     }
 
+    // debug
+    console.log([...formData.entries()]);
+
     let response;
 
-    // ==========================
+    // =====================================
     // ADD PRODUCT
-    // ==========================
+    // =====================================
 
     if (!isEdit.value) {
-      response = await api.post("/api/profile/product/create", formData, {
+      response = await api.post("/api/products", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      alert(response.data.message || "Add Product Success");
+      alert(response.data.message || "បន្ថែមផលិតផលបានជោគជ័យ");
     }
 
-    // ==========================
+    // =====================================
     // UPDATE PRODUCT
-    // ==========================
+    // =====================================
     else {
+      const updateData = new FormData();
+
+      updateData.append("_method", "PUT");
+
+      updateData.append("title", form.title);
+      updateData.append("price", form.price);
+      updateData.append("condition", form.condition);
+      updateData.append("description", form.description);
+      updateData.append("detail", form.detail);
+      updateData.append("story", form.story);
+
+      // FIX: Ensure category_ids is converted to a Number array for backend consistency
+      updateData.append(
+        "category_ids",
+        JSON.stringify([Number(form.category_ids[0])]),
+      );
+
+      // image optional
+      if (form.image) {
+        updateData.append("image", form.image);
+      }
+
       response = await api.post(
-        `/api/profile/product/update/${currentProductId.value}`,
-        formData,
+        `/api/products/${currentProductId.value}`,
+        updateData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -270,12 +337,12 @@ const saveProduct = async () => {
     // close modal
     showModal.value = false;
 
-    // refresh data
+    // refresh
     getProducts();
   } catch (error) {
-    console.log(error);
+    console.log("SAVE ERROR:", error);
 
-    console.log(error.response?.data);
+    console.log("ERROR RESPONSE:", error.response?.data);
 
     // backend validation
     if (error.response?.data?.data) {
@@ -297,8 +364,8 @@ const saveProduct = async () => {
         errors.description = backendErrors.description[0];
       }
 
-      if (backendErrors.category_id) {
-        errors.category_id = backendErrors.category_id[0];
+      if (backendErrors.category_ids) {
+        errors.category_ids = backendErrors.category_ids[0];
       }
 
       if (backendErrors.image) {
@@ -312,19 +379,21 @@ const saveProduct = async () => {
   }
 };
 
-// ==============================
+// =====================================
 // DELETE PRODUCT
-// ==============================
+// =====================================
 
 const deleteProduct = async (id) => {
-  const confirmDelete = confirm("Are you sure delete this product?");
+  const confirmDelete = confirm(
+    "Are you sure you want to delete this product?",
+  );
 
   if (!confirmDelete) {
     return;
   }
 
   try {
-    const response = await api.delete(`/api/profile/product/delete/${id}`);
+    const response = await api.delete(`/api/products/${id}`);
 
     alert(response.data.message || "Delete Successfully");
 
@@ -337,21 +406,44 @@ const deleteProduct = async (id) => {
   }
 };
 
-// ==============================
+//==============Pagination===========
+
+const currentPage = ref(1);
+const perPage = 6;
+
+/* pagination products */
+const paginatedProducts = computed(() => {
+  const start = (currentPage.value - 1) * perPage;
+  const end = start + perPage;
+
+  return products.value.slice(start, end);
+});
+
+/* total pages */
+const totalPages = computed(() => {
+  return Math.ceil(products.value.length / perPage);
+});
+
+/* change page */
+const changePage = (page) => {
+  currentPage.value = page;
+};
+// =====================================
 // MOUNTED
-// ==============================
+// =====================================
 
 onMounted(() => {
   getProducts();
+  getCategories();
 });
 </script>
 
 <template>
   <div class="card card-ui p-4">
     <!-- HEADER -->
-     
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h4 class="">ផលិតផលរបស់ខ្ញុំ</h4>
+      <h4>ផលិតផលរបស់ខ្ញុំ</h4>
 
       <button @click="openAddModal" class="btn btn-primary">
         បន្ថែមផលិតផល
@@ -360,16 +452,7 @@ onMounted(() => {
 
     <!-- LOADING -->
 
-    <!-- LOADING SKELETON -->
     <div v-if="loading">
-      <!-- header skeleton -->
-      <!-- <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="skeleton skeleton-title"></div>
-
-        <div class="skeleton skeleton-btn"></div>
-      </div> -->
-
-      <!-- table skeleton -->
       <table class="table align-middle">
         <thead>
           <tr>
@@ -384,8 +467,7 @@ onMounted(() => {
         </thead>
 
         <tbody>
-          <!-- skeleton rows -->
-          <tr v-for="i in 5" :key="i">
+          <tr v-for="i in 6" :key="i">
             <td>
               <div class="skeleton skeleton-id"></div>
             </td>
@@ -399,11 +481,7 @@ onMounted(() => {
             </td>
 
             <td>
-              <div class="">
-                <!-- <div class="skeleton skeleton-badge"></div> -->
-
-                <div class="skeleton skeleton-badge"></div>
-              </div>
+              <div class="skeleton skeleton-badge"></div>
             </td>
 
             <td>
@@ -417,7 +495,6 @@ onMounted(() => {
             <td>
               <div class="d-flex gap-2">
                 <div class="skeleton skeleton-action"></div>
-
                 <div class="skeleton skeleton-action"></div>
               </div>
             </td>
@@ -426,7 +503,8 @@ onMounted(() => {
       </table>
     </div>
 
-    <!-- REAL TABLE -->
+    <!-- TABLE -->
+
     <div v-else class="table-responsive">
       <table class="table table-hover align-middle">
         <thead>
@@ -442,26 +520,31 @@ onMounted(() => {
         </thead>
 
         <tbody>
-          <!-- EMPTY -->
           <tr v-if="products.length === 0">
-            <td colspan="7" class="text-center text-muted py-4">គ្មានផលិតផលទេ</td>
+            <td colspan="7" class="text-center text-muted py-4">
+              គ្មានផលិតផលទេ
+            </td>
           </tr>
-
-          <!-- PRODUCTS -->
-          <tr v-for="product in products" :key="product.id">
-            <td>#{{ product.id }}</td>
+          <tr v-for="product in paginatedProducts" :key="product.id">
+            <!-- <tr v-for="product in products" :key="product.id"> -->
+            <td>{{ product.id }}</td>
 
             <!-- IMAGE -->
+
             <td>
-              <img :src="product.image" class="product-img" />
+              <img
+                :src="product.image"
+                class="product-img"
+                :alt="product.title"
+              />
             </td>
 
             <!-- TITLE -->
-            <td>
-              {{ product.title }}
-            </td>
+
+            <td>{{ product.title }}</td>
 
             <!-- CATEGORY -->
+
             <td>
               <span
                 v-for="category in product.categories"
@@ -473,14 +556,17 @@ onMounted(() => {
             </td>
 
             <!-- PRICE -->
+
             <td>${{ product.price }}</td>
 
             <!-- DATE -->
+
             <td>
-              {{ product.created_at }}
+              {{ formatDate(product.created_at) }}
             </td>
 
             <!-- ACTION -->
+
             <td>
               <div class="d-flex justify-content-center gap-2">
                 <button
@@ -500,19 +586,48 @@ onMounted(() => {
             </td>
           </tr>
         </tbody>
+        <div class="d-flex justify-content-center mt-4 gap-2">
+          <!-- PREV -->
+          <button
+            class="btn btn-outline-primary"
+            :disabled="currentPage === 1"
+            @click="currentPage--"
+          >
+            Prev
+          </button>
+
+          <!-- PAGE NUMBER -->
+          <button
+            v-for="page in totalPages"
+            :key="page"
+            @click="changePage(page)"
+            class="btn"
+            :class="
+              currentPage === page ? 'btn-primary' : 'btn-outline-primary'
+            "
+          >
+            {{ page }}
+          </button>
+
+          <!-- NEXT -->
+          <button
+            class="btn btn-outline-primary"
+            :disabled="currentPage === totalPages"
+            @click="currentPage++"
+          >
+            Next
+          </button>
+        </div>
       </table>
     </div>
-
-    <!-- under -->
   </div>
 
-  <!-- =========================
-        MODAL
-  ========================== -->
+  <!-- MODAL -->
 
-  <div v-if="showModal" class="modal-overlay z-index-999">
-    <div class="modal-box">
+  <div v-if="showModal" class="modal-overlay">
+    <div class="modal-box h-75">
       <!-- HEADER -->
+
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold">
           {{ isEdit ? "Edit Product" : "Add Product" }}
@@ -522,8 +637,9 @@ onMounted(() => {
       </div>
 
       <!-- TITLE -->
+
       <div class="mb-3">
-        <label class="form-label"> Product Title </label>
+        <label class="form-label">Product Title</label>
 
         <input
           v-model="form.title"
@@ -538,8 +654,9 @@ onMounted(() => {
       </div>
 
       <!-- PRICE -->
+
       <div class="mb-3">
-        <label class="form-label"> Price </label>
+        <label class="form-label">Price</label>
 
         <input
           v-model="form.price"
@@ -553,31 +670,36 @@ onMounted(() => {
         </small>
       </div>
 
-      <!-- CATEGORY -->
       <div class="mb-3">
-        <label class="form-label"> Category ID </label>
+        <label class="form-label">Category</label>
 
-        <input
-          v-model="form.category_id"
-          type="number"
-          class="form-control"
-          placeholder="Enter category id"
-        />
+        <select v-model="form.category_ids[0]" class="form-select">
+          <option disabled value="">Select category</option>
+
+          <option
+            v-for="category in categories"
+            :key="category.id"
+            :value="category.id"
+          >
+            {{ category.name }}
+          </option>
+        </select>
 
         <small class="text-danger">
-          {{ errors.category_id }}
+          {{ errors.category_ids }}
         </small>
       </div>
 
       <!-- CONDITION -->
+
       <div class="mb-3">
-        <label class="form-label"> Condition </label>
+        <label class="form-label">Condition</label>
 
         <input
           v-model="form.condition"
           type="text"
           class="form-control"
-          placeholder="Example: New / Old"
+          placeholder="New / Old"
         />
 
         <small class="text-danger">
@@ -586,8 +708,9 @@ onMounted(() => {
       </div>
 
       <!-- DESCRIPTION -->
+
       <div class="mb-3">
-        <label class="form-label"> Description </label>
+        <label class="form-label">Description</label>
 
         <textarea
           v-model="form.description"
@@ -602,8 +725,9 @@ onMounted(() => {
       </div>
 
       <!-- DETAIL -->
+
       <div class="mb-3">
-        <label class="form-label"> Detail </label>
+        <label class="form-label">Detail</label>
 
         <textarea
           v-model="form.detail"
@@ -614,8 +738,9 @@ onMounted(() => {
       </div>
 
       <!-- STORY -->
+
       <div class="mb-3">
-        <label class="form-label"> Story </label>
+        <label class="form-label">Story</label>
 
         <textarea
           v-model="form.story"
@@ -626,8 +751,9 @@ onMounted(() => {
       </div>
 
       <!-- IMAGE -->
+
       <div class="mb-3">
-        <label class="form-label"> Product Image </label>
+        <label class="form-label">Product Image</label>
 
         <input
           type="file"
@@ -642,11 +768,13 @@ onMounted(() => {
       </div>
 
       <!-- PREVIEW -->
+
       <div v-if="imagePreview" class="mb-3">
-        <img :src="imagePreview" class="preview-img" />
+        <img :src="imagePreview" class="preview-img" alt="Preview" />
       </div>
 
       <!-- BUTTONS -->
+
       <div class="d-flex gap-2">
         <button @click="saveProduct" class="btn btn-success" :disabled="saving">
           {{
@@ -679,43 +807,33 @@ onMounted(() => {
 .modal-overlay {
   position: fixed;
   inset: 0;
-
   background: rgba(0, 0, 0, 0.5);
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   z-index: 999;
 }
 
 .modal-box {
   background: white;
-
   width: 100%;
   max-width: 650px;
-
   max-height: 90vh;
-
   overflow-y: auto;
-
   border-radius: 20px;
-
   padding: 25px;
 }
 
 .preview-img {
   width: 120px;
   height: 120px;
-
   object-fit: cover;
-
   border-radius: 10px;
 }
 
-/* =========================
-SKELETON LOADING
-========================= */
+/* =====================================
+   SKELETON LOADING
+===================================== */
 
 .skeleton {
   position: relative;
@@ -726,15 +844,11 @@ SKELETON LOADING
 
 .skeleton::before {
   content: "";
-
   position: absolute;
-
   top: 0;
   left: -150px;
-
   width: 150px;
   height: 100%;
-
   background: linear-gradient(
     90deg,
     transparent,
@@ -749,17 +863,6 @@ SKELETON LOADING
   100% {
     left: 100%;
   }
-}
-
-.skeleton-title {
-  width: 200px;
-  height: 35px;
-}
-
-.skeleton-btn {
-  width: 130px;
-  height: 42px;
-  border-radius: 12px;
 }
 
 .skeleton-id {
@@ -779,7 +882,7 @@ SKELETON LOADING
 }
 
 .skeleton-badge {
-  width: 70px;
+  width: 80px;
   height: 25px;
   border-radius: 30px;
 }
@@ -790,7 +893,7 @@ SKELETON LOADING
 }
 
 .skeleton-date {
-  width: 140px;
+  width: 120px;
   height: 20px;
 }
 

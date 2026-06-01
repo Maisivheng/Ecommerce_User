@@ -29,21 +29,19 @@
                     ភ្លេចពាក្យសម្ងាត់?
                     </router-link>
                 </div>
-<<<<<<< HEAD
 <!-- <<<<<<< HEAD -->
                 <!-- <a class="text-center text-dark">មិនមានគណនី?<span class=" text-primary">បង្កើតគណនី</span> </a> -->
                 <RouterLink to="/register">បង្កើតគណនី</RouterLink>
 <!-- ======= -->
-                <button class="btn btn-primary w-100 py-2">
-=======
+                <!-- <button class="btn btn-primary w-100 py-2"> -->
+<!-- ======= -->
                 <!-- <button class="btn btn-primary w-100 py-2">
->>>>>>> 2b652b585d7ba030c24bbf40608e19c62bd32f93
+                <a class="text-center text-dark">មិនមានគណនី?<span class=" text-primary">បង្កើតគណនី</span> </a> -->
+<!--  -->
+                
+                <RouterLink to="/register">បង្កើតគណនី</RouterLink>
+                <button class="btn btn-primary w-100 py-2">
                     ចូលគណនី
-                </button> -->
-                <button class="btn btn-primary w-100 py-2" :disabled="loading">
-                    <span v-if="!loading">ចូលគណនី</span>
-                    <span v-if="loading" class="loading-spinner"></span>
-                    <span v-if="loading">កំពុងដំណើរការ...</span>
                 </button>
                 <div class="d-flex align-items-center text-muted my-4">
                     <hr class="flex-grow-1">
@@ -69,7 +67,6 @@
     import { useauthStore } from '@/stores/auth';
     let auth = useauthStore();
     let isvalid = ref(true);
-    const loading = ref(false)
     let form = reactive ({
         email: '',
         password: '',
@@ -91,44 +88,15 @@
             form.errors.password = 'សូមបញ្ចូលពាក្យសម្ងាត់របស់អ្នក';
             isvalid.value= false
         }
-        return isvalid   
+        return isvalid
+        
     }
     const loginForm = async() => {   
         // console.log(email.value);
         // console.log(password.value);
         if(!validationForm()) return
-            loading.value = true;
-            try{
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                await auth.login(form)
-            }catch(error){
-                console.err(error);
-            }
-            loading.value = false;
-            
-            // if(alert == 'Login Success'){
-                // router.push('/');
-            //     return true
-            // }else{
-            //     return false
-            // }
-            
+            await auth.login(form);
+            router.push('/');
     }
 
 </script>
-<style scoped>
-    .loading-spinner {
-        width: 18px;
-        height: 18px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        border-top-color: white;
-        animation: spin 0.6s linear infinite;
-        display: inline-block;
-    }
-    @keyframes spin {
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-</style>

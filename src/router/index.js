@@ -1,11 +1,18 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import HomeView from "../views/HomeView.vue";
+import register from "@/views/register.vue";
+import login from "@/views/login.vue";
+import { useauthStore } from "@/stores/auth";
+import forgotpassword from '@/views/forgotPass/forgotpassword.vue'
+import resetpassword from '@/views/forgotPass/resetpassword.vue'
+import verityOtp from '@/views/forgotPass/verityOtp.vue'
+import profile from '@/views/Profile.vue'
 import Register from "@/views/register.vue";
 import Login from "@/views/login.vue";
 import DetailPage from "../components/DetailPage.vue";
-import Checkout from "@/views/Checkout.vue";
-import Success from "@/views/Success.vue";
+// import Checkout from "@/views/Checkout.vue";
+// import Success from "@/views/Success.vue";
 import Profile from "@/views/Profile.vue";
 import ContactUS from "@/views/ContactUS.vue";
 import AddtoCart from "@/components/AddtoCart.vue";
@@ -14,7 +21,7 @@ import ForgotPassword from "@/views/forgotPass/forgotpassword.vue";
 import ResetPassword from "@/views/forgotPass/resetpassword.vue";
 import VerityOtp from "@/views/forgotPass/verityOtp.vue";
 
-import { useauthStore } from "@/stores/auth.js";
+// import { useauthStore } from "@/stores/auth.js";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,6 +35,8 @@ const router = createRouter({
         title: "Home",
       },
     },
+    
+   
 
     // {
     //   path: "/about",
@@ -75,26 +84,25 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
+    // {
+    //   path: "/checkout",
+    //   name: "checkout",
+    //   component: Checkout,
+    //   meta: {
+    //     title: "Checkout",
+    //     requiresAuth: true,
+    //   },
+    // },
 
-    {
-      path: "/checkout",
-      name: "checkout",
-      component: Checkout,
-      meta: {
-        title: "Checkout",
-        requiresAuth: true,
-      },
-    },
-
-    {
-      path: "/success",
-      name: "success",
-      component: Success,
-      meta: {
-        title: "Success",
-        requiresAuth: true,
-      },
-    },
+    // {
+    //   path: "/success",
+    //   name: "success",
+    //   component: Success,
+    //   meta: {
+    //     title: "Success",
+    //     requiresAuth: true,
+    //   },
+    // },
 
     {
       path: "/forgotpassword",

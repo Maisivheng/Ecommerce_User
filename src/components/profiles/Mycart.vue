@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/API/api";
 
@@ -10,14 +10,12 @@ const router = useRouter();
 // =========================
 
 const cartItems = ref([]);
+const selectedItems = ref([]);
 
 const loading = ref(false);
 
-// selected items
-const selectedItems = ref([]);
-
 // =========================
-// GET CART
+// GET MY CART
 // API => /api/profile/carts
 // =========================
 
@@ -25,13 +23,18 @@ const getCart = async () => {
   try {
     loading.value = true;
 
+    // FIXED
     const response = await api.get("/api/profile/carts");
 
-    console.log(response.data);
+    console.log("CART RESPONSE:", response.data);
 
+    // API RESPONSE
+    // data.items
     cartItems.value = response.data.data.items || [];
   } catch (error) {
     console.log(error);
+
+    alert(error.response?.data?.message || "Get Cart Failed");
   } finally {
     loading.value = false;
   }
@@ -50,7 +53,7 @@ const toggleSelectAll = (event) => {
 };
 
 // =========================
-// CHECK IF SELECTED
+// CHECK SELECTED
 // =========================
 
 const isSelected = (id) => {
@@ -59,7 +62,6 @@ const isSelected = (id) => {
 
 // =========================
 // GRAND TOTAL
-// ONLY SELECTED PRODUCTS
 // =========================
 
 const grandTotal = computed(() => {
@@ -77,16 +79,33 @@ const grandTotal = computed(() => {
 // =========================
 
 const removeCart = async (id) => {
-  try {
-    await api.delete(`/api/cart/remove/${id}`);
+  const confirmDelete = confirm("តើអ្នកប្រាកដថាចង់លុបផលិតផលនេះមែនទេ?");
 
-    // remove ui
+  if (!confirmDelete) {
+    return;
+  }
+
+  try {
+    loading.value = true;
+
+    // FIX API DELETE
+    const response = await api.delete(`/api/profile/carts/${id}`);
+
+    console.log("DELETE RESPONSE:", response.data);
+
+    // REMOVE UI
     cartItems.value = cartItems.value.filter((item) => item.id !== id);
 
-    // remove selected
+    // REMOVE SELECTED
     selectedItems.value = selectedItems.value.filter((itemId) => itemId !== id);
+
+    alert(response.data.message || "Delete Success");
   } catch (error) {
     console.log(error);
+
+    alert(error.response?.data?.message || "Delete Failed");
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -101,8 +120,19 @@ const checkout = () => {
     return;
   }
 
+  // selected products
+  const selectedProducts = cartItems.value.filter((item) =>
+    selectedItems.value.includes(item.id),
+  );
+
+  console.log(selectedProducts);
+
   router.push("/checkout");
 };
+
+// =========================
+// MOUNTED
+// =========================
 
 onMounted(() => {
   getCart();
@@ -111,36 +141,20 @@ onMounted(() => {
 
 <template>
   <div class="card card-ui p-4">
-    <!-- =========================
-         HEADER
-    ========================== -->
+    <!-- HEADER -->
 
-    <!-- skeleton header -->
-    <!-- <div
-      v-if="loading"
-      class="d-flex justify-content-between align-items-center mb-4"
-    >
-      <div class="skeleton skeleton-title"></div>
-
-      <div class="skeleton skeleton-btn"></div>
-    </div> -->
-
-    <!-- real header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h4>របស់ខ្ញុំ</h4>
+      <h4>រទេះទិញរបស់ខ្ញុំ</h4>
 
       <button @click="checkout" class="btn btn-success">ទូទាត់ប្រាក់</button>
     </div>
 
-    <!-- =========================
-         TABLE
-    ========================== -->
+    <!-- TABLE -->
 
     <div class="table-responsive">
       <table class="table align-middle">
         <thead>
           <tr>
-            <!-- select all -->
             <th>
               <input type="checkbox" @change="toggleSelectAll" />
             </th>
@@ -156,9 +170,7 @@ onMounted(() => {
         </thead>
 
         <tbody>
-          <!-- =========================
-               SKELETON LOADING
-          ========================== -->
+          <!-- LOADING -->
 
           <template v-if="loading">
             <tr v-for="n in 5" :key="n">
@@ -200,37 +212,41 @@ onMounted(() => {
             </tr>
           </template>
 
-          <!-- =========================
-               EMPTY
-          ========================== -->
+          <!-- EMPTY -->
 
           <tr v-else-if="cartItems.length === 0">
             <td colspan="8" class="text-center text-muted py-5">
-              គ្មានផលិតផលនៅក្នុងរទេះទិញទេ។
+              គ្មានផលិតផលនៅក្នុងរទេះទិញទេ
             </td>
           </tr>
 
-          <!-- =========================
-               PRODUCTS
-          ========================== -->
+          <!-- PRODUCTS -->
 
           <tr v-else v-for="item in cartItems" :key="item.id">
-            <!-- checkbox -->
+            <!-- CHECKBOX -->
+
             <td>
               <input type="checkbox" :value="item.id" v-model="selectedItems" />
             </td>
 
-            <!-- image -->
+            <!-- IMAGE -->
+
             <td>
-              <img :src="item.product.image" class="product-img" />
+              <img
+                :src="item.product.image"
+                class="product-img"
+                :alt="item.product.title"
+              />
             </td>
 
-            <!-- title -->
+            <!-- TITLE -->
+
             <td>
               {{ item.product.title }}
             </td>
 
-            <!-- categories -->
+            <!-- CATEGORY -->
+
             <td>
               <span
                 v-for="category in item.product.categories"
@@ -241,39 +257,40 @@ onMounted(() => {
               </span>
             </td>
 
-            <!-- price -->
+            <!-- PRICE -->
+
             <td>${{ item.price }}</td>
 
-            <!-- qty -->
+            <!-- QTY -->
+
             <td>
               {{ item.qty }}
             </td>
 
-            <!-- total -->
+            <!-- TOTAL -->
+
             <td>
               <span :class="isSelected(item.id) ? 'text-success fw-bold' : ''">
                 ${{ (item.price * item.qty).toFixed(2) }}
               </span>
             </td>
 
-            <!-- action -->
+            <!-- ACTION -->
+
             <td>
               <button
                 @click="removeCart(item.id)"
                 class="btn btn-danger btn-sm"
               >
-                លុប
+                Delete
               </button>
             </td>
           </tr>
-          
         </tbody>
       </table>
     </div>
 
-    <!-- =========================
-         GRAND TOTAL
-    ========================== -->
+    <!-- GRAND TOTAL -->
 
     <div class="d-flex justify-content-end mt-4">
       <div class="total-box">
@@ -288,17 +305,17 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.card-ui {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+}
+
 .product-img {
   width: 70px;
   height: 70px;
   object-fit: cover;
   border-radius: 10px;
-}
-
-.card-ui {
-  border: none;
-  border-radius: 20px;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
 }
 
 .total-box {
@@ -331,18 +348,14 @@ onMounted(() => {
     rgba(255, 255, 255, 0.6),
     transparent
   );
+
   animation: shimmer 1.2s infinite;
 }
 
-.skeleton-title {
-  width: 180px;
-  height: 32px;
-}
-
-.skeleton-btn {
-  width: 140px;
-  height: 42px;
-  border-radius: 12px;
+@keyframes shimmer {
+  100% {
+    left: 100%;
+  }
 }
 
 .skeleton-check {
@@ -376,11 +389,5 @@ onMounted(() => {
   width: 90px;
   height: 35px;
   border-radius: 10px;
-}
-
-@keyframes shimmer {
-  100% {
-    left: 100%;
-  }
 }
 </style>
