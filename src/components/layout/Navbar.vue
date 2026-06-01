@@ -284,8 +284,6 @@ a {
         </router-link>
     </div>
 
-
-    ///////////view profile or logout
     <div class="modal" tabindex="-1":class="{ 'show': showLogoutModal }" 
         :style="{ display: showLogoutModal ? 'block' : 'none', backgroundColor: showLogoutModal ? 'rgba(0,0,0,0.5)' : 'transparent' }"
          @click.self="cancelLogout">

@@ -71,7 +71,18 @@ Form login
             </router-link>
         </div>
     </form>
-    </div>
+      <!-- Toast Notification -->
+      <div v-if="toast.message" class="toast" :class="toast.type">
+        <i
+          :class="
+            toast.type === 'error'
+              ? 'bi bi-x-circle-fill'
+              : 'bi bi-check-circle-fill'
+          "
+        ></i>
+        <span>{{ toast.message }}</span>
+      </div>
+      </div>
   </div>
 </template>
 
@@ -83,6 +94,18 @@ Form login
     let auth = useauthStore();
     let isvalid = ref(true);
     const loading = ref(false)
+    let passwordVisible = ref(false)
+    const toast = reactive({
+      message: '',
+      type: 'success'
+    })
+    const showToast = (message, type = 'success') => {
+      toast.message = message
+      toast.type = type
+      setTimeout(() => {
+        toast.message = ''
+      }, 3000)
+    }
     let form = reactive ({
         email: '',
         password: '',
@@ -111,13 +134,39 @@ Form login
         // console.log(password.value);
         if(!validationForm()) return
             loading.value = true;
-            try{
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                await auth.login(form)
-            }catch(error){
-                console.err(error);
-            }
-            loading.value = false;
+              try {
+                const success = await auth.login({
+                  email: form.email,
+                  password: form.password
+                });
+
+                if (success) {
+                  showToast('ចូលគណនីបានដោយជោគជ័យ', 'success');
+                  setTimeout(() => {
+                    router.push('/');
+                  }, 1000);
+                } else {
+                  showToast('អ៊ីមែល ឬ ពាក្យសម្ងាត់មិនត្រឹមត្រូវ', 'error');
+                }
+
+              } catch (error) {
+                console.error(error);
+                showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ', 'error');
+              } finally {
+                loading.value = false;
+              }
+            };
+            // try{
+            //     showToast('ចូលគណនីបានដោយជោគជ័យ', 'success')         
+            //     // router.push('/')
+            //     await auth.login(form)
+            // }catch(error){
+            //     console.err(error);
+            //     showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ សូមព្យាយាមម្តងទៀត', 'error')
+            // }finally{
+            //   loading.value = false;
+            // }
+            
             // if(alert == 'Login Success'){
                 // router.push('/');
             //     return true
@@ -125,7 +174,6 @@ Form login
             //     return false
             // }
             
-    }
 
 </script>
 
