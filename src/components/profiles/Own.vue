@@ -2,35 +2,28 @@
 import { ref, reactive, onMounted } from "vue";
 import api from "@/API/api";
 
+// ==============================
+// STATES
+// ==============================
 
-// products State
 const products = ref([]);
-
-// loading
 const loading = ref(false);
 
-// modal
 const showModal = ref(false);
 
-// edit mode
 const isEdit = ref(false);
 
-// current product id
 const currentProductId = ref(null);
+
+const saving = ref(false);
 
 // image preview
 const imagePreview = ref("");
 
-// errors
-const errors = reactive({
-  title: "",
-  price: "",
-  condition: "",
-  description: "",
-  category_id: "",
-});
+// ==============================
+// FORM
+// ==============================
 
-// form
 const form = reactive({
   title: "",
   price: "",
@@ -42,9 +35,22 @@ const form = reactive({
   image: null,
 });
 
-// =========================
+// ==============================
+// ERRORS
+// ==============================
+
+const errors = reactive({
+  title: "",
+  price: "",
+  condition: "",
+  description: "",
+  category_id: "",
+  image: "",
+});
+
+// ==============================
 // GET PRODUCTS
-// =========================
+// ==============================
 
 const getProducts = async () => {
   try {
@@ -54,83 +60,83 @@ const getProducts = async () => {
 
     console.log(response.data);
 
-    products.value = response.data.data;
+    products.value = response.data.data || [];
   } catch (error) {
     console.log(error);
+
+    alert("Get Products Failed");
   } finally {
     loading.value = false;
   }
 };
 
-// =========================
-// VALIDATE
-// =========================
+// ==============================
+// VALIDATE FORM
+// ==============================
 
 const validateForm = () => {
   let isValid = true;
 
-  // reset
+  // reset errors
   errors.title = "";
   errors.price = "";
   errors.condition = "";
   errors.description = "";
   errors.category_id = "";
+  errors.image = "";
 
   // title
-  if (!form.title) {
+  if (!form.title.trim()) {
     errors.title = "Title is required";
-
     isValid = false;
   }
 
   // price
   if (!form.price) {
     errors.price = "Price is required";
-
     isValid = false;
   }
 
   // condition
-  if (!form.condition) {
+  if (!form.condition.trim()) {
     errors.condition = "Condition is required";
-
     isValid = false;
   }
 
   // description
-  if (!form.description) {
+  if (!form.description.trim()) {
     errors.description = "Description is required";
-
     isValid = false;
   }
 
   // category
   if (!form.category_id) {
     errors.category_id = "Category ID is required";
-
     isValid = false;
   }
 
   return isValid;
 };
 
-// =========================
+// ==============================
 // HANDLE IMAGE
-// =========================
+// ==============================
 
 const handleImage = (event) => {
   const file = event.target.files[0];
 
+  if (!file) {
+    return;
+  }
+
   form.image = file;
 
-  if (file) {
-    imagePreview.value = URL.createObjectURL(file);
-  }
+  imagePreview.value = URL.createObjectURL(file);
 };
 
-// =========================
+// ==============================
 // RESET FORM
-// =========================
+// ==============================
 
 const resetForm = () => {
   form.title = "";
@@ -149,11 +155,12 @@ const resetForm = () => {
   errors.condition = "";
   errors.description = "";
   errors.category_id = "";
+  errors.image = "";
 };
 
-// =========================
+// ==============================
 // OPEN ADD MODAL
-// =========================
+// ==============================
 
 const openAddModal = () => {
   resetForm();
@@ -165,9 +172,9 @@ const openAddModal = () => {
   showModal.value = true;
 };
 
-// =========================
+// ==============================
 // OPEN EDIT MODAL
-// =========================
+// ==============================
 
 const openEditModal = (product) => {
   resetForm();
@@ -184,7 +191,7 @@ const openEditModal = (product) => {
   form.story = product.story;
 
   // category
-  if (product.categories && product.categories.length > 0) {
+  if (product.categories?.length > 0) {
     form.category_id = product.categories[0].id;
   }
 
@@ -193,9 +200,9 @@ const openEditModal = (product) => {
   showModal.value = true;
 };
 
-// =========================
+// ==============================
 // SAVE PRODUCT
-// =========================
+// ==============================
 
 const saveProduct = async () => {
   // validate
@@ -204,6 +211,8 @@ const saveProduct = async () => {
   }
 
   try {
+    saving.value = true;
+
     const formData = new FormData();
 
     formData.append("title", form.title);
@@ -227,9 +236,9 @@ const saveProduct = async () => {
 
     let response;
 
-    // =========================
+    // ==========================
     // ADD PRODUCT
-    // =========================
+    // ==========================
 
     if (!isEdit.value) {
       response = await api.post("/api/profile/product/create", formData, {
@@ -238,12 +247,13 @@ const saveProduct = async () => {
         },
       });
 
-      alert(response.data.message || "Product Added Successfully");
-    } else {
-      // =========================
-      // UPDATE PRODUCT
-      // =========================
+      alert(response.data.message || "Add Product Success");
+    }
 
+    // ==========================
+    // UPDATE PRODUCT
+    // ==========================
+    else {
       response = await api.post(
         `/api/profile/product/update/${currentProductId.value}`,
         formData,
@@ -254,28 +264,57 @@ const saveProduct = async () => {
         },
       );
 
-      alert(response.data.message || "Product Updated Successfully");
+      alert(response.data.message || "Update Product Success");
     }
 
     // close modal
     showModal.value = false;
 
-    // refresh
+    // refresh data
     getProducts();
   } catch (error) {
     console.log(error);
 
-    console.log(error.response);
-
     console.log(error.response?.data);
 
+    // backend validation
+    if (error.response?.data?.data) {
+      const backendErrors = error.response.data.data;
+
+      if (backendErrors.title) {
+        errors.title = backendErrors.title[0];
+      }
+
+      if (backendErrors.price) {
+        errors.price = backendErrors.price[0];
+      }
+
+      if (backendErrors.condition) {
+        errors.condition = backendErrors.condition[0];
+      }
+
+      if (backendErrors.description) {
+        errors.description = backendErrors.description[0];
+      }
+
+      if (backendErrors.category_id) {
+        errors.category_id = backendErrors.category_id[0];
+      }
+
+      if (backendErrors.image) {
+        errors.image = backendErrors.image[0];
+      }
+    }
+
     alert(error.response?.data?.message || "Save Product Failed");
+  } finally {
+    saving.value = false;
   }
 };
 
-// =========================
+// ==============================
 // DELETE PRODUCT
-// =========================
+// ==============================
 
 const deleteProduct = async (id) => {
   const confirmDelete = confirm("Are you sure delete this product?");
@@ -298,9 +337,9 @@ const deleteProduct = async (id) => {
   }
 };
 
-// =========================
+// ==============================
 // MOUNTED
-// =========================
+// ==============================
 
 onMounted(() => {
   getProducts();
@@ -309,109 +348,180 @@ onMounted(() => {
 
 <template>
   <div class="card card-ui p-4">
-    <!-- header -->
+    <!-- HEADER -->
+     
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h4>ផលិតផលរបស់ខ្ញុំ</h4>
+      <h4 class="">ផលិតផលរបស់ខ្ញុំ</h4>
 
-      <button @click="openAddModal" class="btn btn-primary">Add Product</button>
+      <button @click="openAddModal" class="btn btn-primary">
+        បន្ថែមផលិតផល
+      </button>
     </div>
 
-    <!-- loading -->
-    <div v-if="loading" class="text-center py-5">Loading...</div>
+    <!-- LOADING -->
 
-    <!-- table -->
-    <table v-else class="table table-hover align-middle">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Image</th>
-          <th>Title</th>
-          <th>Category</th>
-          <th>Price</th>
-          <th>Date</th>
-          <th>Action</th>
-        </tr>
-      </thead>
+    <!-- LOADING SKELETON -->
+    <div v-if="loading">
+      <!-- header skeleton -->
+      <!-- <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="skeleton skeleton-title"></div>
 
-      <tbody>
-        <!-- empty -->
-        <tr v-if="products.length === 0">
-          <td colspan="7" class="text-center text-muted">No Products</td>
-        </tr>
+        <div class="skeleton skeleton-btn"></div>
+      </div> -->
 
-        <!-- products -->
-        <tr v-for="product in products" :key="product.id">
-          <!-- id -->
-          <td>#{{ product.id }}</td>
+      <!-- table skeleton -->
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
 
-          <!-- image -->
-          <td>
-            <img :src="product.image" class="product-img" />
-          </td>
+        <tbody>
+          <!-- skeleton rows -->
+          <tr v-for="i in 5" :key="i">
+            <td>
+              <div class="skeleton skeleton-id"></div>
+            </td>
 
-          <!-- title -->
-          <td>
-            {{ product.title }}
-          </td>
+            <td>
+              <div class="skeleton skeleton-image"></div>
+            </td>
 
-          <!-- category -->
-          <td>
-            <span
-              v-for="category in product.categories"
-              :key="category.id"
-              class="badge bg-primary me-1"
-            >
-              {{ category.name }}
-            </span>
-          </td>
+            <td>
+              <div class="skeleton skeleton-text"></div>
+            </td>
 
-          <!-- price -->
-          <td>${{ product.price }}</td>
+            <td>
+              <div class="">
+                <!-- <div class="skeleton skeleton-badge"></div> -->
 
-          <!-- date -->
-          <td>
-            {{ product.created_at }}
-          </td>
+                <div class="skeleton skeleton-badge"></div>
+              </div>
+            </td>
 
-          <!-- action -->
-          <td>
-            <div class="d-flex gap-2">
-              <button
-                @click="openEditModal(product)"
-                class="btn btn-warning btn-sm"
+            <td>
+              <div class="skeleton skeleton-price"></div>
+            </td>
+
+            <td>
+              <div class="skeleton skeleton-date"></div>
+            </td>
+
+            <td>
+              <div class="d-flex gap-2">
+                <div class="skeleton skeleton-action"></div>
+
+                <div class="skeleton skeleton-action"></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- REAL TABLE -->
+    <div v-else class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- EMPTY -->
+          <tr v-if="products.length === 0">
+            <td colspan="7" class="text-center text-muted py-4">គ្មានផលិតផលទេ</td>
+          </tr>
+
+          <!-- PRODUCTS -->
+          <tr v-for="product in products" :key="product.id">
+            <td>#{{ product.id }}</td>
+
+            <!-- IMAGE -->
+            <td>
+              <img :src="product.image" class="product-img" />
+            </td>
+
+            <!-- TITLE -->
+            <td>
+              {{ product.title }}
+            </td>
+
+            <!-- CATEGORY -->
+            <td>
+              <span
+                v-for="category in product.categories"
+                :key="category.id"
+                class="badge bg-primary me-1"
               >
-                Edit
-              </button>
+                {{ category.name }}
+              </span>
+            </td>
 
-              <button
-                @click="deleteProduct(product.id)"
-                class="btn btn-danger btn-sm"
-              >
-                Delete
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <!-- PRICE -->
+            <td>${{ product.price }}</td>
+
+            <!-- DATE -->
+            <td>
+              {{ product.created_at }}
+            </td>
+
+            <!-- ACTION -->
+            <td>
+              <div class="d-flex justify-content-center gap-2">
+                <button
+                  @click="openEditModal(product)"
+                  class="btn btn-warning btn-sm"
+                >
+                  Edit
+                </button>
+
+                <button
+                  @click="deleteProduct(product.id)"
+                  class="btn btn-danger btn-sm"
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- under -->
   </div>
 
   <!-- =========================
         MODAL
   ========================== -->
 
-  <div v-if="showModal" class="z-index-1001 modal-overlay">
+  <div v-if="showModal" class="modal-overlay z-index-999">
     <div class="modal-box">
-      <!-- header -->
+      <!-- HEADER -->
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4>
+        <h4 class="fw-bold">
           {{ isEdit ? "Edit Product" : "Add Product" }}
         </h4>
 
         <button @click="showModal = false" class="btn-close"></button>
       </div>
 
-      <!-- title -->
+      <!-- TITLE -->
       <div class="mb-3">
         <label class="form-label"> Product Title </label>
 
@@ -427,7 +537,7 @@ onMounted(() => {
         </small>
       </div>
 
-      <!-- price -->
+      <!-- PRICE -->
       <div class="mb-3">
         <label class="form-label"> Price </label>
 
@@ -443,7 +553,7 @@ onMounted(() => {
         </small>
       </div>
 
-      <!-- category -->
+      <!-- CATEGORY -->
       <div class="mb-3">
         <label class="form-label"> Category ID </label>
 
@@ -459,7 +569,7 @@ onMounted(() => {
         </small>
       </div>
 
-      <!-- condition -->
+      <!-- CONDITION -->
       <div class="mb-3">
         <label class="form-label"> Condition </label>
 
@@ -475,14 +585,14 @@ onMounted(() => {
         </small>
       </div>
 
-      <!-- description -->
+      <!-- DESCRIPTION -->
       <div class="mb-3">
         <label class="form-label"> Description </label>
 
         <textarea
           v-model="form.description"
-          class="form-control"
           rows="3"
+          class="form-control"
           placeholder="Enter description"
         ></textarea>
 
@@ -491,31 +601,31 @@ onMounted(() => {
         </small>
       </div>
 
-      <!-- detail -->
+      <!-- DETAIL -->
       <div class="mb-3">
         <label class="form-label"> Detail </label>
 
         <textarea
           v-model="form.detail"
-          class="form-control"
           rows="3"
+          class="form-control"
           placeholder="Enter detail"
         ></textarea>
       </div>
 
-      <!-- story -->
+      <!-- STORY -->
       <div class="mb-3">
         <label class="form-label"> Story </label>
 
         <textarea
           v-model="form.story"
-          class="form-control"
           rows="3"
+          class="form-control"
           placeholder="Enter story"
         ></textarea>
       </div>
 
-      <!-- image -->
+      <!-- IMAGE -->
       <div class="mb-3">
         <label class="form-label"> Product Image </label>
 
@@ -525,17 +635,23 @@ onMounted(() => {
           accept="image/*"
           @change="handleImage"
         />
+
+        <small class="text-danger">
+          {{ errors.image }}
+        </small>
       </div>
 
-      <!-- preview -->
+      <!-- PREVIEW -->
       <div v-if="imagePreview" class="mb-3">
         <img :src="imagePreview" class="preview-img" />
       </div>
 
-      <!-- buttons -->
+      <!-- BUTTONS -->
       <div class="d-flex gap-2">
-        <button @click="saveProduct" class="btn btn-success">
-          {{ isEdit ? "Update Product" : "Save Product" }}
+        <button @click="saveProduct" class="btn btn-success" :disabled="saving">
+          {{
+            saving ? "Loading..." : isEdit ? "Update Product" : "Save Product"
+          }}
         </button>
 
         <button @click="showModal = false" class="btn btn-secondary">
@@ -576,7 +692,8 @@ onMounted(() => {
 .modal-box {
   background: white;
 
-  width: 600px;
+  width: 100%;
+  max-width: 650px;
 
   max-height: 90vh;
 
@@ -590,7 +707,96 @@ onMounted(() => {
 .preview-img {
   width: 120px;
   height: 120px;
+
   object-fit: cover;
+
+  border-radius: 10px;
+}
+
+/* =========================
+SKELETON LOADING
+========================= */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e9ecef;
+  border-radius: 10px;
+}
+
+.skeleton::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: -150px;
+
+  width: 150px;
+  height: 100%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.7),
+    transparent
+  );
+
+  animation: loading 1s infinite;
+}
+
+@keyframes loading {
+  100% {
+    left: 100%;
+  }
+}
+
+.skeleton-title {
+  width: 200px;
+  height: 35px;
+}
+
+.skeleton-btn {
+  width: 130px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.skeleton-id {
+  width: 40px;
+  height: 20px;
+}
+
+.skeleton-image {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+}
+
+.skeleton-text {
+  width: 160px;
+  height: 20px;
+}
+
+.skeleton-badge {
+  width: 70px;
+  height: 25px;
+  border-radius: 30px;
+}
+
+.skeleton-price {
+  width: 70px;
+  height: 20px;
+}
+
+.skeleton-date {
+  width: 140px;
+  height: 20px;
+}
+
+.skeleton-action {
+  width: 70px;
+  height: 35px;
   border-radius: 10px;
 }
 </style>

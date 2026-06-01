@@ -2,7 +2,7 @@
   <Navbar />
 
   <!-- HERO SECTION -->
-  <section class="hero-section">
+  <section class="hero-section" style="position: relative;">
     <div class="container">
 
       <div class="row align-items-center min-vh-75">
@@ -178,20 +178,24 @@
 </template>
 
 <script setup>
-import Navbar from '@/components/layout/Navbar.vue'
-import Footer from '@/components/layout/Footer.vue'
-import BaseCard from '@/components/ui/BaseCard.vue'
+  
+  import Navbar from '@/components/layout/Navbar.vue'
+  import Footer from '@/components/layout/Footer.vue'
+  import BaseCard from '@/components/ui/BaseCard.vue'
+
+
+  
 </script>
 
 <style scoped>
-:root {
+:global(:root) {
   --primary-color: #0d6efd;
 }
 
 .hero-section {
-  background:
-    linear-gradient(to right, #f8fbff, #eef5ff);
-  padding: 80px 0;
+  position: relative;
+  background: linear-gradient(to right, #f8fbff, #eef5ff);
+  padding: 120px 0;
 }
 
 .min-vh-75 {
@@ -224,7 +228,7 @@ import BaseCard from '@/components/ui/BaseCard.vue'
   line-height: 1.8;
 }
 
-.btn-shop {
+.btn-shop{
   background: var(--primary-color);
   color: white;
   border-radius: 50px;
@@ -244,6 +248,7 @@ import BaseCard from '@/components/ui/BaseCard.vue'
   padding: 12px 28px;
   font-weight: 600;
 }
+
 
 .hero-image-box {
   position: relative;
