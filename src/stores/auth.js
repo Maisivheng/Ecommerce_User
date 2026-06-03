@@ -1,8 +1,8 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import router from '@/router';
-import axios from 'axios'
+// import axios from 'axios'
 import api from '@/API/api'
+import router from '@/router'
 
 export const useauthStore = defineStore('auth', () => {
   let token = ref(localStorage.getItem('token') || null)
@@ -21,12 +21,12 @@ export const useauthStore = defineStore('auth', () => {
       if(errMassage.value !== 'Incorrect email or password.'){
         token.value = res.data.data.token;
         localStorage.setItem('token', token.value)
-        alert('Login Success')
-        router.push('/');
+        // alert('Login Success')
+        // router.push('/');
         return true
       }
       else{
-        alert("Incorrect email or password.")
+        // alert("Incorrect email or password.")
         return false
       }
     }catch(err){
@@ -43,6 +43,7 @@ export const useauthStore = defineStore('auth', () => {
       console.log(res);
       token.value = res.data.data.token;
       localStorage.setItem('token', token.value)
+      router.push("/");
     }catch(err){
       console.error(err.response);
     }
@@ -51,7 +52,7 @@ export const useauthStore = defineStore('auth', () => {
   const Logout = async () =>{
       const res =await api.delete('/api/logout');
       console.log(res);
-      localStorage.removeItem('token');
+      localStorage.removeItem('token', token.value);
   }
 
   
