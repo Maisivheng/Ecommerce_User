@@ -23,7 +23,6 @@ Form login
           </div>
           <small class="text-danger">{{ form.errors.email }}</small>
         </div>
-
         <div class="form-group">
           <label>ពាក្យសម្ងាត់</label>
           <div class="input-icon-wrapper password-field">

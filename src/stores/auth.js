@@ -14,18 +14,18 @@ export const useauthStore = defineStore('auth', () => {
       const res =await api.post('/api/login', data);
       success.value = res.status;
 
-      console.log(res);
+      // console.log(res);
       errMassage.value = res.data.message;
       console.log(errMassage.value);
       if(errMassage.value !== 'Incorrect email or password.'){
         token.value = res.data.data.token;
         localStorage.setItem('token', token.value)
-        alert('Login Success')
+        // alert('Login Success')
         router.push('/');
         return true
       }
       else{
-        alert("Incorrect email or password.")
+        // alert("Incorrect email or password.")
         return false
       }
     }catch(err){
@@ -39,7 +39,7 @@ export const useauthStore = defineStore('auth', () => {
     try{
       let res =await api.post('/api/register' ,data);
       success.value = res.status;
-      console.log(res);
+      // console.log(res);
       token.value = res.data.data.token;
       localStorage.setItem('token', token.value)
     }catch(err){
@@ -49,7 +49,7 @@ export const useauthStore = defineStore('auth', () => {
   // logout
   const Logout = async () =>{
       const res =await api.delete('/api/logout');
-      console.log(res);
+      // console.log(res);
       localStorage.removeItem('token');
   }
 
