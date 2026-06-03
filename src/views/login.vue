@@ -92,6 +92,7 @@ Form login
     import { useRoute } from 'vue-router';
     import { useauthStore } from '@/stores/auth';
     let auth = useauthStore();
+    const route = useRoute();
     let isvalid = ref(true);
     const loading = ref(false)
     let passwordVisible = ref(false)
@@ -143,7 +144,12 @@ Form login
                 if (success) {
                   showToast('ចូលគណនីបានដោយជោគជ័យ', 'success');
                   setTimeout(() => {
-                    router.push('/');
+                    const redirect = route.query.redirect;
+                    if (redirect) {
+                      router.push({ name: redirect });
+                    } else {
+                      router.push('/');
+                    }
                   }, 1000);
                 } else {
                   showToast('អ៊ីមែល ឬ ពាក្យសម្ងាត់មិនត្រឹមត្រូវ', 'error');

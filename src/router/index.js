@@ -4,7 +4,7 @@ import HomeView from "../views/HomeView.vue";
 import Register from "@/views/register.vue";
 import Login from "@/views/login.vue";
 import DetailPage from "../components/DetailPage.vue";
-import Checkout from "@/views/Checkout.vue";
+import Checkout from "@/views/CheckoutView.vue";
 import Success from "@/views/Success.vue";
 import Profile from "@/views/Profile.vue";
 import ContactUS from "@/views/ContactUS.vue";
