@@ -8,12 +8,12 @@ import api from "@/API/api";
 // =======================
 
 const purchasedProducts = ref([]);
-
 const loading = ref(false);
 
 // =======================
 // GET PURCHASED PRODUCTS
 // =======================
+
 
 const getPurchasedProducts = async () => {
   try {
@@ -21,11 +21,10 @@ const getPurchasedProducts = async () => {
 
     const response = await api.get("/api/profile/purchased");
 
-    console.log(response.data);
-
+    // កែសម្រួល៖ ទាញយកតម្លៃពី response និងកំណត់ default ជា Array ទទេ បើគ្មានទិន្នន័យ
     purchasedProducts.value = response.data.data || [];
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching purchased products:", error);
   } finally {
     loading.value = false;
   }
@@ -47,139 +46,128 @@ onMounted(() => {
       <h4 class="">ផលិតផលដែលបានទិញ</h4>
     </div>
 
-    <!-- loading -->
     <!-- loading skeleton -->
-<div v-if="loading">
-  <!-- title skeleton -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div class="skeleton skeleton-title"></div>
-  </div>
+    <div v-if="loading">
+      <!-- title skeleton -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <!-- <div class="skeleton skeleton-title"></div> -->
+      </div>
 
-  <!-- skeleton cards -->
-  <div class="row">
-    <div
-      class="col-lg-4 col-md-6 mb-4"
-      v-for="n in 6"
-      :key="n"
-    >
-      <div class="card card-ui overflow-hidden">
-        <!-- image -->
-        <div class="skeleton skeleton-image"></div>
+      <!-- skeleton cards -->
+      <div class="row">
+        <div class="col-lg-4 col-md-6 mb-4" v-for="n in 6" :key="n">
+          <div class="card card-ui overflow-hidden">
+            <!-- image -->
+            <div class="skeleton skeleton-image"></div>
 
-        <div class="card-body">
-          <!-- title -->
-          <div class="skeleton skeleton-text mb-3"></div>
+            <div class="card-body">
+              <!-- title -->
+              <div class="skeleton skeleton-text mb-3"></div>
 
-          <!-- creator -->
-          <div class="skeleton skeleton-small mb-3"></div>
+              <!-- creator -->
+              <div class="skeleton skeleton-small mb-3"></div>
 
-          <!-- categories -->
-          <div class="d-flex gap-2 mb-3">
-            <div class="skeleton skeleton-badge"></div>
-            <div class="skeleton skeleton-badge"></div>
+              <!-- categories -->
+              <div class="d-flex gap-2 mb-3">
+                <div class="skeleton skeleton-badge"></div>
+                <div class="skeleton skeleton-badge"></div>
+              </div>
+
+              <!-- price -->
+              <div class="skeleton skeleton-price mb-3"></div>
+
+              <!-- status -->
+              <div class="skeleton skeleton-status mb-3"></div>
+
+              <!-- button -->
+              <div class="skeleton skeleton-button"></div>
+            </div>
           </div>
-
-          <!-- price -->
-          <div class="skeleton skeleton-price mb-3"></div>
-
-          <!-- status -->
-          <div class="skeleton skeleton-status mb-3"></div>
-
-          <!-- button -->
-          <div class="skeleton skeleton-button"></div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- empty -->
-<div
-  v-else-if="purchasedProducts.length === 0"
-  class="card card-ui p-5 text-center"
->
-  <i class="bi bi-bag-x text-secondary empty-icon"></i>
+    <!-- empty state -->
+    <div
+      v-else-if="purchasedProducts.length === 0"
+      class="card card-ui p-5 text-center"
+    >
+      <i class="bi bi-bag-x text-secondary empty-icon"></i>
 
-  <h5 class="mt-3">
-    មិនទាន់មានផលិតផលដែលបានទិញទេ
-  </h5>
+      <h5 class="mt-3">មិនទាន់មានផលិតផលដែលបានទិញទេ</h5>
 
-  <p class="text-muted">
-    សូមធ្វើការទិញផលិតផលជាមុនសិន
-  </p>
-</div>
+      <p class="text-muted">សូមធ្វើការទិញផលិតផលជាមុនសិន</p>
+    </div>
 
-<!-- products -->
-<div v-else class="row">
-  <div
-    class="col-lg-4 col-md-6 mb-4"
-    v-for="item in purchasedProducts"
-    :key="item.id"
-  >
-    <div class="card card-ui h-100 overflow-hidden">
-      <!-- image -->
-      <img
-        :src="item.product?.image"
-        class="card-img-top product-img"
-      />
+    <!-- products list -->
+    <div v-else class="row">
+      <div
+        class="col-lg-4 col-md-6 mb-4"
+        v-for="item in purchasedProducts"
+        :key="item.id"
+      >
+        <div class="card card-ui h-100 overflow-hidden">
+          <!-- image (បន្ថែមរូបភាព Default បើករណីគ្មានរូបពី API) -->
+          <img
+            :src="
+              item.product?.image ||
+              'https://via.placeholder.com/400x250?text=No+Image'
+            "
+            class="card-img-top product-img"
+            :alt="item.product?.title || 'Product Image'"
+          />
 
-      <!-- body -->
-      <div class="card-body d-flex flex-column">
-        <!-- title -->
-        <h5 class="fw-bold mb-2">
-          {{ item.product?.title }}
-        </h5>
+          <!-- body -->
+          <div class="card-body d-flex flex-column">
+            <!-- title -->
+            <h5 class="fw-bold mb-2">
+              {{ item.product?.title || "មិនមានឈ្មោះ" }}
+            </h5>
 
-        <!-- creator -->
-        <p class="text-muted mb-2">
-          <i class="bi bi-person"></i>
+            <!-- creator -->
+            <p class="text-muted mb-2">
+              <i class="bi bi-person"></i>
+              {{ item.product?.creator?.name || "Unknown Creator" }}
+            </p>
 
-          {{ item.product?.creator?.name }}
-        </p>
+            <!-- categories -->
+            <div class="mb-3">
+              <span
+                v-for="category in item.product?.categories"
+                :key="category.id"
+                class="badge bg-primary me-1"
+              >
+                {{ category.name }}
+              </span>
+            </div>
 
-        <!-- categories -->
-        <div class="mb-3">
-          <span
-            v-for="category in item.product?.categories"
-            :key="category.id"
-            class="badge bg-primary me-1"
-          >
-            {{ category.name }}
-          </span>
+            <!-- price -->
+            <h5 class="text-success mb-3">
+              ${{ item.product?.price || "0.00" }}
+            </h5>
+
+            <!-- status -->
+            <div class="mb-3">
+              <span class="badge bg-success"> Purchased Successfully </span>
+            </div>
+
+            <!-- button -->
+            <RouterLink
+              :to="`/detail/${item.product?.id}`"
+              class="btn btn-outline-primary mt-auto"
+            >
+              <i class="bi bi-eye"></i>
+              View Detail
+            </RouterLink>
+          </div>
         </div>
-
-        <!-- price -->
-        <h5 class="text-success mb-3">
-          $
-          {{ item.product?.price }}
-        </h5>
-
-        <!-- status -->
-        <div class="mb-3">
-          <span class="badge bg-success">
-            Purchased Successfully
-          </span>
-        </div>
-
-        <!-- button -->
-        <RouterLink
-          :to="`/detail/${item.product?.id}`"
-          class="btn btn-outline-primary mt-auto"
-        >
-          <i class="bi bi-eye"></i>
-
-          View Detail
-        </RouterLink>
+        
       </div>
     </div>
-  </div>
-</div>
-
   </div>
 </template>
 
 <style scoped>
-
 .card-ui {
   border: none;
   border-radius: 20px;
@@ -278,4 +266,3 @@ onMounted(() => {
   }
 }
 </style>
-

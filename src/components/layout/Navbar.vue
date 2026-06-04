@@ -284,9 +284,12 @@ a {
         </router-link>
     </div>
 
+<!-- <<<<<<< HEAD -->
 
     <!-- ///////////view profile or logout -->
-    <div class="modal" tabindex="-1":class="{ 'show': showLogoutModal }" 
+<!-- ======= -->
+<!-- >>>>>>> 8124509740ef11f94670e4cd98534d2c7d4e4e8d -->
+    <div class="modal" tabindex="-1" :class="{ 'show': showLogoutModal }" 
         :style="{ display: showLogoutModal ? 'block' : 'none', backgroundColor: showLogoutModal ? 'rgba(0,0,0,0.5)' : 'transparent' }"
          @click.self="cancelLogout">
         <div class="modal-dialog">
@@ -351,7 +354,7 @@ a {
 
     onMounted(async () => {
         await productStore.fetchProduct();
-        await profileStore.getProfile();
+        // await profileStore.getProfile();
     });
 
 

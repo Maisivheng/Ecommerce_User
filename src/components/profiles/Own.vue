@@ -525,7 +525,7 @@ onMounted(() => {
               គ្មានផលិតផលទេ
             </td>
           </tr>
-          <tr v-for="product in paginatedProducts" :key="product.id">
+          <tr class=" w-25" v-for="product in paginatedProducts" :key="product.id">
             <!-- <tr v-for="product in products" :key="product.id"> -->
             <td>{{ product.id }}</td>
 

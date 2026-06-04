@@ -7,12 +7,10 @@ import { useauthStore } from "@/stores/auth";
 import forgotpassword from '@/views/forgotPass/forgotpassword.vue'
 import resetpassword from '@/views/forgotPass/resetpassword.vue'
 import verityOtp from '@/views/forgotPass/verityOtp.vue'
-import profile from '@/views/Profile.vue'
 import Register from "@/views/register.vue";
 import Login from "@/views/login.vue";
 import DetailPage from "../components/DetailPage.vue";
-// import Checkout from "@/views/Checkout.vue";
-// import Success from "@/views/Success.vue";
+import Checkout from "@/views/CheckoutView.vue";
 import Profile from "@/views/Profile.vue";
 import ContactUS from "@/views/ContactUS.vue";
 import AddtoCart from "@/components/AddtoCart.vue";
@@ -21,7 +19,6 @@ import ForgotPassword from "@/views/forgotPass/forgotpassword.vue";
 import ResetPassword from "@/views/forgotPass/resetpassword.vue";
 import VerityOtp from "@/views/forgotPass/verityOtp.vue";
 
-// import { useauthStore } from "@/stores/auth.js";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
