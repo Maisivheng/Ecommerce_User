@@ -1,8 +1,56 @@
 <template>
-  <h1>This is an about page</h1>
+    <Navbar></Navbar>
+    <!-- Banner -->
+    <div class="banner-placeholder border-bottom">
+        <p class="text-muted m-0"></p>
+    </div>
+
+    <!-- Content -->
+    <div class="container my-5 p-5 bg-white rounded shadow-sm">
+        <h1 class="fw-bold text-dark mb-3">អំពីយើង</h1>
+        <h4 class="text-primary fw-semibold mb-4">ស្វាគមន៍មកកាន់ ពិភពទំនិញ — ទីកន្លែងតែមួយសម្រាប់គ្រប់តម្រូវការរបស់អ្នក!</h4>
+        
+        <p class="text-secondary lh-lg mb-4">
+            «ពិភពទំនិញ» ត្រូវបានបង្កើតឡើងក្នុងគោលបំណងផ្តល់ជូននូវបទពិសោធន៍ទិញទំនិញអនឡាញដ៏ងាយស្រួល រហ័ស និងមានទំនុកចិត្តខ្ពស់បំផុត។ យើងខ្ញុំបានប្រមូលផ្តុំផលិតផលជាច្រើនប្រភេទ ចាប់តាំងពីគ្រឿងឧបភោគបរិភោគ រហូតដល់សម្ភារៈប្រើប្រាស់ប្រចាំថ្ងៃ ជូនដល់បងប្អូនខ្មែរគ្រប់រូប។
+        </p>
+        
+        <h5 class="fw-bold text-dark mb-2">បេសកកម្មរបស់យើង៖</h5>
+        <p class="text-secondary lh-lg mb-4">
+            ផ្តល់ជូនផលិតផលដែលមានគុណភាពល្អ តម្លៃសមរម្យ និងសេវាកម្មដឹកជញ្ជូនដែលគួរឱ្យទុកចិត្តបំផុត ដើម្បីធ្វើឱ្យការរស់នៅប្រចាំថ្ងៃរបស់អ្នកកាន់តែមានភាពងាយស្រួល។
+        </p>
+
+        <h5 class="fw-bold text-dark mb-3">គុណតម្លៃស្នូល៖</h5>
+        <ul class="list-unstyled ps-2 text-secondary">
+            <li class="mb-3 d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-primary me-2 fs-5"></i> 
+                <span><strong>គុណភាពជាចម្បង:</strong> រាល់ទំនិញទាំងអស់សុទ្ធតែត្រូវបានត្រួតពិនិត្យច្បាស់លាស់។</span>
+            </li>
+            <li class="mb-3 d-flex align-items-center">
+                <i class="bi bi-shield-fill-check text-primary me-2 fs-5"></i> 
+                <span><strong>ភាពស្មោះត្រង់:</strong> តម្លៃសមរម្យ និងគ្មានការភភូតភរឡើយ។</span>
+            </li>
+            <li class="mb-3 d-flex align-items-center">
+                <i class="bi bi-heart-fill text-primary me-2 fs-5"></i> 
+                <span><strong>អតិថិជនជាចម្បង:</strong> រាល់ការបញ្ជាទិញ និងមតិរិះគន់ត្រូវបានយកចិត្តទុកដាក់បំផុត។</span>
+            </li>
+        </ul>
+    </div>
+
 </template>
 
 
 <style>
-
+    body {
+        font-family: 'Kantumruy Pro', sans-serif;
+        background-color: #f8f9fa;
+        font-size: 18px;
+    }
+    .banner-placeholder {
+        background-color: #e9ecef;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
 </style>

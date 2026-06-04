@@ -4,9 +4,11 @@ import HomeView from "../views/HomeView.vue";
 import Register from "@/views/register.vue";
 import Login from "@/views/login.vue";
 import DetailPage from "../components/DetailPage.vue";
-import Checkout from "@/views/Checkout.vue";
+import Checkout from "@/views/CheckoutView.vue";
 import Success from "@/views/Success.vue";
 import Profile from "@/views/Profile.vue";
+import ContactUS from "@/views/ContactUS.vue";
+import AddtoCart from "@/components/AddtoCart.vue";
 
 import ForgotPassword from "@/views/forgotPass/forgotpassword.vue";
 import ResetPassword from "@/views/forgotPass/resetpassword.vue";
@@ -36,14 +38,14 @@ const router = createRouter({
     //   },
     // },
 
-    // {
-    //   path: "/contactUS",
-    //   name: "contactUS",
-    //   component: () => import("../views/ContactView.vue"),
-    //   meta: {
-    //     title: "Contact Us",
-    //   },
-    // },
+    {
+      path: "/contactUS",
+      name: "contactUS",
+      component: ContactUS,
+      meta: {
+        title: "Contact Us",
+      },
+    },
 
     {
       path: "/register",
@@ -64,7 +66,6 @@ const router = createRouter({
         guestOnly: true,
       },
     },
-
     {
       path: "/profile",
       name: "profile",
@@ -72,15 +73,6 @@ const router = createRouter({
       meta: {
         title: "Profile",
         requiresAuth: true,
-      },
-    },
-
-    {
-      path: "/detail",
-      name: "detail",
-      component: DetailPage,
-      meta: {
-        title: "Detail",
       },
     },
 
@@ -136,6 +128,20 @@ const router = createRouter({
       component: Shop,
       meta: {
         title: "shop",
+      path: "/detailpage/:id",
+      name: "detailpage",
+      component: DetailPage,
+      meta: {
+        title: "Detail Page",
+      },
+    },
+    {
+      path: "/addtoCart",
+      name: "addtoCart",
+      component: AddtoCart,
+      meta: {
+        title: "Cart",
+        requiresAuth: true,
       },
     },
   ],
@@ -150,6 +156,9 @@ router.beforeEach((to) => {
   // Protect routes
   if (to.meta.requiresAuth && !auth.token) {
     return "/login";
+  }
+  if(auth.token && to.path == '/login'){
+    return '/'
   }
 
 

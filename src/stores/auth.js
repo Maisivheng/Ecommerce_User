@@ -1,12 +1,14 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import axios from 'axios'
+// import axios from 'axios'
 import api from '@/API/api'
+import router from '@/router'
 
 export const useauthStore = defineStore('auth', () => {
   let token = ref(localStorage.getItem('token') || null)
   let errMassage = ref("")
   let success = ref(null)
+  // login
   const login = async (data) =>{
     console.log(data);
     try{
@@ -16,14 +18,15 @@ export const useauthStore = defineStore('auth', () => {
       console.log(res);
       errMassage.value = res.data.message;
       console.log(errMassage.value);
-      if(errMassage.value !== 'Incorrect email or password.' ){
+      if(errMassage.value !== 'Incorrect email or password.'){
         token.value = res.data.data.token;
         localStorage.setItem('token', token.value)
-        alert('Login Success')
+        // alert('Login Success')
+        // router.push('/');
         return true
       }
       else{
-        alert("Incorrect email or password.")
+        // alert("Incorrect email or password.")
         return false
       }
     }catch(err){
@@ -31,6 +34,7 @@ export const useauthStore = defineStore('auth', () => {
     }
   }
 
+  // register
   const register = async (data) =>{
     console.log(data);
     try{
@@ -39,10 +43,38 @@ export const useauthStore = defineStore('auth', () => {
       console.log(res);
       token.value = res.data.data.token;
       localStorage.setItem('token', token.value)
+      router.push("/");
     }catch(err){
       console.error(err.response);
     }
-    
   }
-  return {login, token, register, success};
-})
+  // logout
+  const Logout = async () =>{
+      const res =await api.delete('/api/logout');
+      console.log(res);
+      localStorage.removeItem('token', token.value);
+  }
+
+  
+
+  return {login, Logout, register, token, success};
+  })
+  
+//   const Logout = async (data) => {
+//     try {
+//         await api.delete('/api/logout', {
+//             headers: {
+//                 Accept: 'application/json',
+//                 Authorization: Bearer `${token.value}`
+//             }
+//         })
+
+//         token.value = null
+//         localStorage.removeItem('token')
+
+//     } catch (err) {
+//         console.error(err.response)
+//     }
+// }
+  
+

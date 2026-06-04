@@ -1,112 +1,179 @@
 <script setup>
 import Navbar from "@/components/layout/Navbar.vue";
 import Mycart from "@/components/profiles/Mycart.vue";
-import { ref, onMounted, reactive } from "vue";
-import api from "@/API/api";
 import Purchased from "@/components/profiles/Purchased.vue";
 import Own from "@/components/profiles/Own.vue";
 import Devices from "@/components/profiles/Devices.vue";
+import ChangePW from "@/components/profiles/ChangePW.vue";
 
+import { ref, reactive, onMounted } from "vue";
+import api from "@/API/api";
 
+// ===========================
+// ACTIVE SECTION
+// ===========================
 
 const activeSection = ref("profile");
 
-// loading
+// ===========================
+// LOADING
+// ===========================
+
 const loading = ref(false);
 
-// image preview
+// ===========================
+// IMAGE PREVIEW
+// ===========================
+
 const imagePreview = ref("");
 
-// success message
+// ===========================
+// SUCCESS MESSAGE
+// ===========================
+
 const successMessage = ref("");
 
-// validation errors
+// ===========================
+// ERRORS
+// ===========================
+
 const errors = reactive({
   name: "",
   email: "",
   phone: "",
-  address: "",
+  location: "",
 });
 
-// form data
+// ===========================
+// FORM
+// ===========================
+
 const form = reactive({
   name: "",
   email: "",
   phone: "",
-  address: "",
-  verified: false,
-  accountCreated: "",
+  location: "",
+  created_at: "",
+  verified: true,
   image: null,
 });
 
-// get profile
 const getProfile = async () => {
   try {
-   
-    const response = await api.post("/api/profile/update", formData);
+    loading.value = true;
+
+    const response = await api.get("/api/me");
+
+    console.log(response.data);
+
     const user = response.data.data;
 
     form.name = user.name || "";
+
     form.email = user.email || "";
+
     form.phone = user.phone || "";
-    form.address = user.address || "";
-    form.accountCreated = user.created_at || "";
+
+    form.location = user.location || "";
+
+    form.created_at = user.created_at || "";
+
     form.verified = user.verified || false;
-    imagePreview.value = user.image || "";
+
+    imagePreview.value =
+      user.avatar ||
+      "https://api-loukbontor.g2.ant.com.kh/storage/avatars/no_photo.jpg";
   } catch (error) {
     console.log(error);
+
+    alert(error.response?.data?.message || "Get Profile Failed");
+  } finally {
+    loading.value = false;
   }
 };
 
-// image upload
 const handleImage = (event) => {
   const file = event.target.files[0];
 
   if (file) {
     form.image = file;
+
     imagePreview.value = URL.createObjectURL(file);
   }
 };
 
-// validation
+// ===========================
+// VALIDATE
+// ===========================
+
 const validateForm = () => {
   let isValid = true;
 
   errors.name = "";
   errors.email = "";
   errors.phone = "";
-  errors.address = "";
+  errors.location = "";
 
   // name
   if (!form.name) {
     errors.name = "Name is required";
+
     isValid = false;
   }
 
   // email
   if (!form.email) {
     errors.email = "Email is required";
-    isValid = false;
-  }
 
-  // phone
-  if (!form.phone) {
-    errors.phone = "Phone is required";
-    isValid = false;
-  }
-
-  // address
-  if (!form.address) {
-    errors.address = "Address is required";
     isValid = false;
   }
 
   return isValid;
 };
 
-// update profile
-const Editprofile = async () => {
+// ===========================
+// UPDATE PROFILE INFO
+// API => /api/profile/info
+// ===========================
+
+const updateProfile = async () => {
   if (!validateForm()) {
+    return;
+  }
+
+  try {
+    loading.value = true;
+
+    const response = await api.put("/api/profile/info", {
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      location: form.location,
+    });
+
+    console.log(response.data);
+
+    successMessage.value = response.data.message || "Update Success";
+
+    alert(response.data.message || "Profile Updated");
+  } catch (error) {
+    console.log(error);
+
+    alert(error.response?.data?.message || "Update Failed");
+  } finally {
+    loading.value = false;
+  }
+};
+
+// ===========================
+// UPDATE PROFILE IMAGE
+// API => /api/profile/image
+// ===========================
+
+const updateProfileImage = async () => {
+  if (!form.image) {
+    alert("Please select image");
+
     return;
   }
 
@@ -115,63 +182,90 @@ const Editprofile = async () => {
 
     const formData = new FormData();
 
-    formData.append("name", form.name);
-    formData.append("email", form.email);
-    formData.append("phone", form.phone);
-    formData.append("address", form.address);
+    formData.append("image", form.image);
 
-    if (form.image) {
-      formData.append("image", form.image);
-    }
-
-    // const response = await api.post("/api/user/update-profile", formData, {
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    // });
-    const response = await api.post("/api/login", {
-      email,
-      password,
+    const response = await api.post("/api/profile/image", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
 
-    localStorage.setItem("token", response.data.token);
-    successMessage.value = "Profile updated successfully";
-
     console.log(response.data);
+
+    alert(response.data.message || "Image Updated");
+
+    getProfile();
   } catch (error) {
     console.log(error);
 
-    // alert("Update Failed");
-    alert(error.response?.data?.message || "Update Failed");
+    alert(error.response?.data?.message || "Upload Failed");
   } finally {
     loading.value = false;
   }
 };
 
+// ===========================
+// DELETE ACCOUNT
+// API => /api/profile/acc
+// ===========================
+
+const deleteAccount = async () => {
+  const confirmDelete = confirm("តើអ្នកប្រាកដថាចង់លុបគណនីមែនទេ?");
+
+  if (!confirmDelete) {
+    return;
+  }
+
+  try {
+    loading.value = true;
+
+    const response = await api.delete("/api/profile/acc");
+
+    console.log(response.data);
+
+    alert(response.data.message || "Account Deleted");
+
+    // remove token
+    localStorage.removeItem("token");
+
+    // redirect login
+    window.location.href = "/login";
+  } catch (error) {
+    console.log(error);
+
+    alert(error.response?.data?.message || "Delete Account Failed");
+  } finally {
+    loading.value = false;
+  }
+};
+
+// ===========================
+// MOUNTED
+// ===========================
+
 onMounted(() => {
   getProfile();
 });
 </script>
+
 <template>
+  <Navbar></Navbar>
   <body>
-    <Navbar></Navbar>
-    <div class="container-fluid">
+    <div class="container min-vh-100">
       <div class="row">
         <!-- SIDEBAR -->
         <div class="col-lg-3 sidebar">
           <div class="text-center mb-4">
-            <img
-              :src="
-                imagePreview ||
-                'https://api-loukbontor.g2.ant.com.kh/storage/avatars/no_photo.jpg'
-              "
-              class="profile-img mb-3"
-            />
+            <img :src="imagePreview" class="profile-img mb-3" />
 
-            <h4>{{ form.name || "Name not available" }}</h4>
+            <h4>
+              {{ form.name }}
+            </h4>
 
-            <p class="text-muted">{{ form.email || "Email not available" }}</p>
-            <!-- <span class="badge bg-success">Verified</span> -->
+            <p class="text-muted">
+              {{ form.email }}
+            </p>
+
             <span
               class="badge"
               :class="form.verified ? 'bg-success' : 'bg-danger'"
@@ -180,6 +274,7 @@ onMounted(() => {
             </span>
           </div>
 
+          <!-- MENU -->
           <div class="nav flex-column">
             <a
               href="#"
@@ -230,106 +325,170 @@ onMounted(() => {
               <i class="bi bi-phone"></i>
               Devices
             </a>
-
-            <a href="#" class="nav-link text-danger">
-              <i class="bi bi-box-arrow-right"></i>
-              Logout
-            </a>
           </div>
         </div>
 
         <!-- CONTENT -->
         <div class="col-lg-9 p-4">
-          <!-- DASHBOARD -->
-          <section id="">
-            <div class="section-title">Account Overview</div>
-            <div class="row mb-4">
-              <div class="col-md-4 mb-3">
-                <div class="card card-ui stat-card">
-                  <h2>20</h2>
-                  <p>ផលិតផលសរុប</p>
-                </div>
-              </div>
-
-              <div class="col-md-4 mb-3">
-                <div class="card card-ui stat-card">
-                  <h2>12</h2>
-                  <p>ផលិតផលដែលបានទិញ</p>
-                </div>
-              </div>
-
-              <div class="col-md-4 mb-3">
-                <div class="card card-ui stat-card">
-                  <h2>5</h2>
-                  <p>Devices</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
           <!-- PROFILE -->
-          <section v-if="activeSection === 'profile'" id="" class="mb-5">
-            <Profileus></Profileus>
+
+          <section v-if="activeSection === 'profile'">
             <div class="card card-ui p-4">
+              <!-- =========================
+         HEADER SKELETON
+    ========================== -->
+
               <div
+                v-if="loading"
+                class="d-flex justify-content-between align-items-center mb-4"
+              >
+                <div class="skeleton skeleton-title"></div>
+
+                <div class="skeleton skeleton-btn"></div>
+              </div>
+
+              <!-- =========================
+         REAL HEADER
+    ========================== -->
+
+              <div
+                v-else
                 class="d-flex justify-content-between align-items-center mb-4"
               >
                 <h4>ប្រវត្តិរូប</h4>
+
                 <button
-                  @click="Editprofile"
-                  :disabled="loading"
+                  @click="updateProfile"
                   class="btn btn-primary"
+                  :disabled="loading"
                 >
-                  {{ loading ? "កំពុងផ្ទុក..." : "ធ្វើបច្ចុប្បន្នភាព" }}
+                  រក្សាទុក
                 </button>
               </div>
-              <!-- add alert -->
-              <div v-if="successMessage" class="alert alert-success">
-                {{ successMessage }}
+
+              <!-- =========================
+         SKELETON BODY
+    ========================== -->
+
+              <div v-if="loading" class="row">
+                <!-- name -->
+                <div class="col-md-6 mb-3">
+                  <div class="skeleton skeleton-label mb-2"></div>
+
+                  <div class="skeleton skeleton-input"></div>
+                </div>
+
+                <!-- email -->
+                <div class="col-md-6 mb-3">
+                  <div class="skeleton skeleton-label mb-2"></div>
+
+                  <div class="skeleton skeleton-input"></div>
+                </div>
+
+                <!-- phone -->
+                <div class="col-md-6 mb-3">
+                  <div class="skeleton skeleton-label mb-2"></div>
+
+                  <div class="skeleton skeleton-input"></div>
+                </div>
+
+                <!-- location -->
+                <div class="col-md-6 mb-3">
+                  <div class="skeleton skeleton-label mb-2"></div>
+
+                  <div class="skeleton skeleton-input"></div>
+                </div>
+
+                <!-- created at -->
+                <div class="col-12 mb-3">
+                  <div class="skeleton skeleton-label mb-2"></div>
+
+                  <div class="skeleton skeleton-input"></div>
+                </div>
+
+                <!-- image -->
+                <div class="col-12 mb-3">
+                  <div class="skeleton skeleton-label mb-2"></div>
+
+                  <div class="skeleton skeleton-input"></div>
+                </div>
+
+                <!-- buttons -->
+                <div class="d-flex gap-3 mt-3">
+                  <div class="skeleton skeleton-btn"></div>
+
+                  <div class="skeleton skeleton-btn"></div>
+                </div>
               </div>
 
-              <div class="row">
+              <!-- =========================
+         REAL FORM
+    ========================== -->
+
+              <div v-else class="row">
+                <!-- name -->
                 <div class="col-md-6 mb-3">
-                  <label>ឈ្មោះ​</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="form.name"
-                    placeholder="បញ្ចូល​ឈ្មេាះ"
-                  />
+                  <label> ឈ្មោះ </label>
+
+                  <input v-model="form.name" type="text" class="form-control" />
+
                   <small class="text-danger">
                     {{ errors.name }}
                   </small>
                 </div>
 
+                <!-- email -->
                 <div class="col-md-6 mb-3">
-                  <label>Email</label>
+                  <label> Email </label>
+
                   <input
+                    v-model="form.email"
                     type="email"
                     class="form-control"
-                    v-model="form.email"
-                    placeholder="បញ្ចូលអុីមែល"
                   />
+
                   <small class="text-danger">
                     {{ errors.email }}
                   </small>
                 </div>
 
+                <!-- phone -->
                 <div class="col-md-6 mb-3">
-                  <label>លេខទូរសព្ទ</label>
+                  <label> លេខទូរសព្ទ </label>
+
                   <input
                     v-model="form.phone"
                     type="text"
                     class="form-control"
-                    placeholder="បញ្ចូលលេខទូរសព្ទ"
                   />
-                  <small class="text-danger">
-                    {{ errors.phone }}
-                  </small>
                 </div>
 
+                <!-- location -->
                 <div class="col-md-6 mb-3">
-                  <label class=""> Profile Image</label>
+                  <label> ទីតាំង </label>
+
+                  <input
+                    v-model="form.location"
+                    type="text"
+                    class="form-control"
+                  />
+                </div>
+
+                <!-- created at -->
+                <div class="col-12 mb-3">
+                  <label> Account Created </label>
+
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="form.created_at"
+                    readonly
+                  />
+                </div>
+
+                <!-- image -->
+                <div class="col-12 mb-3">
+                  <label> Profile Image </label>
 
                   <input
                     type="file"
@@ -338,84 +497,46 @@ onMounted(() => {
                     @change="handleImage"
                   />
                 </div>
-                <div class="col-12">
-                  <label class="form-label"> Account Created </label>
 
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="form.accountCreated"
-                    readonly
-                  />
-                </div>
-                <div class="col-12 mb-3">
-                  <label>Address</label>
-                  <textarea
-                    class="form-control"
-                    rows="4"
-                    v-model="form.address"
-                    placeholder="បញ្ចូលអាសយដ្ឋាន"
-                  >
-Phnom Penh, Cambodia
-                  </textarea>
-                  <small class="text-danger">
-                    {{ errors.address }}
-                  </small>
+                <!-- buttons -->
+                <div
+                  class="d-flex justify-content-start gap-3 align-items-center"
+                >
+                  <button @click="updateProfileImage" class="btn btn-success">
+                    Upload Image
+                  </button>
+
+                  <button @click="deleteAccount" class="btn btn-danger">
+                    លុបគណនី
+                  </button>
                 </div>
               </div>
             </div>
           </section>
 
-          <!-- CHANGE PASSWORD -->
-          <section v-if="activeSection === 'password'" id="" class="mb-5">
-            <div class="card card-ui p-4">
-              <h3 class="mb-4">ផ្លាស់ប្តូរពាក្យសម្ងាត់</h3>
-
-              <div class="mb-3">
-                <label>ពាក្យសម្ងាត់បច្ចុប្បន្ន</label>
-                <input type="password" class="form-control" />
-              </div>
-
-              <div class="mb-3">
-                <label>ពាក្យសម្ងាត់ថ្មី</label>
-                <input type="password" class="form-control" />
-              </div>
-
-              <div class="mb-3">
-                <label>បញ្ជាក់ពាក្យសម្ងាត់</label>
-                <input type="password" class="form-control" />
-              </div>
-
-              <div class="">
-                <button class="btn btn-primary">
-                  ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់
-                </button>
-              </div>
-            </div>
+          <!-- PASSWORD -->
+          <section v-if="activeSection === 'password'">
+            <ChangePW />
           </section>
 
-          <!-- MY CART -->
-          <section v-if="activeSection == 'cart'" id="" class="mb-5">
-            
-            <Mycart></Mycart>
-
+          <!-- CART -->
+          <section v-if="activeSection === 'cart'">
+            <Mycart />
           </section>
 
-          <!-- PURCHASED PRODUCTS -->
-          <section v-if="activeSection === 'purchased'" id="" class="mb-5">
-            <Purchased></Purchased>
+          <!-- PURCHASED -->
+          <section v-if="activeSection === 'purchased'">
+            <Purchased />
           </section>
 
-          <!-- OWN PRODUCTS -->
-          <section v-if="activeSection === 'own'" id="" class="mb-5">
-            <Own></Own>
-      
+          <!-- OWN -->
+          <section v-if="activeSection === 'own'">
+            <Own />
           </section>
 
           <!-- DEVICES -->
-          <section v-if="activeSection === 'devices'" id="" class="mb-5">
-            <Devices></Devices>
-
+          <section v-if="activeSection === 'devices'">
+            <Devices />
           </section>
         </div>
       </div>
@@ -425,9 +546,8 @@ Phnom Penh, Cambodia
 
 <style scoped>
 body {
-  /* background: #f5f7fb; */
+  font-family: "Kantumruy Pro", sans-serif;
   background: #f6f9fc;
-  /* font-family: Arial, sans-serif; */
 }
 
 .sidebar {
@@ -442,7 +562,7 @@ body {
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #0d6efd;
+  border: 2px solid #0d6efd;
 }
 
 .nav-link {
@@ -450,17 +570,13 @@ body {
   padding: 14px 18px;
   border-radius: 12px;
   margin-bottom: 10px;
-  transition: 1s;
+  transition: 0.3s;
   font-weight: 500;
 }
 
 .nav-link:hover {
   background: #0d6efd;
-  color: white;
-}
-.nav-link.active {
-  background: #0d6efd;
-  color: white;
+  color: white !important;
 }
 
 .card-ui {
@@ -469,19 +585,58 @@ body {
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
 }
 
-.stat-card {
-  padding: 25px;
-  text-align: center;
-}
+/* =========================
+   SKELETON
+========================= */
 
-.product-img {
-  width: 70px;
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e9ecef;
   border-radius: 10px;
 }
 
-.section-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 150px;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 1.2s infinite;
+}
+
+.skeleton-title {
+  width: 180px;
+  height: 32px;
+}
+
+.skeleton-btn {
+  width: 140px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.skeleton-label {
+  width: 100px;
+  height: 16px;
+}
+
+.skeleton-input {
+  width: 100%;
+  height: 42px;
+  border-radius: 10px;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 100%;
+  }
 }
 </style>

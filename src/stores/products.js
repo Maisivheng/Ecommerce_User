@@ -6,9 +6,6 @@ export const useProductStore = defineStore('product', () => {
 
     const products = ref([]);
     async function fetchProduct(params = {}) { 
-        // let res = await api.get('/api/products?page=1&per_page=20&search=');
-        // products.value = res.data?.data;
-
         let url = "/api/products";
         if (params.search) {
             url += `?search=${encodeURIComponent(params.search)}`;
@@ -18,18 +15,25 @@ export const useProductStore = defineStore('product', () => {
         console.log(products.value);
     }
 
-    // async function fetchSearchProduct(params = {}) {
-    //     let url = "/api/products/api/products?page=1&per_page=20&search=";
-    //     if (params.search) {
-    //       url += `${encodeURIComponent(params.search)}`;
-    //     }
-    //     let res = await api.get(url);
-    //     products.value = res.data.data.items;
-    // }
+    
+
+    let product = ref([])
+    async function fetchCatchID(params) {
+        if (!params) {
+            console.error("Error: ID របស់ផលិតផលគឺ undefined មិនអាចហៅ API បានទេ!");
+            return;
+        }
+        console.log(params)
+        let res = await api.get(`/api/products/${params}`);  
+        console.log(ref)      
+        product.value = res.data?.data;
+    }
+
 
     return {
         products,
+        product,
         fetchProduct,
-        // fetchSearchProduct
+        fetchCatchID
     };
 });
