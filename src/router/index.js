@@ -142,6 +142,7 @@ const router = createRouter({
   ],
 });
 
+<<<<<<< HEAD
 router.beforeEach((to) => {
 
   const auth = useauthStore();
@@ -155,6 +156,18 @@ router.beforeEach((to) => {
   if(auth.token && to.path == '/login'){
     return '/'
   }
+=======
+router.beforeEach((to)=>{
+  const auth = useauthStore()
+  document.title = to.meta.title
+  // if(!auth.token && to.path !== '/login'){
+  //   return '/login'
+  // }
+  // if(auth.token && to.path == '/login'){
+  //   return '/'
+  // }
+  // return true
+>>>>>>> af38a51 (pullcode)
 
 
   return true;
