@@ -4,7 +4,7 @@ import Footer from "@/components/layout/Footer.vue";
 </script> -->
 
 <template>
-  <Navbar></Navbar>
+  <!-- <Navbar></Navbar>
   <div class="hero-full-width">
     <div class="container">
       <div class="row align-items-center">
@@ -30,9 +30,9 @@ import Footer from "@/components/layout/Footer.vue";
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
-  <div class="container">
+  <!-- <div class="container">
     <div class="my-5">
       <h3 class="product-section-title">ផលិតផលពិសេស</h3>
       <p class="text-muted mb-4">
@@ -186,8 +186,8 @@ import Footer from "@/components/layout/Footer.vue";
       </div>
     </div>
   </div>
-  <Footer></Footer>
-  <!-- ======= -->
+  <Footer></Footer> -->
+  
   <template>
     <Navbar></Navbar>
     <section class="hero-banner-full border-bottom">
@@ -233,9 +233,8 @@ import Footer from "@/components/layout/Footer.vue";
     </section>
     <BaseCard></BaseCard>
     <Footer></Footer>
-
-    <!-- >>>>>>> 9a1f219bcb20a54c4467efed89b7ac2a6a99dd10 -->
   </template>
+
 
   <!-- <script setup>
     import BaseCard from "@/components/ui/BaseCard.vue";

@@ -43,8 +43,8 @@
                         <span class="summary-total">{{ totalCartItems }}</span>
                     </div>
                     <div class="summary-row">
-                        <span>តម្លៃសរុបបឋម</span>
-                        <span class="summary-total">${{}}</span>
+                        <span>តំលៃសរុបឯកតា</span>
+                        <span class="summary-total">${{ totalCartPrice }}</span>
                     </div>
                     <div class="summary-row">
                         <span class=" fw-normal">ដឹកជញ្ជូន</span>
@@ -53,9 +53,9 @@
                     <hr class="my-3 text-secondary opacity-25">
                     <div class="summary-row">
                         <span>តម្លៃសរុប</span>
-                        <span class="summary-qty">${{totalCartPrice}}</span>
+                        <span class="summary-qty">${{ totalCartPrice }}</span>
                     </div>
-                    <button class="checkout-btn bg-primary">ទូទាត់ប្រាក់</button>
+                    <button class="checkout-btn bg-primary" @click="goToCheckout" :disabled="cartItems.length === 0">ទូទាត់ប្រាក់</button>
                 </div>
             </div>
         </div>
@@ -101,8 +101,11 @@
     import Footer from './layout/Footer.vue';
     import { storeToRefs } from 'pinia'; 
     import { useCart } from '@/stores/addToCart.js';
+    import { useauthStore } from '@/stores/auth.js';
     import { useProductStore } from '@/stores/products';
     import { onMounted, nextTick, computed } from 'vue';
+    import { useRouter } from 'vue-router';
+    const router = useRouter();
     const productStore = useProductStore();
     const { products } = storeToRefs(productStore);
 
@@ -155,6 +158,17 @@
         if (confirm('តើអ្នកពិតជាចង់សម្អាតកន្ត្រកទំនិញទាំងមូលមែនទេ?')) {
             cartStore.clearCart();
         }
+    };
+
+    const goToCheckout = () => {
+        if (cartItems.value.length === 0) return;
+        const auth = useauthStore();
+        if (!auth.token) {
+            // redirect to login and preserve target
+            router.push({ name: 'login', query: { redirect: 'checkout' } });
+            return;
+        }
+        router.push({ name: 'checkout' });
     };
 
 </script>

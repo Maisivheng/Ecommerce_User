@@ -120,108 +120,159 @@ const changePassword = async () => {
   }
 };
 </script>
+
 <template>
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-12">
         <div class="card card-ui p-4">
-          <!-- title -->
-          <h4 class="mb-4 text-start">ផ្លាស់ប្តូរពាក្យសម្ងាត់</h4>
 
-          <!-- OLD PASSWORD -->
-          <div class="mb-3">
-            <label class="form-label"> ពាក្យសម្ងាត់បច្ចុប្បន្ន </label>
+          <!-- Loading -->
+          <template v-if="loading">
 
-            <div class="input-group">
-              <input
-                v-model="form.old_pass"
-                :type="showOldPassword ? 'text' : 'password'"
-                class="form-control"
-                placeholder="Enter current password"
-              />
+            <div class="skeleton skeleton-title mb-4"></div>
 
-              <span
-                class="input-group-text"
-                style="cursor: pointer"
-                @click="showOldPassword = !showOldPassword"
-              >
-                <i
-                  :class="showOldPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"
-                ></i>
-              </span>
+            <!-- Old Password -->
+            <div class="mb-3">
+              <div class="skeleton skeleton-label mb-2"></div>
+              <div class="skeleton skeleton-input"></div>
             </div>
 
-            <small class="text-danger">
-              {{ errors.old_pass }}
-            </small>
-          </div>
-
-          <!-- NEW PASSWORD -->
-          <div class="mb-3">
-            <label class="form-label"> ពាក្យសម្ងាត់ថ្មី </label>
-
-            <div class="input-group">
-              <input
-                v-model="form.new_pass"
-                :type="showNewPassword ? 'text' : 'password'"
-                class="form-control"
-                placeholder="Enter new password"
-              />
-
-              <span
-                class="input-group-text"
-                style="cursor: pointer"
-                @click="showNewPassword = !showNewPassword"
-              >
-                <i
-                  :class="showNewPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"
-                ></i>
-              </span>
+            <!-- New Password -->
+            <div class="mb-3">
+              <div class="skeleton skeleton-label mb-2"></div>
+              <div class="skeleton skeleton-input"></div>
             </div>
 
-            <small class="text-danger">
-              {{ errors.new_pass }}
-            </small>
-          </div>
-
-          <!-- CONFIRM PASSWORD -->
-          <div class="mb-4">
-            <label class="form-label"> បញ្ជាក់ពាក្យសម្ងាត់ </label>
-
-            <div class="input-group">
-              <input
-                v-model="form.new_pass_confirmation"
-                :type="showConfirmPassword ? 'text' : 'password'"
-                class="form-control"
-                placeholder="Confirm password"
-              />
-
-              <span
-                class="input-group-text"
-                style="cursor: pointer"
-                @click="showConfirmPassword = !showConfirmPassword"
-              >
-                <i
-                  :class="showConfirmPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"
-                ></i>
-              </span>
+            <!-- Confirm Password -->
+            <div class="mb-4">
+              <div class="skeleton skeleton-label mb-2"></div>
+              <div class="skeleton skeleton-input"></div>
             </div>
 
-            <small class="text-danger">
-              {{ errors.new_pass_confirmation }}
-            </small>
+            <!-- Button -->
+            <div class="skeleton skeleton-btn"></div>
+
+          </template>
+
+          <!-- Content -->
+          <template v-else>
+
+            <h4 class="mb-4 text-start">
+              ផ្លាស់ប្តូរពាក្យសម្ងាត់
+            </h4>
+
+            <!-- OLD PASSWORD -->
+            <div class="mb-3">
+              <label class="form-label">
+                ពាក្យសម្ងាត់បច្ចុប្បន្ន
+              </label>
+
+              <div class="input-group">
+                <input
+                  v-model="form.old_pass"
+                  :type="showOldPassword ? 'text' : 'password'"
+                  class="form-control"
+                  placeholder="Enter current password"
+                />
+
+                <span
+                  class="input-group-text"
+                  style="cursor:pointer"
+                  @click="showOldPassword = !showOldPassword"
+                >
+                  <i
+                    :class="showOldPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"
+                  ></i>
+                </span>
+              </div>
+
+              <small class="text-danger">
+                {{ errors.old_pass }}
+              </small>
+            </div>
+
+            <!-- NEW PASSWORD -->
+            <div class="mb-3">
+              <label class="form-label">
+                ពាក្យសម្ងាត់ថ្មី
+              </label>
+
+              <div class="input-group">
+                <input
+                  v-model="form.new_pass"
+                  :type="showNewPassword ? 'text' : 'password'"
+                  class="form-control"
+                  placeholder="Enter new password"
+                />
+
+                <span
+                  class="input-group-text"
+                  style="cursor:pointer"
+                  @click="showNewPassword = !showNewPassword"
+                >
+                  <i
+                    :class="showNewPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"
+                  ></i>
+                </span>
+              </div>
+
+              <small class="text-danger">
+                {{ errors.new_pass }}
+              </small>
+            </div>
+
+            <!-- CONFIRM PASSWORD -->
+            <div class="mb-4">
+              <label class="form-label">
+                បញ្ជាក់ពាក្យសម្ងាត់
+              </label>
+
+              <div class="input-group">
+                <input
+                  v-model="form.new_pass_confirmation"
+                  :type="showConfirmPassword ? 'text' : 'password'"
+                  class="form-control"
+                  placeholder="Confirm password"
+                />
+
+                <span
+                  class="input-group-text"
+                  style="cursor:pointer"
+                  @click="showConfirmPassword = !showConfirmPassword"
+                >
+                  <i
+                    :class="
+                      showConfirmPassword
+                        ? 'bi bi-eye-slash'
+                        : 'bi bi-eye'
+                    "
+                  ></i>
+                </span>
+              </div>
+
+              <small class="text-danger">
+                {{ errors.new_pass_confirmation }}
+              </small>
+            </div>
+
+            <!-- BUTTON -->
+          <div class="">
+              <button
+              @click="changePassword"
+              class="btn btn-primary px-3"
+              :disabled="loading"
+            >
+              {{
+                loading
+                  ? "Loading..."
+                  : "ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់"
+              }}
+            </button>
           </div>
 
-          <!-- BUTTON -->
-       <div class="">
-           <button
-            @click="changePassword"
-            class="btn btn-primary px-3"
-            :disabled="loading"
-          >
-            {{ loading ? "Loading..." : "ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់" }}
-          </button>
-       </div>
+          </template>
+
         </div>
       </div>
     </div>
@@ -239,5 +290,60 @@ const changePassword = async () => {
 
 .input-group-text {
   background: white;
+}
+
+/* =========================
+   Skeleton Loading
+========================= */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e9ecef;
+  border-radius: 10px;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 150px;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.7),
+    transparent
+  );
+  animation: shimmer 1.2s infinite;
+}
+
+.skeleton-title {
+  width: 250px;
+  height: 32px;
+}
+
+.skeleton-label {
+  width: 140px;
+  height: 16px;
+}
+
+.skeleton-input {
+  width: 100%;
+  height: 44px;
+  border-radius: 8px;
+}
+
+.skeleton-btn {
+  width: 220px;
+  height: 42px;
+  border-radius: 10px;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 100%;
+  }
 }
 </style>

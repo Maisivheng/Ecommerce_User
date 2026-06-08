@@ -7,7 +7,6 @@ import api from "@/API/api";
 // =========================
 
 const devices = ref([]);
-
 const loading = ref(false);
 
 // =========================
@@ -21,31 +20,28 @@ const getDevices = async () => {
 
     const response = await api.get("/api/profile/devices");
 
-    console.log(response.data);
-
     // =========================
-    // REMOVE DUPLICATE DEVICES
+    // REMOVE DUPLICATE DEVICES (Optimized with reduce)
     // =========================
 
-    const uniqueDevices = [];
+    const uniqueDevices = response.data.data.reduce(
+      (acc, device) => {
+        // បង្កើត Unique Key ដោយភ្ជាប់ឈ្មោះ, browser និង ip ចូលគ្នា
+        const key = `${device.device_name}-${device.browser}-${device.ip_address}`;
 
-    response.data.data.forEach((device) => {
-      const exists = uniqueDevices.find(
-        (item) =>
-          item.device_name === device.device_name &&
-          item.browser === device.browser &&
-          item.ip_address === device.ip_address,
-      );
+        if (!acc.found[key]) {
+          acc.found[key] = true;
+          acc.result.push(device);
+        }
 
-      if (!exists) {
-        uniqueDevices.push(device);
-      }
-    });
+        return acc;
+      },
+      { found: {}, result: [] },
+    ).result;
 
     devices.value = uniqueDevices;
   } catch (error) {
-    console.log(error);
-
+    console.error("Error fetching devices:", error);
     alert(error.response?.data?.message || "Get Devices Failed");
   } finally {
     loading.value = false;
@@ -56,45 +52,25 @@ const getDevices = async () => {
 // REMOVE DEVICE
 // =========================
 const removeDevice = async (id) => {
-  const confirmRemove = confirm(
-    "តើអ្នកប្រាកដថាចង់លុបឧបករណ៍នេះមែនទេ?"
-  );
+  const confirmRemove = confirm("តើអ្នកប្រាកដថាចង់លុបឧបករណ៍នេះមែនទេ?");
 
   if (!confirmRemove) {
     return;
   }
 
   try {
+    const response = await api.delete(`/api/profile/device/remove/${id}`);
 
-    console.log("DELETE ID =", id);
-
-    const response = await api.delete(
-      `/api/profile/device/remove/${id}`
-    );
-
-    console.log(response.data);
-
-    // remove ui
-    devices.value = devices.value.filter(
-      (device) => device.id !== id
-    );
+    // Update UI ដោយការលុបឧបករណ៍ដែលមាន ID ត្រូវគ្នា ដោយមិនចាំបាច់ហៅ API មកវិញ
+    devices.value = devices.value.filter((device) => device.id !== id);
 
     alert(response.data.message || "Remove Success");
-
   } catch (error) {
-
-    console.log(error);
-
-    // debug full error
-    console.log(error.response);
-
-    alert(
-      error.response?.data?.message ||
-      error.message ||
-      "Remove Failed"
-    );
+    console.error("Error removing device:", error.response || error);
+    alert(error.response?.data?.message || error.message || "Remove Failed");
   }
 };
+
 // =========================
 // DEVICE ICON
 // =========================

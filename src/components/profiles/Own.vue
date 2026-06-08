@@ -586,7 +586,9 @@ onMounted(() => {
             </td>
           </tr>
         </tbody>
-        <div class="d-flex justify-content-center mt-4 gap-2">
+       
+      </table>
+       <div class="d-flex justify-content-center mt-4 gap-2">
           <!-- PREV -->
           <button
             class="btn btn-outline-primary"
@@ -618,7 +620,6 @@ onMounted(() => {
             Next
           </button>
         </div>
-      </table>
     </div>
   </div>
 

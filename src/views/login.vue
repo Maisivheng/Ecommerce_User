@@ -1,6 +1,7 @@
 <!-- Form login -->
 
 <template>
+<<<<<<< HEAD
 <!-- <<<<<<< HEAD -->
     <div class="container min-vh-100 d-flex justify-content-center align-items-center">
         <div class="card shadow-lg border-0 rounded-5 p-4 w-100" style="max-width: 520px;">
@@ -56,6 +57,8 @@
             </form>
             </div>
             </div>
+=======
+>>>>>>> ccdb5dbed6b4d531b2b183b1372d4893f732cde4
   <div class="signin-container">
     <div class="signin-card">
       <div class="signin-header">
@@ -147,6 +150,7 @@
     import { useRoute } from 'vue-router';
     import { useauthStore } from '@/stores/auth';
     let auth = useauthStore();
+    const route = useRoute();
     let isvalid = ref(true);
     const loading = ref(false)
     let passwordVisible = ref(false)
@@ -193,6 +197,7 @@
             router.push('/');
         }
 
+<<<<<<< HEAD
             loading.value = true;
               try {
                 const success = await auth.login({
@@ -662,3 +667,6 @@
 }
 </style>
 >>>>>>> 9b398ca49f61f988d299474fd74c27a3b881b2d9
+=======
+</script>
+>>>>>>> ccdb5dbed6b4d531b2b183b1372d4893f732cde4

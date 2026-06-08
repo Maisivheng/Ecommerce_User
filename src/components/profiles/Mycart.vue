@@ -1,164 +1,35 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import api from "@/API/api";
+import { onMounted, ref } from "vue";
+import { storeToRefs } from "pinia";
+import { useCart } from "@/stores/addToCart";
 
-const router = useRouter();
+const cartStore = useCart();
+const { cartItems, totalCartPrice } = storeToRefs(cartStore);
 
-// =========================
-// STATES
-// =========================
-
-const cartItems = ref([]);
-const selectedItems = ref([]);
-
-const loading = ref(false);
-
-// =========================
-// GET MY CART
-// API => /api/profile/carts
-// =========================
-
-const getCart = async () => {
-  try {
-    loading.value = true;
-
-    // FIXED
-    const response = await api.get("/api/profile/carts");
-
-    console.log("CART RESPONSE:", response.data);
-
-    // API RESPONSE
-    // data.items
-    cartItems.value = response.data.data.items || [];
-  } catch (error) {
-    console.log(error);
-
-    alert(error.response?.data?.message || "Get Cart Failed");
-  } finally {
-    loading.value = false;
-  }
-};
-
-// =========================
-// SELECT ALL
-// =========================
-
-const toggleSelectAll = (event) => {
-  if (event.target.checked) {
-    selectedItems.value = cartItems.value.map((item) => item.id);
-  } else {
-    selectedItems.value = [];
-  }
-};
-
-// =========================
-// CHECK SELECTED
-// =========================
-
-const isSelected = (id) => {
-  return selectedItems.value.includes(id);
-};
-
-// =========================
-// GRAND TOTAL
-// =========================
-
-const grandTotal = computed(() => {
-  return cartItems.value.reduce((total, item) => {
-    if (selectedItems.value.includes(item.id)) {
-      return total + item.price * item.qty;
-    }
-
-    return total;
-  }, 0);
-});
-
-// =========================
-// REMOVE CART
-// =========================
-
-const removeCart = async (id) => {
-  const confirmDelete = confirm("តើអ្នកប្រាកដថាចង់លុបផលិតផលនេះមែនទេ?");
-
-  if (!confirmDelete) {
-    return;
-  }
-
-  try {
-    loading.value = true;
-
-    // FIX API DELETE
-    const response = await api.delete(`/api/profile/carts/${id}`);
-
-    console.log("DELETE RESPONSE:", response.data);
-
-    // REMOVE UI
-    cartItems.value = cartItems.value.filter((item) => item.id !== id);
-
-    // REMOVE SELECTED
-    selectedItems.value = selectedItems.value.filter((itemId) => itemId !== id);
-
-    alert(response.data.message || "Delete Success");
-  } catch (error) {
-    console.log(error);
-
-    alert(error.response?.data?.message || "Delete Failed");
-  } finally {
-    loading.value = false;
-  }
-};
-
-// =========================
-// CHECKOUT
-// =========================
-
-const checkout = () => {
-  if (selectedItems.value.length === 0) {
-    alert("Please select product first");
-
-    return;
-  }
-
-  // selected products
-  const selectedProducts = cartItems.value.filter((item) =>
-    selectedItems.value.includes(item.id),
-  );
-
-  console.log(selectedProducts);
-
-  router.push("/checkout");
-};
-
-// =========================
-// MOUNTED
-// =========================
+// បង្កើត local loading state សម្រាប់បង្ហាញ Skeleton ខណៈពេលកំពុង render ទំព័រ (មិនបានប្រើពី Store ទេ)
+const isPageLoading = ref(true);
 
 onMounted(() => {
-  getCart();
+  // ដោយសារ Store ដើមទាញពី localStorage ភ្លាមៗ យើងគ្រាន់តែបិទ Skeleton ក្រោយពេល mount រួច
+  // កុំហៅ cartStore.fetchCart() ព្រោះកូដគេមិនមាន Function នេះទេ
+  setTimeout(() => {
+    isPageLoading.value = false;
+  }, 300); // ពន្យារបន្តិចដើម្បីឲ្យ Skeleton បង្ហាញខ្លះៗសម្រាប់ UX ល្អ
 });
 </script>
 
 <template>
   <div class="card card-ui p-4">
     <!-- HEADER -->
-
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h4>រទេះទិញរបស់ខ្ញុំ</h4>
-
-      <button @click="checkout" class="btn btn-success">ទូទាត់ប្រាក់</button>
     </div>
 
     <!-- TABLE -->
-
     <div class="table-responsive">
       <table class="table align-middle">
         <thead>
           <tr>
-            <th>
-              <input type="checkbox" @change="toggleSelectAll" />
-            </th>
-
             <th>Image</th>
             <th>Name</th>
             <th>Categories</th>
@@ -168,118 +39,89 @@ onMounted(() => {
             <th>Action</th>
           </tr>
         </thead>
-
         <tbody>
-          <!-- LOADING -->
-
-          <template v-if="loading">
+          <!-- LOADING (ប្រើ local loading state) -->
+          <template v-if="isPageLoading">
             <tr v-for="n in 5" :key="n">
-              <td>
-                <div class="skeleton skeleton-check"></div>
-              </td>
-
-              <td>
-                <div class="skeleton skeleton-img"></div>
-              </td>
-
-              <td>
-                <div class="skeleton skeleton-text"></div>
-              </td>
-
+              <td><div class="skeleton skeleton-img"></div></td>
+              <td><div class="skeleton skeleton-text"></div></td>
               <td>
                 <div class="d-flex gap-2">
                   <div class="skeleton skeleton-badge"></div>
-
                   <div class="skeleton skeleton-badge"></div>
                 </div>
               </td>
-
-              <td>
-                <div class="skeleton skeleton-small"></div>
-              </td>
-
-              <td>
-                <div class="skeleton skeleton-small"></div>
-              </td>
-
-              <td>
-                <div class="skeleton skeleton-small"></div>
-              </td>
-
-              <td>
-                <div class="skeleton skeleton-btn-sm"></div>
-              </td>
+              <td><div class="skeleton skeleton-small"></div></td>
+              <td><div class="skeleton skeleton-small"></div></td>
+              <td><div class="skeleton skeleton-small"></div></td>
+              <td><div class="skeleton skeleton-btn-sm"></div></td>
             </tr>
           </template>
 
           <!-- EMPTY -->
-
           <tr v-else-if="cartItems.length === 0">
-            <td colspan="8" class="text-center text-muted py-5">
+            <td colspan="7" class="text-center text-muted py-5">
               គ្មានផលិតផលនៅក្នុងរទេះទិញទេ
             </td>
           </tr>
 
           <!-- PRODUCTS -->
-
           <tr v-else v-for="item in cartItems" :key="item.id">
-            <!-- CHECKBOX -->
-
-            <td>
-              <input type="checkbox" :value="item.id" v-model="selectedItems" />
-            </td>
-
             <!-- IMAGE -->
-
             <td>
               <img
-                :src="item.product.image"
+                :src="item.image || 'https://via.placeholder.com/50'"
                 class="product-img"
-                :alt="item.product.title"
+                :alt="item.title || 'Product'"
               />
             </td>
 
             <!-- TITLE -->
-
             <td>
-              {{ item.product.title }}
+              {{ item.title || item.name || "មិនមានឈ្មោះ" }}
             </td>
 
-            <!-- CATEGORY -->
-
+            <!-- CATEGORY (ដោយសារកូដគេមិនកែរក្សា category យើងដាក់ Fallback) -->
             <td>
-              <span
-                v-for="category in item.product.categories"
-                :key="category.id"
-                class="badge bg-primary me-1"
-              >
-                {{ category.name }}
+              <span class="badge bg-primary me-1" v-if="item.category">
+                {{ item.category }}
               </span>
+              <span class="badge bg-secondary me-1" v-else> គ្មានប្រភេទ </span>
             </td>
 
             <!-- PRICE -->
-
             <td>${{ item.price }}</td>
 
             <!-- QTY -->
-
             <td>
-              {{ item.qty }}
+              <div class="d-flex align-items-center gap-2">
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  @click="cartStore.updateQty(item.id, (item.qty || 1) - 1)"
+                >
+                  -
+                </button>
+                <span>{{ item.qty || 1 }}</span>
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  @click="cartStore.updateQty(item.id, (item.qty || 1) + 1)"
+                >
+                  +
+                </button>
+              </div>
             </td>
 
             <!-- TOTAL -->
-
             <td>
-              <span :class="isSelected(item.id) ? 'text-success fw-bold' : ''">
-                ${{ (item.price * item.qty).toFixed(2) }}
+              <span class="text-success fw-bold">
+                ${{ (item.price * (item.qty || 1)).toFixed(2) }}
               </span>
             </td>
 
             <!-- ACTION -->
-
             <td>
               <button
-                @click="removeCart(item.id)"
+                @click="cartStore.removeItem(item.id)"
                 class="btn btn-danger btn-sm"
               >
                 Delete
@@ -291,13 +133,14 @@ onMounted(() => {
     </div>
 
     <!-- GRAND TOTAL -->
-
-    <div class="d-flex justify-content-end mt-4">
+    <div
+      class="d-flex justify-content-end mt-4"
+      v-if="!isPageLoading && cartItems.length > 0"
+    >
       <div class="total-box">
         <h5 class="mb-0">
           Grand Total :
-
-          <span class="text-success"> ${{ grandTotal.toFixed(2) }} </span>
+          <span class="text-success"> ${{ totalCartPrice.toFixed(2) }} </span>
         </h5>
       </div>
     </div>
@@ -308,7 +151,7 @@ onMounted(() => {
 .card-ui {
   border: none;
   border-radius: 20px;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 3px 15px rgba(123, 91, 91, 0.05);
 }
 
 .product-img {
@@ -356,11 +199,6 @@ onMounted(() => {
   100% {
     left: 100%;
   }
-}
-
-.skeleton-check {
-  width: 20px;
-  height: 20px;
 }
 
 .skeleton-img {
