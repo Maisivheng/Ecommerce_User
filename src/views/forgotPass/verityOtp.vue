@@ -3,6 +3,7 @@
     <!-- Background -->
     <div class="bg-circle bg-one"></div>
     <div class="bg-circle bg-two"></div>
+    
     <div class="otp-card">
       <!-- Top -->
       <div class="top-section">
@@ -23,7 +24,7 @@
 
       <!-- Description -->
       <p class="description">
-        សូមបញ្ចូលលេខកូដ OTP 6 ខ្ទង់ ដែលបានផ្ញើទៅ Email របស់អ្នក
+        សូមបញ្ចូលលេខកូដ OTP 6 ខ្ទង់ដែលបានផ្ញើទៅ Email របស់អ្នក
       </p>
 
       <!-- OTP Inputs -->
@@ -276,8 +277,8 @@ const startCountdown = () => {
   font-family: "Kantumruy Pro", sans-serif;
 }
 .otp-card {
-  width: 600px;
-  height: 850px;
+  width: 450px;
+  height: 600px;
   background: white;
   border-radius: 30px;
   border: 2px solid #d9d9d9;
@@ -286,7 +287,7 @@ const startCountdown = () => {
 }
 /* Back */
 .back-btn {
-  font-size: 45px;
+  font-size: 35px;
   color: #333;
   cursor: pointer;
   transition: 0.3s;
@@ -303,8 +304,8 @@ const startCountdown = () => {
   margin-top: -5px;
 }
 .icon-circle {
-  width: 110px;
-  height: 110px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: #4d6cf0;
   display: flex;
@@ -313,45 +314,45 @@ const startCountdown = () => {
 }
 .icon-circle i {
   color: white;
-  font-size: 48px;
+  font-size: 38px;
 }
 /* Title */
 .title {
   text-align: center;
-  font-size: 42px;
+  font-size: 34px;
   font-weight: 600;
-  margin-top: 45px;
+  margin-top: 35px;
   color: #111;
 }
 
 .error-text {
   display: block;
   color: #e53935;
-  font-size: 15px;
+  font-size: 10px;
   margin-top: 10px;
 }
 /* Description */
 .description {
   text-align: center;
-  font-size: 20px;
+  font-size: 16px;
   color: #555;
-  margin-top: 45px;
+  margin-top: 35px;
 }
 /* OTP Inputs */
 .otp-inputs {
   display: flex;
   justify-content: center;
   gap: 18px;
-  margin-top: 55px;
+  margin-top: 45px;
 }
 .otp-inputs input {
-  width: 72px;
-  height: 86px;
+  width: 44px;
+  height: 50px;
   border-radius: 10px;
   border: 2px solid #d5dbe3;
   background: #eef2f6;
   text-align: center;
-  font-size: 36px;
+  font-size: 20px;
   font-weight: 600;
   color: #111;
   outline: none;
@@ -359,15 +360,15 @@ const startCountdown = () => {
 }
 /* Button */
 .verify-btn {
-  width: 230px;
-  height: 62px;
+  width: 350px;
+  height: 45px;
   background: #4d6cf0;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   color: white;
-  font-size: 20px;
+  font-size: 18px;
   display: block;
-  margin: 60px auto 0;
+  margin: 30px auto 0;
   cursor: pointer;
   transition: 0.3s;
   font-family: "Kantumruy Pro", sans-serif;
@@ -383,7 +384,7 @@ const startCountdown = () => {
 .resend-text {
   text-align: center;
   margin-top: 18px;
-  font-size: 20px;
+  font-size: 16px;
   color: #333;
   cursor: pointer;
   font-family: "Kantumruy Pro", sans-serif;

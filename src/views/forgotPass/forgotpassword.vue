@@ -204,23 +204,23 @@ const submitForm = async () => {
 
 /* Card */
 .forgot-card {
-  width: 100%;
-  max-width: 560px;
-  min-height: 720px;
+  width: 90%;
+  max-width: 450px;
+  min-height: 550px;
   background: #ffffff;
   border-radius: 30px;
   border: 2px solid #dddddd;
-  padding: 35px 50px;
+  padding: 35px 45px;
   position: relative;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 /* Back Button */
 .back-btn {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   border: none;
   background: transparent;
-  font-size: 42px;
+  font-size: 30px;
   color: #333333;
   cursor: pointer;
   transition: 0.3s;
@@ -236,8 +236,8 @@ const submitForm = async () => {
   margin-top: -10px;
 }
 .icon-circle {
-  width: 110px;
-  height: 110px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: #4d6cf0;
   display: flex;
@@ -247,12 +247,12 @@ const submitForm = async () => {
 }
 .icon-circle i {
   color: white;
-  font-size: 52px;
+  font-size: 38px;
 }
 /* Title */
 .title {
   text-align: center;
-  font-size: 42px;
+  font-size: 34px;
   font-weight: 600;
   color: #111111;
   margin-top: 45px;
@@ -260,14 +260,14 @@ const submitForm = async () => {
 /* Description */
 .description {
   text-align: center;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1.8;
   color: #666666;
   margin-top: 18px;
 }
 /* Form */
 .forgot-form {
-  margin-top: 45px;
+  margin-top: 40px;
 }
 /* Form Group */
 .form-group {
@@ -276,15 +276,15 @@ const submitForm = async () => {
 /* Label */
 .form-label {
   display: block;
-  font-size: 25px;
+  font-size: 16px;
   font-weight: 400;
   color: #222222;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 /* Input Wrapper */
 .input-wrapper {
   width: 100%;
-  height: 65px;
+  height: 50px;
   border: 2px solid #d8d8d8;
   border-radius: 16px;
   background: white;
@@ -305,7 +305,7 @@ const submitForm = async () => {
   justify-content: center;
   align-items: center;
   color: #888888;
-  font-size: 20px;
+  font-size: 16px;
 }
 /* Input */
 .custom-input {
@@ -313,7 +313,7 @@ const submitForm = async () => {
   height: 100%;
   border: none;
   outline: none;
-  font-size: 18px;
+  font-size: 14px;
   color: #222222;
   padding-right: 18px;
   font-family: "Kantumruy Pro", sans-serif;
@@ -326,20 +326,20 @@ const submitForm = async () => {
   display: block;
   color: #e53935;
   margin-top: 10px;
-  font-size: 15px;
+  font-size: 12px;
 }
 /* Submit Button */
 .submit-btn {
-  width: 240px;
-  height: 62px;
+  width: 100%;
+  height: 50px;
   border: none;
-  border-radius: 14px;
+  border-radius: 10px;
   background: #4d6cf0;
   color: white;
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 400;
   display: block;
-  margin: 55px auto 0;
+  margin: 30px auto 0;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: "Kantumruy Pro", sans-serif;
