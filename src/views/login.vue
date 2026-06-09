@@ -1,7 +1,6 @@
 <!-- Form login -->
 
 <template>
-<<<<<<< HEAD
 <!-- <<<<<<< HEAD -->
     <div class="container min-vh-100 d-flex justify-content-center align-items-center">
         <div class="card shadow-lg border-0 rounded-5 p-4 w-100" style="max-width: 520px;">
@@ -57,8 +56,6 @@
             </form>
             </div>
             </div>
-=======
->>>>>>> ccdb5dbed6b4d531b2b183b1372d4893f732cde4
   <div class="signin-container">
     <div class="signin-card">
       <div class="signin-header">
@@ -197,7 +194,6 @@
             router.push('/');
         }
 
-<<<<<<< HEAD
             loading.value = true;
               try {
                 const success = await auth.login({
