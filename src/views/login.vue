@@ -241,6 +241,33 @@
             // }
             
 
+            loading.value = true;
+              try {
+                const success = await auth.login({
+                  email: form.email,
+                  password: form.password
+                });
+
+                if (success) {
+                  showToast('ចូលគណនីបានដោយជោគជ័យ', 'success');
+                  setTimeout(() => {
+                    const redirect = route.query.redirect;
+                    if (redirect) {
+                      router.push({ name: redirect });
+                    } else {
+                      router.push('/');
+                    }
+                  }, 1000);
+                } else {
+                  showToast('អ៊ីមែល ឬ ពាក្យសម្ងាត់មិនត្រឹមត្រូវ', 'error');
+                }
+
+              } catch (error) {
+                console.error(error);
+                showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ', 'error');
+              } finally {
+                loading.value = false;
+              }
 </script>
 
 <style scoped>

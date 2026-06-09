@@ -21,6 +21,8 @@ const saving = ref(false);
 
 const imagePreview = ref("");
 
+const fileInputRef = ref(null); // ✅ ADD: file input ref
+
 // =====================================
 // FORM
 // =====================================
@@ -122,37 +124,36 @@ const validateForm = () => {
   errors.category_ids = "";
   errors.image = "";
 
-  // title
   if (!form.title.trim()) {
     errors.title = "Title is required";
     isValid = false;
   }
 
-  // price
-  if (!form.price) {
+  if (!form.price && form.price !== 0) {
     errors.price = "Price is required";
     isValid = false;
   }
 
-  // condition
   if (!form.condition.trim()) {
     errors.condition = "Condition is required";
     isValid = false;
   }
 
-  // description
   if (!form.description.trim()) {
     errors.description = "Description is required";
     isValid = false;
   }
 
-  // category
-  if (!form.category_ids[0]) {
+  // ✅ FIX: handle category_ids[0] being 0 (valid id)
+  if (
+    form.category_ids[0] === "" ||
+    form.category_ids[0] === null ||
+    form.category_ids[0] === undefined
+  ) {
     errors.category_ids = "Category is required";
     isValid = false;
   }
 
-  // image
   if (!isEdit.value && !form.image) {
     errors.image = "Image is required";
     isValid = false;
@@ -191,6 +192,11 @@ const resetForm = () => {
 
   imagePreview.value = "";
 
+  // ✅ FIX: reset file input element
+  if (fileInputRef.value) {
+    fileInputRef.value.value = "";
+  }
+
   errors.title = "";
   errors.price = "";
   errors.condition = "";
@@ -225,20 +231,20 @@ const openEditModal = (product) => {
   currentProductId.value = product.id;
 
   form.title = product.title || "";
-  form.price = product.price || "";
+  form.price = product.price ?? "";
   form.condition = product.condition || "";
   form.description = product.description || "";
   form.detail = product.detail || "";
   form.story = product.story || "";
 
-  // FIX: Force category ID to be a Number so it matches the <select> <option> value
+  // ✅ FIX: Convert to Number so it matches <option :value="Number(category.id)">
   if (product.categories?.length > 0) {
     form.category_ids = [Number(product.categories[0].id)];
   } else {
     form.category_ids = [""];
   }
 
-  // image preview
+  // image preview (existing URL)
   imagePreview.value = product.image || "";
 
   showModal.value = true;
@@ -262,8 +268,8 @@ const saveProduct = async () => {
     formData.append("price", form.price);
     formData.append("condition", form.condition);
     formData.append("description", form.description);
-    formData.append("detail", form.detail);
-    formData.append("story", form.story);
+    formData.append("detail", form.detail || "");
+    formData.append("story", form.story || "");
 
     // category_ids
     formData.append(
@@ -291,6 +297,7 @@ const saveProduct = async () => {
           "Content-Type": "multipart/form-data",
         },
       });
+      // response = await api.post(`/api/products/${currentProductId.value}`, updateData);
 
       alert(response.data.message || "បន្ថែមផលិតផលបានជោគជ័យ");
     }
@@ -307,19 +314,23 @@ const saveProduct = async () => {
       updateData.append("price", form.price);
       updateData.append("condition", form.condition);
       updateData.append("description", form.description);
-      updateData.append("detail", form.detail);
-      updateData.append("story", form.story);
+      updateData.append("detail", form.detail || "");
+      updateData.append("story", form.story || "");
 
-      // FIX: Ensure category_ids is converted to a Number array for backend consistency
+      // ✅ FIX: Ensure category_ids is a Number array
       updateData.append(
         "category_ids",
         JSON.stringify([Number(form.category_ids[0])]),
       );
 
-      // image optional
-      if (form.image) {
+      // ✅ FIX: Only append image if user selected a NEW file
+      // If form.image is a File object (not the original URL string),
+      // it means the user selected a new image
+      if (form.image instanceof File) {
         updateData.append("image", form.image);
       }
+
+      console.log("UPDATE DATA:", [...updateData.entries()]);
 
       response = await api.post(
         `/api/products/${currentProductId.value}`,
@@ -348,29 +359,15 @@ const saveProduct = async () => {
     if (error.response?.data?.data) {
       const backendErrors = error.response.data.data;
 
-      if (backendErrors.title) {
-        errors.title = backendErrors.title[0];
-      }
-
-      if (backendErrors.price) {
-        errors.price = backendErrors.price[0];
-      }
-
-      if (backendErrors.condition) {
+      if (backendErrors.title) errors.title = backendErrors.title[0];
+      if (backendErrors.price) errors.price = backendErrors.price[0];
+      if (backendErrors.condition)
         errors.condition = backendErrors.condition[0];
-      }
-
-      if (backendErrors.description) {
+      if (backendErrors.description)
         errors.description = backendErrors.description[0];
-      }
-
-      if (backendErrors.category_ids) {
+      if (backendErrors.category_ids)
         errors.category_ids = backendErrors.category_ids[0];
-      }
-
-      if (backendErrors.image) {
-        errors.image = backendErrors.image[0];
-      }
+      if (backendErrors.image) errors.image = backendErrors.image[0];
     }
 
     alert(error.response?.data?.message || "Save Product Failed");
@@ -397,7 +394,6 @@ const deleteProduct = async (id) => {
 
     alert(response.data.message || "Delete Successfully");
 
-    // remove ui
     products.value = products.value.filter((item) => item.id !== id);
   } catch (error) {
     console.log(error);
@@ -406,28 +402,27 @@ const deleteProduct = async (id) => {
   }
 };
 
-//==============Pagination===========
+// =====================================
+// PAGINATION
+// =====================================
 
 const currentPage = ref(1);
 const perPage = 6;
 
-/* pagination products */
 const paginatedProducts = computed(() => {
   const start = (currentPage.value - 1) * perPage;
   const end = start + perPage;
-
   return products.value.slice(start, end);
 });
 
-/* total pages */
 const totalPages = computed(() => {
   return Math.ceil(products.value.length / perPage);
 });
 
-/* change page */
 const changePage = (page) => {
   currentPage.value = page;
 };
+
 // =====================================
 // MOUNTED
 // =====================================
@@ -441,17 +436,14 @@ onMounted(() => {
 <template>
   <div class="card card-ui p-4">
     <!-- HEADER -->
-
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h4>ផលិតផលរបស់ខ្ញុំ</h4>
-
       <button @click="openAddModal" class="btn btn-primary">
         បន្ថែមផលិតផល
       </button>
     </div>
 
     <!-- LOADING -->
-
     <div v-if="loading">
       <table class="table align-middle">
         <thead>
@@ -465,33 +457,14 @@ onMounted(() => {
             <th>Action</th>
           </tr>
         </thead>
-
         <tbody>
           <tr v-for="i in 6" :key="i">
-            <td>
-              <div class="skeleton skeleton-id"></div>
-            </td>
-
-            <td>
-              <div class="skeleton skeleton-image"></div>
-            </td>
-
-            <td>
-              <div class="skeleton skeleton-text"></div>
-            </td>
-
-            <td>
-              <div class="skeleton skeleton-badge"></div>
-            </td>
-
-            <td>
-              <div class="skeleton skeleton-price"></div>
-            </td>
-
-            <td>
-              <div class="skeleton skeleton-date"></div>
-            </td>
-
+            <td><div class="skeleton skeleton-id"></div></td>
+            <td><div class="skeleton skeleton-image"></div></td>
+            <td><div class="skeleton skeleton-text"></div></td>
+            <td><div class="skeleton skeleton-badge"></div></td>
+            <td><div class="skeleton skeleton-price"></div></td>
+            <td><div class="skeleton skeleton-date"></div></td>
             <td>
               <div class="d-flex gap-2">
                 <div class="skeleton skeleton-action"></div>
@@ -504,7 +477,6 @@ onMounted(() => {
     </div>
 
     <!-- TABLE -->
-
     <div v-else class="table-responsive">
       <table class="table table-hover align-middle">
         <thead>
@@ -518,7 +490,6 @@ onMounted(() => {
             <th class="text-center">Action</th>
           </tr>
         </thead>
-
         <tbody>
           <tr v-if="products.length === 0">
             <td colspan="7" class="text-center text-muted py-4">
@@ -526,11 +497,7 @@ onMounted(() => {
             </td>
           </tr>
           <tr v-for="product in paginatedProducts" :key="product.id">
-            <!-- <tr v-for="product in products" :key="product.id"> -->
             <td>{{ product.id }}</td>
-
-            <!-- IMAGE -->
-
             <td>
               <img
                 :src="product.image"
@@ -538,13 +505,7 @@ onMounted(() => {
                 :alt="product.title"
               />
             </td>
-
-            <!-- TITLE -->
-
             <td>{{ product.title }}</td>
-
-            <!-- CATEGORY -->
-
             <td>
               <span
                 v-for="category in product.categories"
@@ -554,19 +515,8 @@ onMounted(() => {
                 {{ category.name }}
               </span>
             </td>
-
-            <!-- PRICE -->
-
             <td>${{ product.price }}</td>
-
-            <!-- DATE -->
-
-            <td>
-              {{ formatDate(product.created_at) }}
-            </td>
-
-            <!-- ACTION -->
-
+            <td>{{ formatDate(product.created_at) }}</td>
             <td>
               <div class="d-flex justify-content-center gap-2">
                 <button
@@ -575,7 +525,6 @@ onMounted(() => {
                 >
                   Edit
                 </button>
-
                 <button
                   @click="deleteProduct(product.id)"
                   class="btn btn-danger btn-sm"
@@ -586,150 +535,113 @@ onMounted(() => {
             </td>
           </tr>
         </tbody>
-       
       </table>
-       <div class="d-flex justify-content-center mt-4 gap-2">
-          <!-- PREV -->
-          <button
-            class="btn btn-outline-primary"
-            :disabled="currentPage === 1"
-            @click="currentPage--"
-          >
-            Prev
-          </button>
-
-          <!-- PAGE NUMBER -->
-          <button
-            v-for="page in totalPages"
-            :key="page"
-            @click="changePage(page)"
-            class="btn"
-            :class="
-              currentPage === page ? 'btn-primary' : 'btn-outline-primary'
-            "
-          >
-            {{ page }}
-          </button>
-
-          <!-- NEXT -->
-          <button
-            class="btn btn-outline-primary"
-            :disabled="currentPage === totalPages"
-            @click="currentPage++"
-          >
-            Next
-          </button>
-        </div>
+      <div class="d-flex justify-content-center mt-4 gap-2">
+        <button
+          class="btn btn-outline-primary"
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+        >
+          Prev
+        </button>
+        <button
+          v-for="page in totalPages"
+          :key="page"
+          @click="changePage(page)"
+          class="btn"
+          :class="currentPage === page ? 'btn-primary' : 'btn-outline-primary'"
+        >
+          {{ page }}
+        </button>
+        <button
+          class="btn btn-outline-primary"
+          :disabled="currentPage === totalPages"
+          @click="currentPage++"
+        >
+          Next
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- MODAL -->
-
   <div v-if="showModal" class="modal-overlay">
     <div class="modal-box h-75">
       <!-- HEADER -->
-
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold">
           {{ isEdit ? "Edit Product" : "Add Product" }}
         </h4>
-
         <button @click="showModal = false" class="btn-close"></button>
       </div>
 
       <!-- TITLE -->
-
       <div class="mb-3">
         <label class="form-label">Product Title</label>
-
         <input
           v-model="form.title"
           type="text"
           class="form-control"
           placeholder="Enter product title"
         />
-
-        <small class="text-danger">
-          {{ errors.title }}
-        </small>
+        <small class="text-danger">{{ errors.title }}</small>
       </div>
 
       <!-- PRICE -->
-
       <div class="mb-3">
         <label class="form-label">Price</label>
-
         <input
           v-model="form.price"
           type="number"
           class="form-control"
           placeholder="Enter price"
         />
-
-        <small class="text-danger">
-          {{ errors.price }}
-        </small>
+        <small class="text-danger">{{ errors.price }}</small>
       </div>
 
+      <!-- ✅ FIX: CATEGORY — use :value="Number(category.id)" for type consistency -->
       <div class="mb-3">
         <label class="form-label">Category</label>
-
         <select v-model="form.category_ids[0]" class="form-select">
           <option disabled value="">Select category</option>
-
           <option
             v-for="category in categories"
             :key="category.id"
-            :value="category.id"
+            :value="Number(category.id)"
           >
             {{ category.name }}
           </option>
         </select>
-
-        <small class="text-danger">
-          {{ errors.category_ids }}
-        </small>
+        <small class="text-danger">{{ errors.category_ids }}</small>
       </div>
 
       <!-- CONDITION -->
-
       <div class="mb-3">
         <label class="form-label">Condition</label>
-
         <input
           v-model="form.condition"
           type="text"
           class="form-control"
           placeholder="New / Old"
         />
-
-        <small class="text-danger">
-          {{ errors.condition }}
-        </small>
+        <small class="text-danger">{{ errors.condition }}</small>
       </div>
 
       <!-- DESCRIPTION -->
-
       <div class="mb-3">
         <label class="form-label">Description</label>
-
         <textarea
           v-model="form.description"
           rows="3"
           class="form-control"
           placeholder="Enter description"
         ></textarea>
-
-        <small class="text-danger">
-          {{ errors.description }}
-        </small>
+        <small class="text-danger">{{ errors.description }}</small>
       </div>
 
       <!-- DETAIL -->
-
       <div class="mb-3">
         <label class="form-label">Detail</label>
-
         <textarea
           v-model="form.detail"
           rows="3"
@@ -739,10 +651,8 @@ onMounted(() => {
       </div>
 
       <!-- STORY -->
-
       <div class="mb-3">
         <label class="form-label">Story</label>
-
         <textarea
           v-model="form.story"
           rows="3"
@@ -751,38 +661,31 @@ onMounted(() => {
         ></textarea>
       </div>
 
-      <!-- IMAGE -->
-
+      <!-- ✅ FIX: IMAGE — add ref="fileInputRef" so we can reset it -->
       <div class="mb-3">
         <label class="form-label">Product Image</label>
-
         <input
+          ref="fileInputRef"
           type="file"
           class="form-control"
           accept="image/*"
           @change="handleImage"
         />
-
-        <small class="text-danger">
-          {{ errors.image }}
-        </small>
+        <small class="text-danger">{{ errors.image }}</small>
       </div>
 
       <!-- PREVIEW -->
-
       <div v-if="imagePreview" class="mb-3">
         <img :src="imagePreview" class="preview-img" alt="Preview" />
       </div>
 
       <!-- BUTTONS -->
-
       <div class="d-flex gap-2">
         <button @click="saveProduct" class="btn btn-success" :disabled="saving">
           {{
             saving ? "Loading..." : isEdit ? "Update Product" : "Save Product"
           }}
         </button>
-
         <button @click="showModal = false" class="btn btn-secondary">
           Cancel
         </button>
@@ -832,10 +735,7 @@ onMounted(() => {
   border-radius: 10px;
 }
 
-/* =====================================
-   SKELETON LOADING
-===================================== */
-
+/* SKELETON LOADING */
 .skeleton {
   position: relative;
   overflow: hidden;
@@ -856,7 +756,6 @@ onMounted(() => {
     rgba(255, 255, 255, 0.7),
     transparent
   );
-
   animation: loading 1s infinite;
 }
 
@@ -870,34 +769,28 @@ onMounted(() => {
   width: 40px;
   height: 20px;
 }
-
 .skeleton-image {
   width: 70px;
   height: 70px;
   border-radius: 12px;
 }
-
 .skeleton-text {
   width: 160px;
   height: 20px;
 }
-
 .skeleton-badge {
   width: 80px;
   height: 25px;
   border-radius: 30px;
 }
-
 .skeleton-price {
   width: 70px;
   height: 20px;
 }
-
 .skeleton-date {
   width: 120px;
   height: 20px;
 }
-
 .skeleton-action {
   width: 70px;
   height: 35px;
