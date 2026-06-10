@@ -315,19 +315,20 @@ const submitForm = async () => {
 }
 /* Card */
 .reset-card {
-  width: 100%;
-  max-width: 560px;
+  width: 80%;
+  max-width: 450px;
+  max-height: 650px;
   background: white;
   border-radius: 30px;
   border: 2px solid #dddddd;
-  padding: 35px 50px;
+  padding: 35px 45px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 /* Back */
 .back-btn {
   border: none;
   background: transparent;
-  font-size: 40px;
+  font-size: 35px;
   color: #333;
   cursor: pointer;
   transition: 0.3s;
@@ -342,8 +343,8 @@ const submitForm = async () => {
   margin-top: -10px;
 }
 .icon-circle {
-  width: 110px;
-  height: 110px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: #4d6cf0;
   display: flex;
@@ -353,12 +354,12 @@ const submitForm = async () => {
 }
 .icon-circle i {
   color: white;
-  font-size: 50px;
+  font-size: 38px;
 }
 /* Title */
 .title {
   text-align: center;
-  font-size: 46px;
+  font-size: 34px;
   font-weight: 700;
   color: #111;
   margin-top: 40px;
@@ -366,22 +367,22 @@ const submitForm = async () => {
 /* Description */
 .description {
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
   color: #666;
   margin-top: 15px;
 }
 /* Form */
 .reset-form {
-  margin-top: 45px;
+  margin-top: 35px;
 }
 /* Group */
 .form-group {
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 /* Label */
 .form-label {
   display: block;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 500;
   color: #222;
   margin-bottom: 14px;
@@ -389,7 +390,7 @@ const submitForm = async () => {
 /* Input Wrapper */
 .input-wrapper {
   width: 100%;
-  height: 65px;
+  height: 50px;
   border: 2px solid #d8d8d8;
   border-radius: 16px;
   background: white;
@@ -410,7 +411,7 @@ const submitForm = async () => {
   justify-content: center;
   align-items: center;
   color: #888;
-  font-size: 20px;
+  font-size: 16px;
 }
 /* Input */
 .custom-input {
@@ -418,7 +419,7 @@ const submitForm = async () => {
   height: 100%;
   border: none;
   outline: none;
-  font-size: 18px;
+  font-size: 14px;
   color: #222;
   background: transparent;
   font-family: "Kantumruy Pro", sans-serif;
@@ -440,7 +441,7 @@ const submitForm = async () => {
 .error-text {
   display: block;
   color: #e53935;
-  font-size: 15px;
+  font-size: 10px;
   margin-top: -10px;
 }
 /* Success */
@@ -454,18 +455,18 @@ const submitForm = async () => {
 .button-group {
   display: flex;
   gap: 20px;
-  margin-top: 45px;
+  margin-top: 35px;
 }
 /* Buttons */
 .cancel-btn,
 .submit-btn {
   flex: 1;
-  height: 58px;
+  height: 45px;
   border: none;
-  border-radius: 14px;
+  border-radius: 10px;
   background: #4d6cf0;
   color: white;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 500;
   cursor: pointer;
   transition: 0.3s;
