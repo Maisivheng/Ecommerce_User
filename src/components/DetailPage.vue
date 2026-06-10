@@ -1,170 +1,179 @@
 <template>
-  <Navbar></Navbar>
-  <main class="container-fluid custom-padding-container pt-4 pb-5" >
-    <div class="card border-0 rounded-4 overflow-hidden shadow-lg Detail">
-      
-      <div class="row p-4 g-4">
+  <div class="detail-page">
+    <Navbar />
+    
+    <div class="container my-5" v-if="product">
+      <div class="row g-5">
         
         <div class="col-md-6">
-          <div class="bg-light rounded-4 p-4 d-flex align-items-center justify-content-center h-100">
-            <img :src="productDetail.image" class="w-100 rounded-4" style="max-height: 400px; object-fit: contain;" alt="Product Image" />
+          <div class="product-image-wrapper p-4 border rounded-3 bg-white text-center shadow-sm">
+            <img :src="getImageUrl(product.image)" class="img-fluid rounded" :alt="product.title">
           </div>
         </div>
-        
+
         <div class="col-md-6">
-          <div class="bg-light rounded-4 p-4 d-flex flex-column justify-content-between h-100">   
-            <!-- Title -->
-            <h2 class="fw-bold mb-3">{{ productDetail?.title }}</h2>
+          <span class="badge bg-primary mb-2 text-uppercase px-3 py-2 fs-7">{{ product.brand || 'ទូទៅ' }}</span>
+          <h1 class="fw-bold text-dark mb-3">{{ product.title }}</h1>
+          
+          <div class="d-flex align-items-center text-warning gap-1 mb-3">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <span class="text-muted small ms-2">({{ product.reviews || 10 }} reviews)</span>
+          </div>
 
-            <!-- Price -->
-            <h5>Price</h5>
-            <h5 class="text-primary fw-bold mb-3">${{ productDetail?.price }}</h5>
-
-            <div class="quantity-selector mb-3">
-                <div class="quantity-selector">
-                    <button class="qty-btn" @click="decrement">-</button>
-                    <span  class="qty-input">{{count}}</span>
-                    <button class="qty-btn" @click="increment">+</button>
-                </div>
-            </div>
-
-            <!-- Description -->
-            <div>
-              <p class="text-muted">{{productDetail?.description}}</p>
-            </div>
-
-            <!-- Detail -->
-            <div>
-              <p class="text-muted">{{productDetail?.detail}}</p>
-            </div>
-
-            <!-- Condition -->
-            <div class="mb-3">
-              <h6>Condition</h6>
-              <span>{{productDetail?.condition}}</span>
-            </div>
-
-            <!-- Story -->
-            <div class="mb-4">
-              <h6 class="text-muted">Story</h6>
-              <span>{{ productDetail?.story }}</span>
-            </div>
-            <!-- Buttons -->
-            <div class="d-flex justify-content-between">
-              <button @click="handleFormSubmit" :disabled="loading" class="exact-btn-action">{{ loading ? 'កំពុងបញ្ចូល...' : 'ដាក់ចូលកន្ត្រក់' }}</button>
-              <button class="btn btn-secondary px-4 btn-sm" @click="$router.go(-1)">ថយក្រោយ</button>
+          <div class="price-box p-3 rounded-3 mb-4" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
+            <h2 class="fw-bold text-danger mb-1">${{ product.price }}</h2>
+            <div class="d-flex gap-2 mt-2">
+              <span class="badge bg-light text-secondary border px-2 py-1">Condition: {{ product.condition || 'Brand New' }}</span>
+              <span class="badge bg-success-subtle text-success border px-2 py-1">In Stock</span>
             </div>
           </div>
+
+          <div class="mb-4">
+            <h5 class="fw-bold text-dark border-bottom pb-2">ការបរិយាយផលិតផល</h5>
+            <p class="text-muted lh-lg">
+              {{ product.description || 'នេះគឺជាផលិតផលដែលមានគុណភាពខ្ពស់ ត្រូវបានរចនានិងផលិតឡើងយ៉ាងផ្ចិតផ្ចង់ សម្រាប់ការប្រើប្រាស់ទូទៅ និងមានការធានាត្រឹមត្រូវចេញពីហាង។' }}
+            </p>
+          </div>
+
+          <div class="mb-4 d-flex align-items-center gap-3">
+            <label class="fw-semibold text-dark small">ចំនួន៖</label>
+            <div class="input-group input-group-sm" style="width: 120px;">
+              <button class="btn btn-outline-secondary" type="button" @click="decreaseQty">-</button>
+              <input type="number" class="form-control text-center fw-bold" v-model.number="quantity" min="1">
+              <button class="btn btn-outline-secondary" type="button" @click="increaseQty">+</button>
+            </div>
+          </div>
+
+          <div class="d-flex gap-3 align-items-center pt-3 border-top mt-4">
+            <button @click="addToCart" :disabled="cartStore.loading" class="btn btn-dark btn-lg px-4 py-2 rounded-3 d-flex align-items-center gap-2">
+              <span v-if="cartStore.loading" class="spinner-border spinner-border-sm" role="status"></span>
+              <i v-else class="bi bi-cart-plus-fill"></i> ថែមក្នុងកន្ត្រក
+            </button>
+            
+            <router-link to="/shop-page" class="btn btn-outline-secondary btn-lg px-4 py-2 rounded-3">
+              ត្រឡប់ទៅហាងវិញ
+            </router-link>
+          </div>
         </div>
+
       </div>
     </div>
-  </main>
-  <!-- <BaseCard></BaseCard> -->
-  <Footer></Footer>
+
+    <div v-else class="container my-5 text-center py-5">
+      <div class="spinner-border text-primary mb-3" role="status"></div>
+      <p class="text-muted">កំពុងស្វែងរកព័ត៌មានលម្អិតនៃផលិតផល...</p>
+    </div>
+
+    <Footer />
+  </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import { storeToRefs } from 'pinia';
-import api from '@/API/api';
-import { useCounterStore } from '@/stores/counter.js';
-// Import Stores
-import { useCart } from '@/stores/addToCart.js';
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import Navbar from '@/components/layout/Navbar.vue'
+import Footer from '@/components/layout/Footer.vue'
+import { useProductStore } from '@/stores/products' 
+import { useCart } from '@/stores/addToCart' 
 
-const route = useRoute();
-const cartStore = useCart(); 
-const counterStore = useCounterStore();
-const { count } = storeToRefs(counterStore);
-const { increment, decrement } = counterStore;
-onMounted(() => {
-    counterStore.decrement();
-    counterStore.increment();
-});
+const route = useRoute()
+const router = useRouter()
+const productsStore = useProductStore()
+const cartStore = useCart() 
 
-// កំណត់តម្លៃដើម (Default Value) ដូចក្នុងរូបថត Postman របស់អ្នក
-const { formData, loading, responseMessage, responseClass } = storeToRefs(cartStore);
+const product = ref(null)
+const quantity = ref(1) 
+const defaultImage = ref('https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80')
 
-const productDetail = ref({});
-const id = route.params.id; 
-onMounted(async() => {
-    formData.product_id = id;
-    formData.qty = count;
+// 🛠️ បន្ថែមថ្មី៖ មុខងារទាញយកផ្លូវរូបភាព និងត្រួតពិនិត្យករណីផលិតផលអត់មានរូបភាព (no_photo.jpg)
+const getImageUrl = (imageName) => {
+  // ១. ប្រសិនបើគ្មានរូបភាព ឬរូបភាពជាប្រភេទ no_photo.jpg ឱ្យវាបង្ហាញរូបភាព Default ជំនួសភ្លាម
+  if (!imageName || imageName.includes('no_photo.jpg')) {
+    return defaultImage.value;
+  }
+  
+  // ២. ប្រសិនបើទិន្នន័យរូបភាពជា Link ពេញលេញស្រាប់ (http://... ឬ https://)
+  if (imageName.startsWith('http://') || imageName.startsWith('https://')) {
+    return imageName;
+  }
+  
+  // ៣. បូកភ្ជាប់ជាមួយ Base URL API របស់គម្រោងអ្នក
+  const apiBaseUrl = 'https://api-loukbontor.g2.ant.com.kh';
+  
+  if (imageName.startsWith('storage/')) {
+    return `${apiBaseUrl}/${imageName}`;
+  }
+  
+  if (imageName.startsWith('/storage/')) {
+    return `${apiBaseUrl}${imageName}`;
+  }
 
-    //  ទាញយក State ដោយប្រើ storeToRefs ត្រឹមត្រូវតាមស្តង់ដារ Vue 3
-    let res = await api.get('api/products/'+ id);
-    productDetail.value = res.data.data;
+  return `${apiBaseUrl}/storage/products/${imageName}`;
+}
 
-    formData.value.product_id = id;
-});
+onMounted(async () => {
+  const productId = parseInt(route.params.id)
+  
+  if (productsStore.products.length === 0) {
+    await productsStore.fetchProduct()
+  }
+  
+  const foundProduct = productsStore.products.find(p => p.id === productId)
+  if (foundProduct) {
+    product.value = foundProduct
+  }
+})
 
-const handleFormSubmit = () => {
-    if (!productDetail.value || !productDetail.value.id) {
-        alert("កំពុងទាញយកទិន្នន័យផលិតផល សូមព្យាយាមម្តងទៀត!");
-        return;
+// មុខងារបូក/ដកចំនួននៅលើ UI
+const increaseQty = () => {
+  quantity.value++
+}
+const decreaseQty = () => {
+  if (quantity.value > 1) quantity.value--
+}
+
+// មុខងារប៊ូតុង Add to Cart
+const addToCart = async () => {
+  if (product.value) {
+    cartStore.formData.product_id = product.value.id
+    cartStore.formData.qty = quantity.value
+
+    await cartStore.addToCart(product.value)
+    if (cartStore.fetchCartItems) {
+      await cartStore.fetchCartItems();
     }
-    // formData.value.product_id = route.params.id;
-
-    const safeProduct = {
-        id: productDetail.value.id,
-        title: productDetail.value.title || 'មិនមានឈ្មោះ',
-        description: productDetail.value.description || 'មិនមានការពិពណ៌នា',
-        condition: productDetail.value.condition || 'ថ្មី',
-        image: productDetail.value.image || '',
-        price: Number(productDetail.value.price) || 0 
-    };
-
-    // ពេលនេះវានឹងស្គាល់ function នេះ ១០០% ដោយមិនលោត Error ទៀតទេ
-    cartStore.pushToLocalCart(safeProduct, count.value);
-    cartStore.addToCart(); 
-};
+    router.push('/addtoCart') // បន្ទាប់ពីបន្ថែមទំនិញទៅកន្ត្រក សូមបញ្ជូនអ្នកប្រើទៅទំព័រកន្ត្រក
+  }
+}
 </script>
 
 <style scoped>
-  :global(:root){
-    --bg-detail: linear-gradient(to bottom, #b8c4d3 0%, #043774 100%);
-  }
-
-  .Detail{
-    background-image: var(--bg-detail);
-  }
-</style>
-
-<style>
-    .quantity-selector {
-        display: inline-flex; /* បន្ថែមនេះដើម្បីឱ្យ elements ខាងក្នុងរៀបជួរដេកបានស្អាត */
-        align-items: center;
-        border: 1px solid #ced4da;
-        border-radius: 8px;
-        width: fit-content;
-        background: #fff;
-        overflow: hidden;
-    }
-
-    .qty-btn {
-        background: transparent;
-        border: none;
-        /* លុប width: 28px; ចេញ ហើយជំនួសដោយ padding វិញ */
-        padding: 0 12px; 
-        height: 26px;
-        cursor: pointer;
-        font-size: 16px;
-        color: #444;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .qty-input {
-        display: inline-block;
-        min-width: 30px;   /* ទំហំតូចបំផុតពេលមានលេខ ១ខ្ទង់ */
-        max-width: 150px;  /* ទំហំធំបំផុតការពារកុំឱ្យរីកវែងពេក */
-        height: 30px;
-        line-height: 30px;
-        text-align: center;
-        padding: 0 8px;    /* បន្ថែមគម្លាតឆ្វេងស្តាំ */
-        border-left: 1px solid #ced4da;
-        border-right: 1px solid #ced4da;
-        outline: none;     /* លុប border ខ្មៅពេលចុចចំ */
-    }
+.detail-page {
+  font-family: 'Kantumruuy Pro', sans-serif;
+  background-color: #fafafa;
+  min-height: 100vh;
+}
+.product-image-wrapper {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0 !important;
+}
+.product-image-wrapper img {
+  max-height: 380px;
+  object-fit: contain;
+}
+.fs-7 {
+  font-size: 0.8rem;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 </style>

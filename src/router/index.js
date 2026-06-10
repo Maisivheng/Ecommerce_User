@@ -6,6 +6,8 @@ import login from "@/views/login.vue";
 import { useauthStore } from "@/stores/auth";
 import forgotpassword from '@/views/forgotPass/forgotpassword.vue'
 import resetpassword from '@/views/forgotPass/resetpassword.vue'
+// import Shop from "@/views/Shop.vue";
+import shopPage from "@/views/shop/shopPage.vue";
 import verityOtp from '@/views/forgotPass/verityOtp.vue'
 import Register from "@/views/register.vue";
 import Login from "@/views/login.vue";
@@ -19,7 +21,7 @@ import AddtoCart from "@/components/AddtoCart.vue";
 import ForgotPassword from "@/views/forgotPass/forgotpassword.vue";
 import ResetPassword from "@/views/forgotPass/resetpassword.vue";
 import VerityOtp from "@/views/forgotPass/verityOtp.vue";
-
+import ShopPage from "@/views/shop/shopPage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,15 +37,6 @@ const router = createRouter({
     },
     
    
-
-    // {
-    //   path: "/about",
-    //   name: "about",
-    //   component: () => import("../views/AboutView.vue"),
-    //   meta: {
-    //     title: "About",
-    //   },
-    // },
 
     {
       path: "/contactUS",
@@ -129,6 +122,14 @@ const router = createRouter({
       },
     },
     {
+      path: "/shop-page",
+      name: "shop",
+      component: shopPage,
+      meta: {
+        title: "shop",
+      },
+    },
+    {
       path: "/detailpage/:id",
       name: "detailpage",
       component: DetailPage,
@@ -149,7 +150,6 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-
   const auth = useauthStore();
   // Change browser title
   document.title = `${to.meta.title} | ពិភពទំនិញ`;
@@ -158,10 +158,9 @@ router.beforeEach((to) => {
   if (to.meta.requiresAuth && !auth.token) {
     return "/login";
   }
-  if(auth.token && to.path == '/login'){
-    return '/'
+  if (auth.token && to.path == "/login") {
+    return "/";
   }
-
 
   return true;
 });
