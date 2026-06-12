@@ -166,7 +166,7 @@ a {
                             ទិញ
                         </router-link>
 
-                        <router-link to="/sell" class="btn btn-outline-primary rounded-pill px-3">
+                        <router-link to="/sellPage" class="btn btn-outline-primary rounded-pill px-3">
                             <i class="bi bi-shop me-1"></i>
                             លក់
                         </router-link>

@@ -2,27 +2,28 @@
 import { ref, reactive, onMounted } from "vue";
 import api from "@/API/api";
 
-// ==============================
-// STATES
-// ==============================
+const showToast = (message, type = "success") => {
+  const id = Date.now();
+  toasts.value.push({ id, message, type });
+  setTimeout(() => {
+    toasts.value = toasts.value.filter((t) => t.id !== id);
+  }, 3500);
+};
+
+const removeToast = (id) => {
+  toasts.value = toasts.value.filter((t) => t.id !== id);
+};
 
 const products = ref([]);
 const loading = ref(false);
-
 const showModal = ref(false);
-
 const isEdit = ref(false);
-
 const currentProductId = ref(null);
-
 const saving = ref(false);
-
-// image preview
+const toasts = ref([]);
 const imagePreview = ref("");
-
-// ==============================
-// FORM
-// ==============================
+const deleting = ref(false);
+const fileInputRef = ref(null);
 
 const form = reactive({
   title: "",
@@ -31,13 +32,9 @@ const form = reactive({
   description: "",
   detail: "",
   story: "",
-  category_id: "",
+  category_ids: [""],
   image: null,
 });
-
-// ==============================
-// ERRORS
-// ==============================
 
 const errors = reactive({
   title: "",
@@ -118,26 +115,15 @@ const validateForm = () => {
   return isValid;
 };
 
-// ==============================
-// HANDLE IMAGE
-// ==============================
-
 const handleImage = (event) => {
   const file = event.target.files[0];
 
   if (!file) {
     return;
   }
-
   form.image = file;
-
   imagePreview.value = URL.createObjectURL(file);
 };
-
-// ==============================
-// RESET FORM
-// ==============================
-
 const resetForm = () => {
   form.title = "";
   form.price = "";
@@ -164,7 +150,6 @@ const resetForm = () => {
 
 const openAddModal = () => {
   resetForm();
-
   isEdit.value = false;
 
   currentProductId.value = null;
