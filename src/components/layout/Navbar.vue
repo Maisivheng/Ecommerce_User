@@ -166,7 +166,7 @@ a {
                             ទិញ
                         </router-link>
 
-                        <router-link to="/sell" class="btn btn-outline-primary rounded-pill px-3">
+                        <router-link to="/sellPage" class="btn btn-outline-primary rounded-pill px-3">
                             <i class="bi bi-shop me-1"></i>
                             លក់
                         </router-link>
@@ -339,7 +339,7 @@ a {
     console.log(search.value);
     watch(search, async(value) => {
         console.log(search.value);
-        await productStore.fetchProduct({search : value});
+        await productStore.fetchProduct({search : value});  
     })
 
     function CancelInput(){
@@ -350,6 +350,7 @@ a {
     const profileStore = useProfileStore();
     // 1. ចាប់យកឈ្មោះ imagePreview ឱ្យត្រូវនឹងឈ្មោះនៅក្នុង Store ផ្ទាល់តែម្តង
     let { imagePreview } = storeToRefs(profileStore);
+    
 
 
     onMounted(async () => {

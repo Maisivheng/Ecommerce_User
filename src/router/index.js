@@ -21,7 +21,9 @@ import AddtoCart from "@/components/AddtoCart.vue";
 import ForgotPassword from "@/views/forgotPass/forgotpassword.vue";
 import ResetPassword from "@/views/forgotPass/resetpassword.vue";
 import VerityOtp from "@/views/forgotPass/verityOtp.vue";
-import ShopPage from "@/views/shop/shopPage.vue";
+
+import { useauthStore } from "@/stores/auth.js";
+import sellPage from "@/views/sellPage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -143,6 +145,15 @@ const router = createRouter({
       component: AddtoCart,
       meta: {
         title: "Cart",
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/sellPage",
+      name: "sellPage",
+      component: sellPage,
+      meta: {
+        title: "Sell Page",
         requiresAuth: true,
       },
     },

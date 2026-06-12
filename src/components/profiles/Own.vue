@@ -53,9 +53,7 @@ const categoryLoading = ref(false);
 
 const showModal = ref(false);
 const isEdit = ref(false);
-
 const currentProductId = ref(null);
-
 const saving = ref(false);
 const deleting = ref(false);
 
@@ -210,7 +208,6 @@ const handleImage = (event) => {
   if (!file) return;
 
   form.image = file;
-
   imagePreview.value = URL.createObjectURL(file);
 };
 
@@ -248,7 +245,6 @@ const resetForm = () => {
 
 const openAddModal = () => {
   resetForm();
-
   isEdit.value = false;
 
   currentProductId.value = null;
