@@ -21,8 +21,6 @@ import AddtoCart from "@/components/AddtoCart.vue";
 import ForgotPassword from "@/views/forgotPass/forgotpassword.vue";
 import ResetPassword from "@/views/forgotPass/resetpassword.vue";
 import VerityOtp from "@/views/forgotPass/verityOtp.vue";
-
-import { useauthStore } from "@/stores/auth.js";
 import sellPage from "@/views/sellPage.vue";
 
 const router = createRouter({
