@@ -2,6 +2,12 @@
 import { ref, reactive, onMounted } from "vue";
 import api from "@/API/api";
 import Navbar from "@/components/layout/Navbar.vue";
+import { useRoute } from "vue-router";
+import router from "@/router";
+
+const route = useRoute()
+
+// toasts
 const toasts = ref([]);
 const showToast = (message, type = "success") => {
   const id = Date.now();
@@ -10,19 +16,19 @@ const showToast = (message, type = "success") => {
     toasts.value = toasts.value.filter((t) => t.id !== id);
   }, 3500);
 };
-
-const categories = ref([]);
 const products = ref([]);
+const categories = ref([]);
 const loading = ref(false);
-const saving = ref(false);
-const isEdit = ref(false);
 const categoryLoading = ref(false);
+const showModal = ref(false);
+const isEdit = ref(false);
 const currentProductId = ref(null);
+const fetchLoading = ref(false);
+const saving = ref(false);
+const deleting = ref(false);
 const imagePreview = ref("");
-const isvalid = ref(true)
-// const deleting = ref(false);
 const fileInputRef = ref(null);
-
+// form 
 const form = reactive({
   title: "",
   price: "",
@@ -33,7 +39,7 @@ const form = reactive({
   category_ids: [""],
   image: null,
 });
-
+// errors 
 const errors = reactive({
   title: "",
   price: "",
@@ -44,28 +50,14 @@ const errors = reactive({
   category_ids: "",
   image: "",
 });
+const formatDate = (date) => {
+  if (!date) return "-";
 
-// const getCategories = async () => {
-//   try {
-//     const response = await api.get("/api/categories");
-//     categories.value = response.data.data || [];
-//   } catch (error) {
-//     console.error("Error fetching categories", error);
-//   }
-// };
-const getMyProducts = async () => {
-  try {
-    loading.value = true;
-    // const response = await api.get("/api/profile/products?page=1&per_page=20");
-    const response = await api.get("/api/products?page=1&per_page=100&search=");
-    products.value = response.data.data || [];
-    console.log(products.value);
-    
-  } catch (error) {
-    console.error("Error fetching products", error);
-  } finally {
-    loading.value = false;
-  }
+  return new Date(date).toLocaleDateString("km-KH", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 };
 const getCategories = async () => {
   try {
@@ -83,11 +75,28 @@ const getCategories = async () => {
     categoryLoading.value = false;
   }
 };
-const handleImage = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-  form.image = file;
-  imagePreview.value = URL.createObjectURL(file);
+
+// 3. UPDATED FUNCTION: Fetch Single Product Data
+const fetchProductData = async (id) => {
+  try {
+    fetchLoading.value = true;
+    const response = await api.get(`/api/products/${id}`);
+    let product = response.data.data;
+    if (!product) {
+      product = response.data; 
+    }
+    if (product) {
+      editProduct(product);
+    } else {
+      console.error("Product data is empty in response");
+      showToast("Could not load product data", "error");
+    }
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    showToast("Failed to load product details", "error");
+  } finally {
+    fetchLoading.value = false;
+  }
 };
 // resetForm
 const resetForm = () => {
@@ -97,103 +106,148 @@ const resetForm = () => {
   form.description = "";
   form.detail = "";
   form.story = "";
-  form.categories = [""];
+  form.category_ids = [""];
   form.image = null;
   imagePreview.value = "";
+  if (fileInputRef.value) {
+    fileInputRef.value.value = "";
+  }
+  errors.title = "";
+  errors.price = "";
+  errors.condition = "";
+  errors.description = "";
+  errors.category_ids = "";
+  errors.image = "";
+};
+// validateForm
+
+const validateForm = () => {
+  let isValid = true;
 
   errors.title = "";
   errors.price = "";
   errors.condition = "";
   errors.description = "";
-  errors.detail = "";
-  errors.story = "";
-  errors.categories = "";
+  errors.category_ids = "";
   errors.image = "";
-  isEdit.value = false;
-  currentProductId.value = null;
+
+  if (!form.title.trim()) {
+    errors.title = "Title is required";
+    isValid = false;
+  }
+
+  if (!form.price && form.price !== 0) {
+    errors.price = "Price is required";
+    isValid = false;
+  }
+
+  if (!form.condition.trim()) {
+    errors.condition = "Condition is required";
+    isValid = false;
+  }
+
+  if (!form.description.trim()) {
+    errors.description = "Description is required";
+    isValid = false;
+  }
+
+  if (
+    form.category_ids[0] === "" ||
+    form.category_ids[0] === null ||
+    form.category_ids[0] === undefined
+  ) {
+    errors.category_ids = "Category is required";
+    isValid = false;
+  }
+
+  if (!isEdit.value && !form.image) {
+    errors.image = "Image is required";
+    isValid = false;
+  }
+
+  return isValid;
 };
-const validationForm =()=>{
-   errors.title = ""; errors.price = ""; errors.condition = ""; 
-   errors.description = ""; errors.detail = ""; errors.story = "";
-   errors.categories = ""; errors.image = "";
-  if (!form.title.trim()){
-      errors.title = "Enter your title";
-      isvalid.value = false; 
-  }
-  if (!form.price){
-    errors.price = "Enter your price";
-    isvalid.value = false;
-  }
-  if (!form.condition.trim()){
-    errors.condition = "Enter your condition";
-    isvalid.value = false;
-  }
-  if (!form.description.trim()){
-    errors.description = "Enter your description";
-    isvalid.value = false;
-  }
-  if (!form.story.trim()){
-    errors.story = "Enter your story";
-    isvalid.value = false;
-  }
-  if (!form.detail.trim()){
-    errors.detail = "Enter Detail Product";
-    isvalid.value = false;
-  }
-  if (!form.categories[0]){
-    errors.categories= "Please Choose your category";
-    isvalid.value = false;
-  }
-  if (!isEdit.value && !form.image){
-    errors.image = "Please choose image";
-    isvalid.value = false;
-  }
-  return isvalid.value;
-}
-const submitProduct = async (data) => {
-  // console.log(data);
-  // if(!validationForm()) return;
+const handleImage = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  form.image = file;
+  imagePreview.value = URL.createObjectURL(file);
+};
+const saveProduct = async () => {
+  if (!validateForm()) {return;}
   try {
     saving.value = true;
     let response;
-    const formData = {
-      title: form.title,
-      price: Number(form.price),
-      condition: form.condition,
-      description: form.description,
-      detail: form.detail,
-      story: form.story,
-      categories: [Number(form.category_ids[0])],
-    };
-    // console.log(formData.categories);
-    // if (form.image) {
-    //   formData.append("image", form.image);
-    // }
+    // ADD PRODUCT
+    if (!isEdit.value) {
+      const formData = new FormData();
+      formData.append("title", form.title);
+      formData.append("price", form.price);
+      formData.append("condition", form.condition);
+      formData.append("description", form.description);
+      formData.append("detail", form.detail || "");
+      formData.append("story", form.story || "");
+      formData.append(
+        "category_ids",
+        JSON.stringify([Number(form.category_ids[0])]),
+      );
 
-    if (isEdit.value) {
-      formData.append("_method", "PUT");
-      response = await api.post(`/api/products/${currentProductId.value}`, formData)
-      // alert("Product Updated Successfully!");
-    } else {
-      response = await api.post("/api/products", formData);
-      // alert("Product Posted Successfully!");
+      if (form.image) {
+        formData.append("image", form.image);
+      }
+      response = await api.post("/api/products", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      showToast("បន្ថែមផលិតផលបានជោគជ័យ", "success");
+      resetForm()
     }
-    showToast("បន្ថែមផលិតផលបានជោគជ័យ", "success");
-    resetForm();
-    getMyProducts();
+    // UPDATE PRODUCT
+    else {
+      const updateData = new FormData();
+      updateData.append("title", form.title);
+      updateData.append("price", form.price);
+      updateData.append("condition", form.condition);
+      updateData.append("description", form.description);
+      updateData.append("detail", form.detail || "");
+      updateData.append("story", form.story || "");
+      updateData.append(
+        "category_ids",
+        JSON.stringify([Number(form.category_ids[0])]),
+      );
 
+      if (form.image instanceof File) {
+        updateData.append("image", form.image);
+      }
+
+      response = await api.post(`/api/products/${currentProductId.value}`,updateData,{
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+      );
+      showToast( "Update Product Success", "success");
+      resetForm();
+      router.push('/sellPage');
+    }
   } catch (error) {
-    console.error(error);
-    alert(error)
+    console.log("SAVE ERROR:", error);
+    if (error.response?.data?.data) {
+      const backendErrors = error.response.data.data;
+      if (backendErrors.title) errors.title = backendErrors.title[0];
+      if (backendErrors.price) errors.price = backendErrors.price[0];
+      if (backendErrors.condition) errors.condition = backendErrors.condition[0];
+      if (backendErrors.description) errors.description = backendErrors.description[0];
+      if (backendErrors.category_ids) errors.category_ids = backendErrors.category_ids[0];
+      if (backendErrors.image) errors.image = backendErrors.image[0];
+    }
+    showToast(error.response?.data?.message || "Save Product Failed", "error");
   } finally {
     saving.value = false;
   }
 };
-// //  -------------- edit product
+//edit product
 const editProduct = (product) => {
+  if (!product) return;
   isEdit.value = true;
   currentProductId.value = product.id;
-
   form.title = product.title;
   form.price = product.price;
   form.condition = product.condition;
@@ -208,43 +262,12 @@ const editProduct = (product) => {
   }
   imagePreview.value = product.image || "";
   form.image = null; 
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-// const editProduct = (product) => {
-//       isEdit.value = true;
-//       currentProductId.value = product.id;
-//       // alert(product)
-
-//       form.title = product.title || "";
-//       form.price = product.price || "";
-//       form.condition = product.condition || "";
-//       form.description = product.description || "";
-//       form.detail = product.detail || "";
-//       form.story = product.story || "";
-      
-//       if (product.categories?.length > 0) {
-//         form.categories = [Number(product.categories[0].id)];
-//       } else {
-//         form.categories = [""];
-//       }
-//       imagePreview.value = product.image || "";
-//         // Scroll to top to show the form
-//         window.scrollTo({ top: 0, behavior: 'smooth' });
-// };
-// ----------- delete product 
-const deleteProduct = async (id) => {
-  if (!confirm("Are you sure you want to delete this product?")) return;
-  try {
-    await api.delete(`/api/products/${id}`);
-    products.value = products.value.filter((p) => p.id !== id);
-    
-  } catch (error) {
-    alert("Failed to delete");
-  }
 };
 onMounted(() => {
   getCategories();
-  getMyProducts();
+  if (route.params.id) {
+    fetchProductData(route.params.id);
+  }
 });
 </script>
 
@@ -341,7 +364,7 @@ onMounted(() => {
 
             <!-- Action Buttons -->
             <div class="d-flex gap-2">
-              <button @click="submitProduct" class="btn btn-primary btn-lg flex-grow-1" :disabled="saving">
+              <button @click="saveProduct" class="btn btn-primary btn-lg flex-grow-1" :disabled="saving">
                 <span v-if="saving" class="spinner-border spinner-border-sm me-2"></span>
                 {{ isEdit ? 'Update Product' : 'Post Product' }}
               </button>

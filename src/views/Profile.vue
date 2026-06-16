@@ -450,7 +450,7 @@ onMounted(() => {
                       </label>
                       <button
                         @click="deleteProfileImage"
-                        class="btn btn-link text-danger btn-sm"
+                        class="btn btn-outline-danger ms-2 btn-sm"
                       >
                         <i class="bi bi-trash me-1"></i>
                         លុប

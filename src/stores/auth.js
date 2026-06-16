@@ -14,7 +14,6 @@ export const useauthStore = defineStore('auth', () => {
     try{
       const res =await api.post('/api/login', data);
       success.value = res.status;
-      // console.log(res);
       errMassage.value = res.data.message;
       console.log(errMassage.value);
       if(errMassage.value !== 'Incorrect email or password.'){
@@ -33,7 +32,6 @@ export const useauthStore = defineStore('auth', () => {
       console.error(err);
     }
   }
-
   // register
   const register = async (data) =>{
     console.log(data);

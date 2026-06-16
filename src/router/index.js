@@ -17,7 +17,6 @@ import DetailPage from "../components/DetailPage.vue";
 import Profile from "@/views/Profile.vue";
 import ContactUS from "@/views/ContactUS.vue";
 import AddtoCart from "@/components/AddtoCart.vue";
-
 import ForgotPassword from "@/views/forgotPass/forgotpassword.vue";
 import ResetPassword from "@/views/forgotPass/resetpassword.vue";
 import VerityOtp from "@/views/forgotPass/verityOtp.vue";
@@ -35,9 +34,6 @@ const router = createRouter({
         title: "Home",
       },
     },
-    
-   
-
     {
       path: "/contactUS",
       name: "contactUS",
@@ -147,7 +143,7 @@ const router = createRouter({
       },
     },
     {
-      path: "/sellPage",
+      path: "/sellPage/:id?",
       name: "sellPage",
       component: sellPage,
       meta: {

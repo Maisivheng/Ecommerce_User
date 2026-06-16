@@ -1,11 +1,11 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from "vue";
 import api from "@/API/api";
+import router from "@/router";
 
 // =====================================
 // TOAST
 // =====================================
-
 const toasts = ref([]);
 
 const showToast = (message, type = "success") => {
@@ -19,7 +19,6 @@ const showToast = (message, type = "success") => {
 const removeToast = (id) => {
   toasts.value = toasts.value.filter((t) => t.id !== id);
 };
-
 // =====================================
 // CONFIRM MODAL
 // =====================================
@@ -113,7 +112,7 @@ const getProducts = async () => {
 
     const response = await api.get("/api/profile/products?page=1&per_page=20");
 
-    console.log("PRODUCTS:", response.data);
+    // console.log("PRODUCTS:", response.data);
 
     products.value = response.data.data || [];
   } catch (error) {
@@ -125,254 +124,11 @@ const getProducts = async () => {
   }
 };
 
-// =====================================
-// GET CATEGORIES
-// =====================================
-
-const getCategories = async () => {
-  try {
-    categoryLoading.value = true;
-
-    const response = await api.get("/api/categories");
-
-    console.log("CATEGORIES:", response.data);
-
-    categories.value = response.data.data || [];
-  } catch (error) {
-    console.log(error);
-
-    showToast(error.response?.data?.message || "Get Categories Failed", "error");
-  } finally {
-    categoryLoading.value = false;
-  }
+// edit 
+const editProduct = (product) => {
+  // Navigate to sellPage and pass the product ID as a parameter
+  router.push({ name: "sellPage", params: { id: product.id } });
 };
-
-// =====================================
-// VALIDATE FORM
-// =====================================
-
-const validateForm = () => {
-  let isValid = true;
-
-  errors.title = "";
-  errors.price = "";
-  errors.condition = "";
-  errors.description = "";
-  errors.category_ids = "";
-  errors.image = "";
-
-  if (!form.title.trim()) {
-    errors.title = "Title is required";
-    isValid = false;
-  }
-
-  if (!form.price && form.price !== 0) {
-    errors.price = "Price is required";
-    isValid = false;
-  }
-
-  if (!form.condition.trim()) {
-    errors.condition = "Condition is required";
-    isValid = false;
-  }
-
-  if (!form.description.trim()) {
-    errors.description = "Description is required";
-    isValid = false;
-  }
-
-  if (
-    form.category_ids[0] === "" ||
-    form.category_ids[0] === null ||
-    form.category_ids[0] === undefined
-  ) {
-    errors.category_ids = "Category is required";
-    isValid = false;
-  }
-
-  if (!isEdit.value && !form.image) {
-    errors.image = "Image is required";
-    isValid = false;
-  }
-
-  return isValid;
-};
-
-// =====================================
-// HANDLE IMAGE
-// =====================================
-
-const handleImage = (event) => {
-  const file = event.target.files[0];
-
-  if (!file) return;
-
-  form.image = file;
-  imagePreview.value = URL.createObjectURL(file);
-};
-
-// =====================================
-// RESET FORM
-// =====================================
-
-const resetForm = () => {
-  form.title = "";
-  form.price = "";
-  form.condition = "";
-  form.description = "";
-  form.detail = "";
-  form.story = "";
-  form.category_ids = [""];
-  form.image = null;
-
-  imagePreview.value = "";
-
-  if (fileInputRef.value) {
-    fileInputRef.value.value = "";
-  }
-
-  errors.title = "";
-  errors.price = "";
-  errors.condition = "";
-  errors.description = "";
-  errors.category_ids = "";
-  errors.image = "";
-};
-
-// =====================================
-// OPEN ADD MODAL
-// =====================================
-
-const openAddModal = () => {
-  resetForm();
-  isEdit.value = false;
-
-  currentProductId.value = null;
-
-  showModal.value = true;
-};
-
-// =====================================
-// OPEN EDIT MODAL
-// =====================================
-
-const openEditModal = (product) => {
-  resetForm();
-
-  isEdit.value = true;
-
-  currentProductId.value = product.id;
-
-  form.title = product.title || "";
-  form.price = product.price ?? "";
-  form.condition = product.condition || "";
-  form.description = product.description || "";
-  form.detail = product.detail || "";
-  form.story = product.story || "";
-
-  if (product.categories?.length > 0) {
-    form.category_ids = [Number(product.categories[0].id)];
-  } else {
-    form.category_ids = [""];
-  }
-
-  imagePreview.value = product.image || "";
-
-  showModal.value = true;
-};
-
-// =====================================
-// SAVE PRODUCT
-// =====================================
-
-const saveProduct = async () => {
-  if (!validateForm()) {
-    return;
-  }
-
-  try {
-    saving.value = true;
-
-    let response;
-
-    // ADD PRODUCT
-    if (!isEdit.value) {
-      const formData = new FormData();
-
-      formData.append("title", form.title);
-      formData.append("price", form.price);
-      formData.append("condition", form.condition);
-      formData.append("description", form.description);
-      formData.append("detail", form.detail || "");
-      formData.append("story", form.story || "");
-      formData.append(
-        "category_ids",
-        JSON.stringify([Number(form.category_ids[0])]),
-      );
-
-      if (form.image) {
-        formData.append("image", form.image);
-      }
-
-      response = await api.post("/api/products", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      showToast(response.data.message || "បន្ថែមផលិតផលបានជោគជ័យ", "success");
-    }
-
-    // UPDATE PRODUCT
-    else {
-      const updateData = new FormData();
-
-      updateData.append("title", form.title);
-      updateData.append("price", form.price);
-      updateData.append("condition", form.condition);
-      updateData.append("description", form.description);
-      updateData.append("detail", form.detail || "");
-      updateData.append("story", form.story || "");
-      updateData.append(
-        "category_ids",
-        JSON.stringify([Number(form.category_ids[0])]),
-      );
-
-      if (form.image instanceof File) {
-        updateData.append("image", form.image);
-      }
-
-      response = await api.post(
-        `/api/products/${currentProductId.value}`,
-        updateData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        },
-      );
-
-      showToast(response.data.message || "Update Product Success", "success");
-    }
-
-    showModal.value = false;
-    getProducts();
-  } catch (error) {
-    console.log("SAVE ERROR:", error);
-
-    if (error.response?.data?.data) {
-      const backendErrors = error.response.data.data;
-
-      if (backendErrors.title) errors.title = backendErrors.title[0];
-      if (backendErrors.price) errors.price = backendErrors.price[0];
-      if (backendErrors.condition) errors.condition = backendErrors.condition[0];
-      if (backendErrors.description) errors.description = backendErrors.description[0];
-      if (backendErrors.category_ids) errors.category_ids = backendErrors.category_ids[0];
-      if (backendErrors.image) errors.image = backendErrors.image[0];
-    }
-
-    showToast(error.response?.data?.message || "Save Product Failed", "error");
-  } finally {
-    saving.value = false;
-  }
-};
-
 // =====================================
 // DELETE PRODUCT
 // =====================================
@@ -385,7 +141,7 @@ const deleteProduct = async () => {
 
     const response = await api.delete(`/api/products/${id}`);
 
-    showToast(response.data.message || "លុបបានជោគជ័យ", "success");
+    showToast("លុបបានជោគជ័យ", "success");
 
     products.value = products.value.filter((item) => item.id !== id);
 
@@ -420,13 +176,9 @@ const changePage = (page) => {
   currentPage.value = page;
 };
 
-// =====================================
-// MOUNTED
-// =====================================
-
 onMounted(() => {
   getProducts();
-  getCategories();
+  // getCategories();
 });
 </script>
 
@@ -435,9 +187,11 @@ onMounted(() => {
     <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h4>ផលិតផលរបស់ខ្ញុំ</h4>
-      <button @click="openAddModal" class="btn btn-primary">
+      <router-link to="/sellPage">
+        <button class="btn btn-primary">
         បន្ថែមផលិតផល
       </button>
+      </router-link>
     </div>
 
     <!-- LOADING -->
@@ -516,18 +270,8 @@ onMounted(() => {
             <td>{{ formatDate(product.created_at) }}</td>
             <td>
               <div class="d-flex justify-content-center gap-2">
-                <button
-                  @click="openEditModal(product)"
-                  class="btn btn-warning btn-sm"
-                >
-                  Edit
-                </button>
-                <button
-                  @click="openConfirmModal(product.id)"
-                  class="btn btn-danger btn-sm"
-                >
-                  Delete
-                </button>
+                <button @click="editProduct(product)" class="btn btn-warning btn-sm">Edit</button>
+                <button @click="openConfirmModal(product.id)" class="btn btn-danger btn-sm">Delete</button>
               </div>
             </td>
           </tr>

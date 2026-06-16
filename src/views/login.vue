@@ -1,68 +1,10 @@
-<!-- Form login -->
-
 <template>
-<!-- <<<<<<< HEAD -->
-    <div class="container min-vh-100 d-flex justify-content-center align-items-center">
-        <div class="card shadow-lg border-0 rounded-5 p-4 w-100" style="max-width: 520px;">
-            <div class="text-center mb-4">
-                <h2 class="fw-bold">សូមស្វាគមន៍</h2>
-                <p class="text-muted">ចូលគណនីរបស់អ្នក</p>
-                <small>{{ form.errors.emailPassword }}</small>
-            </div>
-            <form @submit.prevent="loginForm">
-                <div class="mb-3">
-                    <label class="form-label">អុីមែល</label>
-                    <input type="email" class="form-control" placeholder="បញ្ចូលអុីមែល" v-model="form.email">
-                    <small class="text-danger">{{ form.errors.email }}</small>
-                </div>
-                <div class="mb-3 position-relative">
-                    <label class="form-label">ពាក្យសម្ងាត់</label>
-                    <input type="password" class="form-control" placeholder="បញ្ចូលពាក្យសម្ងាត់" v-model="form.password">
-                    <small class="text-danger">{{ form.errors.password }}</small>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">  
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox">
-                        <label class="form-check-label">
-                            ចងចាំ
-                        </label>
-                    </div>
-                    <router-link to="/forgotpassword" class="text-decoration-none">
-                    ភ្លេចពាក្យសម្ងាត់?
-                    </router-link>
-                </div>
-                <!-- <a class="text-center text-dark">មិនមានគណនី?<span class=" text-primary">បង្កើតគណនី</span> </a> -->
-                <RouterLink to="/register">បង្កើតគណនី</RouterLink>
-                <!-- <button class="btn btn-primary w-100 py-2"> -->
-                <!-- <button class="btn btn-primary w-100 py-2">
-                <a class="text-center text-dark">មិនមានគណនី?<span class=" text-primary">បង្កើតគណនី</span> </a> -->
-                
-                <RouterLink to="/register">បង្កើតគណនី</RouterLink>
-                <button class="btn btn-primary w-100 py-2">
-                    ចូលគណនី
-                </button>
-                <div class="d-flex align-items-center text-muted my-4">
-                    <hr class="flex-grow-1">
-                    <span class="px-3">ឬបន្តជាមួយ</span>
-                    <hr class="flex-grow-1">
-                </div>
-                <div class="text-center">
-                    មិនទាន់មានគណនី?
-                    <router-link to="/register" class="text-decoration-none fw-semibold">
-                    បង្កើតគណនី
-                    </router-link>
-                </div>
-                
-            </form>
-            </div>
-            </div>
   <div class="signin-container">
     <div class="signin-card">
       <div class="signin-header">
         <h1>សូមស្វាគមន៍មកវិញ</h1>
         <p class="subtitle">ចូលគណនីរបស់អ្នក</p>
       </div>
-
       <form @submit.prevent="loginForm" class="signin-form">
         <div class="form-group">
           <label>អុីមែល</label>
@@ -141,108 +83,72 @@
 </template>
 
 <script setup>
-    import {reactive,ref} from 'vue';
-    import router from '@/router';
-    import { useRoute } from 'vue-router';
-    import { useauthStore } from '@/stores/auth';
-    let auth = useauthStore();
-    const route = useRoute();
-    let isvalid = ref(true);
-    const loading = ref(false)
-    let passwordVisible = ref(false)
-    const toast = reactive({
-      message: '',
-      type: 'success'
-    })
-    const showToast = (message, type = 'success') => {
-      toast.message = message
-      toast.type = type
-      setTimeout(() => {
-        toast.message = ''
-      }, 3000)
+  import {reactive,ref} from 'vue';
+  import router from '@/router';
+  import { useRoute } from 'vue-router';
+  import { useauthStore } from '@/stores/auth';
+  let auth = useauthStore();
+  const route = useRoute();
+  let isvalid = ref(true);
+  const loading = ref(false)
+  let passwordVisible = ref(false)
+  const toast = reactive({
+    message: '',
+    type: 'success'
+  })
+  const showToast = (message, type = 'success') => {
+    toast.message = message
+    toast.type = type
+    setTimeout(() => {
+      toast.message = ''
+    }, 3000)
+  }
+  let form = reactive ({
+      email: '',
+      password: '',
+      errors:{
+          email: '',
+          password: '',
+          emailPassword: ''
+      }
+  })
+  const validationForm =()=>{   
+    form.errors.email = '';
+    form.errors.password='';
+    if(!form.email){
+        form.errors.email = 'សូមបញ្ចូលអុីមែលរបស់អ្នក';
+        isvalid.value = false
     }
-    let form = reactive ({
-        email: '',
-        password: '',
-        errors:{
-            email: '',
-            password: '',
-            emailPassword: ''
-        }
-    })
-    const validationForm =()=>{
-        
-        form.errors.email = '';
-        form.errors.password='';
-        if(!form.email){
-            form.errors.email = 'សូមបញ្ចូលអុីមែលរបស់អ្នក';
-            isvalid.value = false
-        }
-        if(!form.password){
-            form.errors.password = 'សូមបញ្ចូលពាក្យសម្ងាត់របស់អ្នក';
-            isvalid.value= false
-        }
-        return isvalid
-        
+    if(!form.password){
+        form.errors.password = 'សូមបញ្ចូលពាក្យសម្ងាត់របស់អ្នក';
+        isvalid.value= false
     }
-    const loginForm = async() => {   
-        // console.log(email.value);
-        // console.log(password.value);
-        if(!validationForm()) return
-            await auth.login(form);
+    return isvalid
+      
+  }
+  const loginForm = async() => {   
+    if(!validationForm()) return
+      loading.value = true;
+      try {
+        const success = await auth.login({
+          email: form.email,
+          password: form.password
+        });
+        if (success) {
+          showToast('ចូលគណនីបានដោយជោគជ័យ', 'success');
+          setTimeout(() => {
             router.push('/');
+          }, 1000);
+        } else {
+          showToast('អ៊ីមែល ឬ ពាក្យសម្ងាត់មិនត្រឹមត្រូវ', 'error');
         }
-
-            loading.value = true;
-              try {
-                const success = await auth.login({
-                  email: form.email,
-                  password: form.password
-                });
-
-                if (success) {
-                  showToast('ចូលគណនីបានដោយជោគជ័យ', 'success');
-                  setTimeout(() => {
-                    router.push('/');
-                  }, 1000);
-                } else {
-                  showToast('អ៊ីមែល ឬ ពាក្យសម្ងាត់មិនត្រឹមត្រូវ', 'error');
-                }
-
-              } catch (error) {
-                console.error(error);
-                showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ', 'error');
-              } finally {
-                loading.value = false;
-              }
-
-            loading.value = true;
-              try {
-                const success = await auth.login({
-                  email: form.email,
-                  password: form.password
-                });
-
-                if (success) {
-                  showToast('ចូលគណនីបានដោយជោគជ័យ', 'success');
-                  setTimeout(() => {
-                    const redirect = route.query.redirect;
-                    if (redirect) {
-                      router.push({ name: redirect });
-                    } else {
-                      router.push('/');
-                    }
-                  }, 1000);
-                } else {
-                  showToast('អ៊ីមែល ឬ ពាក្យសម្ងាត់មិនត្រឹមត្រូវ', 'error');
-                }
-
-              } catch (error) {
-                console.error(error);
-                showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ', 'error');
-              } finally {
-                loading.value = false;
-              }
+      } catch (error) {
+        console.error(error);
+        showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ', 'error');
+      } finally {
+        loading.value = false;
+      }
+  }
 </script>
 
 <style scoped>
