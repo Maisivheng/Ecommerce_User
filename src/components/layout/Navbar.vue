@@ -160,8 +160,8 @@ a {
                 <!-- Buy / Sell -->
                 <li>
                     <div class="nav-item d-flex justify-content-center align-items-center gap-lg-3 my-3 my-lg-0">
-                        <router-link to="/ContactUS" class="btn btn-outline-primary rounded-pill px-3"
-                            :class="{ 'bg-primary active': $route.path === '/ContactUS' }">
+                        <router-link to="/shop-page" class="btn btn-outline-primary rounded-pill px-3"
+                            :class="{ 'bg-primary active': $route.path === '/shop-page' }">
                             <i class="bi bi-bag-check me-1"></i>
                             ទិញ
                         </router-link>
