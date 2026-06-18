@@ -188,6 +188,9 @@ const updateProfileImage = async () => {
       },
     });
 
+    // ប្រើប្រាស់ពេលវេលាដែលច្បាស់លាស់ដើម្បីបំបែក Cache
+    const freshTimestamp = new Date().getTime();
+    imagePreview.value = response.data.avatar + "?t=" + freshTimestamp;
     showToast(response.data.message || "Image Updated", "success");
     getProfile();
   } catch (error) {

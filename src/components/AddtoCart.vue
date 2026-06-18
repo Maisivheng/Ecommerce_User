@@ -36,7 +36,7 @@
             </div>
             <div class="summary-sidebar">
                 <div class="summary-card">
-                    <h2 class="summary-title">សង្ខេបការបម្មង់</h2>
+                    <h2 class="summary-title">សង្ខេបការកម្មង់</h2>
                     
                     <div class="summary-row">
                         <span>ចំនួនទំនិញ</span>

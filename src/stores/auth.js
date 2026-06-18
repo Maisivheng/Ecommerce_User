@@ -46,12 +46,12 @@ export const useauthStore = defineStore('auth', () => {
   }
   // logout
   const Logout = async () =>{
-      const res =await api.delete('/api/logout');
+      const res = await api.delete('/api/logout');
       // console.log(res);
       localStorage.removeItem('token');
       router.push("/")
   }
   return {login, Logout, register, token, success};
-  })
+  });
   
 
