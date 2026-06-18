@@ -105,7 +105,7 @@ export const useCart = defineStore('cart', () => {
                 
                 // responseMessage.value = 'បានបន្ថែមទំនិញទៅក្នុងកន្ត្រកជោគជ័យ!';
                 // responseClass.value = 'success';
-                alert('បានបន្ថែមទំនិញទៅក្នុងកន្ត្រកជោគជ័យ!');
+                // alert('បានបន្ថែមទំនិញទៅក្នុងកន្ត្រកជោគជ័យ!');
             }
         } catch (error) {
             const errorMsg = error.response?.data?.message || error.message;

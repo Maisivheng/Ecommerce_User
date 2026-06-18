@@ -1,5 +1,3 @@
-Form login
-
 <template>
   <div class="signin-container">
     <div class="signin-card">
@@ -7,7 +5,6 @@ Form login
         <h1>សូមស្វាគមន៍មកវិញ</h1>
         <p class="subtitle">ចូលគណនីរបស់អ្នក</p>
       </div>
-
       <form @submit.prevent="loginForm" class="signin-form">
         <div class="form-group">
           <label>អុីមែល</label>
@@ -17,13 +14,12 @@ Form login
               type="email"
               v-model="form.email"
               placeholder="បញ្ចូលអុីមែល"
-              @blur="validateField('email')"
+              
               :disabled="loading"
             />
           </div>
           <small class="text-danger">{{ form.errors.email }}</small>
         </div>
-
         <div class="form-group">
           <label>ពាក្យសម្ងាត់</label>
           <div class="input-icon-wrapper password-field">
@@ -32,7 +28,7 @@ Form login
               :type="passwordVisible ? 'text' : 'password'"
               v-model="form.password"
               placeholder="បញ្ចូលពាក្យសម្ងាត់"
-              @blur="validateField('password')"
+            
               :disabled="loading"
             />
             <button type="button" class="toggle-password" @click="passwordVisible = !passwordVisible" :disabled="loading">
@@ -45,10 +41,10 @@ Form login
         </div>
 
         <div class="options-group">
-          <label class="checkbox-label">
+          <!-- <label class="checkbox-label">
             <input type="checkbox" v-model="rememberMe" :disabled="loading" />
             <span>ចងចាំខ្ញុំ</span>
-          </label>
+          </label> -->
           <router-link to="/forgotpassword" class="text-decoration-none">
             ភ្លេចពាក្យសម្ងាត់?
           </router-link>
@@ -70,7 +66,7 @@ Form login
             បង្កើតគណនី
             </router-link>
         </div>
-    </form>
+      </form>
       <!-- Toast Notification -->
       <div v-if="toast.message" class="toast" :class="toast.type">
         <i
@@ -82,86 +78,77 @@ Form login
         ></i>
         <span>{{ toast.message }}</span>
       </div>
-      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-    import {reactive,ref} from 'vue';
-    import router from '@/router';
-    import { useRoute } from 'vue-router';
-    import { useauthStore } from '@/stores/auth';
-    let auth = useauthStore();
-    const route = useRoute();
-    let isvalid = ref(true);
-    const loading = ref(false)
-    let passwordVisible = ref(false)
-    const toast = reactive({
-      message: '',
-      type: 'success'
-    })
-    const showToast = (message, type = 'success') => {
-      toast.message = message
-      toast.type = type
-      setTimeout(() => {
-        toast.message = ''
-      }, 3000)
+  import {reactive,ref} from 'vue';
+  import router from '@/router';
+  import { useRoute } from 'vue-router';
+  import { useauthStore } from '@/stores/auth';
+  let auth = useauthStore();
+  const route = useRoute();
+  let isvalid = ref(true);
+  const loading = ref(false)
+  let passwordVisible = ref(false)
+  const toast = reactive({
+    message: '',
+    type: 'success'
+  })
+  const showToast = (message, type = 'success') => {
+    toast.message = message
+    toast.type = type
+    setTimeout(() => {
+      toast.message = ''
+    }, 3000)
+  }
+  let form = reactive ({
+      email: '',
+      password: '',
+      errors:{
+          email: '',
+          password: '',
+          emailPassword: ''
+      }
+  })
+  const validationForm =()=>{   
+    form.errors.email = '';
+    form.errors.password='';
+    if(!form.email){
+        form.errors.email = 'សូមបញ្ចូលអុីមែលរបស់អ្នក';
+        isvalid.value = false
     }
-    let form = reactive ({
-        email: '',
-        password: '',
-        errors:{
-            email: '',
-            password: '',
-            emailPassword: ''
-        }
-    })
-    const validationForm =()=>{
-        
-        form.errors.email = '';
-        form.errors.password='';
-        if(!form.email){
-            form.errors.email = 'សូមបញ្ចូលអុីមែលរបស់អ្នក';
-            isvalid.value = false
-        }
-        if(!form.password){
-            form.errors.password = 'សូមបញ្ចូលពាក្យសម្ងាត់របស់អ្នក';
-            isvalid.value= false
-        }
-        return isvalid   
+    if(!form.password){
+        form.errors.password = 'សូមបញ្ចូលពាក្យសម្ងាត់របស់អ្នក';
+        isvalid.value= false
     }
-    const loginForm = async() => {   
-        // console.log(email.value);
-        // console.log(password.value);
-        if(!validationForm()) return
-            loading.value = true;
-              try {
-                const success = await auth.login({
-                  email: form.email,
-                  password: form.password
-                });
-
-                if (success) {
-                  showToast('ចូលគណនីបានដោយជោគជ័យ', 'success');
-                  setTimeout(() => {
-                    const redirect = route.query.redirect;
-                    if (redirect) {
-                      router.push({ name: redirect });
-                    } else {
-                      router.push('/');
-                    }
-                  }, 1000);
-                } else {
-                  showToast('អ៊ីមែល ឬ ពាក្យសម្ងាត់មិនត្រឹមត្រូវ', 'error');
-                }
-
-              } catch (error) {
-                console.error(error);
-                showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ', 'error');
-              } finally {
-                loading.value = false;
-              }
-            };
+    return isvalid
+      
+  }
+  const loginForm = async() => {   
+    if(!validationForm()) return
+      loading.value = true;
+      try {
+        const success = await auth.login({
+          email: form.email,
+          password: form.password
+        });
+        if (success) {
+          showToast('ចូលគណនីបានដោយជោគជ័យ', 'success');
+          setTimeout(() => {
+            router.push('/');
+          }, 1000);
+        } else {
+          showToast('អ៊ីមែល ឬ ពាក្យសម្ងាត់មិនត្រឹមត្រូវ', 'error');
+        }
+      } catch (error) {
+        console.error(error);
+        showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ', 'error');
+      } finally {
+        loading.value = false;
+      }
+  }
 </script>
 
 <style scoped>

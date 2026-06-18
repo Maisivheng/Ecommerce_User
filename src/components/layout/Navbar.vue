@@ -160,13 +160,13 @@ a {
                 <!-- Buy / Sell -->
                 <li>
                     <div class="nav-item d-flex justify-content-center align-items-center gap-lg-3 my-3 my-lg-0">
-                        <router-link to="/ContactUS" class="btn btn-outline-primary rounded-pill px-3"
-                            :class="{ 'bg-primary active': $route.path === '/ContactUS' }">
+                        <router-link to="/shop-page" class="btn btn-outline-primary rounded-pill px-3"
+                            :class="{ 'bg-primary active': $route.path === '/shop-page' }">
                             <i class="bi bi-bag-check me-1"></i>
                             ទិញ
                         </router-link>
 
-                        <router-link to="/sell" class="btn btn-outline-primary rounded-pill px-3">
+                        <router-link to="/sellPage" class="btn btn-outline-primary rounded-pill px-3">
                             <i class="bi bi-shop me-1"></i>
                             លក់
                         </router-link>
@@ -284,7 +284,12 @@ a {
         </router-link>
     </div>
 
-    <div class="modal" tabindex="-1":class="{ 'show': showLogoutModal }" 
+<!-- <<<<<<< HEAD -->
+
+    <!-- ///////////view profile or logout -->
+<!-- ======= -->
+<!-- >>>>>>> 8124509740ef11f94670e4cd98534d2c7d4e4e8d -->
+    <div class="modal" tabindex="-1" :class="{ 'show': showLogoutModal }" 
         :style="{ display: showLogoutModal ? 'block' : 'none', backgroundColor: showLogoutModal ? 'rgba(0,0,0,0.5)' : 'transparent' }"
          @click.self="cancelLogout">
         <div class="modal-dialog">
@@ -337,7 +342,7 @@ a {
     console.log(search.value);
     watch(search, async(value) => {
         console.log(search.value);
-        await productStore.fetchProduct({search : value});
+        await productStore.fetchProduct({search : value});  
     })
 
     function CancelInput(){
@@ -346,17 +351,15 @@ a {
 
     //////get profile image
     const profileStore = useProfileStore();
+    // 1. ចាប់យកឈ្មោះ imagePreview ឱ្យត្រូវនឹងឈ្មោះនៅក្នុង Store ផ្ទាល់តែម្តង
+    let { imagePreview } = storeToRefs(profileStore);
+    
+
+
     onMounted(async () => {
         await productStore.fetchProduct();
+        await profileStore.getProfile();
     });
-    // if(Token.value){
-        onMounted(async()=>{
-            await profileStore.getProfile();
-        });
-        // ចាប់យកឈ្មោះ imagePreview ឱ្យត្រូវនឹងឈ្មោះនៅក្នុង Store ផ្ទាល់តែម្តង
-        let { imagePreview } = storeToRefs(profileStore);
-        console.log(imagePreview)
-    // }
 
     /////////////log out///////////////
     const showLogoutModal = ref(false);

@@ -1,24 +1,23 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import HomeView from "../views/HomeView.vue";
+import { useauthStore } from "@/stores/auth";
+import shopPage from "@/views/shop/shopPage.vue";
 import Register from "@/views/register.vue";
 import Login from "@/views/login.vue";
 import DetailPage from "../components/DetailPage.vue";
-import Checkout from "@/views/CheckoutView.vue";
-import Success from "@/views/Success.vue";
+import CheckoutView from "@/views/CheckoutView.vue";
 import Profile from "@/views/Profile.vue";
 import ContactUS from "@/views/ContactUS.vue";
 import AddtoCart from "@/components/AddtoCart.vue";
-
 import ForgotPassword from "@/views/forgotPass/forgotpassword.vue";
 import ResetPassword from "@/views/forgotPass/resetpassword.vue";
 import VerityOtp from "@/views/forgotPass/verityOtp.vue";
-
-import { useauthStore } from "@/stores/auth.js";
+import sellPage from "@/views/sellPage.vue";
+import sellProduct from "@/components/profiles/sellProduct.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-
   routes: [
     {
       path: "/",
@@ -28,16 +27,6 @@ const router = createRouter({
         title: "Home",
       },
     },
-
-    // {
-    //   path: "/about",
-    //   name: "about",
-    //   component: () => import("../views/AboutView.vue"),
-    //   meta: {
-    //     title: "About",
-    //   },
-    // },
-
     {
       path: "/contactUS",
       name: "contactUS",
@@ -46,7 +35,14 @@ const router = createRouter({
         title: "Contact Us",
       },
     },
-
+    {
+      path: "/sellProduct",
+      name: "SellProduct",
+      component: sellProduct,
+      meta: {
+        title: "Sell Product",
+      },
+    },
     {
       path: "/register",
       name: "register",
@@ -75,23 +71,12 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
-
     {
       path: "/checkout",
       name: "checkout",
-      component: Checkout,
+      component: CheckoutView,
       meta: {
         title: "Checkout",
-        requiresAuth: true,
-      },
-    },
-
-    {
-      path: "/success",
-      name: "success",
-      component: Success,
-      meta: {
-        title: "Success",
         requiresAuth: true,
       },
     },
@@ -123,6 +108,14 @@ const router = createRouter({
       },
     },
     {
+      path: "/shop-page",
+      name: "shop",
+      component: shopPage,
+      meta: {
+        title: "shop",
+      },
+    },
+    {
       path: "/detailpage/:id",
       name: "detailpage",
       component: DetailPage,
@@ -139,11 +132,18 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
+    {
+      path: "/sellPage/:id?",
+      name: "sellPage",
+      component: sellPage,
+      meta: {
+        title: "Sell Page",
+        requiresAuth: true,
+      },
+    },
   ],
 });
-
 router.beforeEach((to) => {
-
   const auth = useauthStore();
   // Change browser title
   document.title = `${to.meta.title} | ពិភពទំនិញ`;
@@ -152,10 +152,9 @@ router.beforeEach((to) => {
   if (to.meta.requiresAuth && !auth.token) {
     return "/login";
   }
-  if(auth.token && to.path == '/login'){
-    return '/'
+  if (auth.token && to.path == "/login") {
+    return "/";
   }
-
 
   return true;
 });
