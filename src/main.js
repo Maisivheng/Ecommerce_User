@@ -19,7 +19,7 @@ const app = createApp(App);
 app.use(createPinia())
 app.use(router)
 
-app.component('Navbar', Navbar)
+app.component('Navbar', Navbar) 
 app.component('Footer', Footer)
 
 app.mount('#app')

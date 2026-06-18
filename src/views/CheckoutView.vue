@@ -82,7 +82,6 @@
         <span v-else class="spinner"></span>
       </button>
     </div>
-
   </div>
   <Footer />
 </template>

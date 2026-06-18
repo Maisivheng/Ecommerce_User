@@ -9,8 +9,8 @@
             <ul class="collapse navbar-collapse navbar-nav justify-content-end align-items-center gap-lg-4 mt-3 mt-lg-0">
                 <li>
                     <div class="nav-item d-flex justify-content-center align-items-center gap-lg-3 my-3 my-lg-0">
-                        <router-link to="/shop-page" class="btn btn-outline-primary rounded-pill px-4 nav-hover" active-class="active-nav">
-                            <i class="bi bi-cart me-1"></i> ចង់ទិញ
+                        <router-link to="/shop-page" class="btn btn-outline-primary rounded-pill px-3 nav-hover" active-class="active-nav">
+                            <i class="bi bi-cart me-1"></i> ទិញ
                         </router-link>
 
                         <router-link to="/sell" class="btn btn-outline-primary rounded-pill px-3 nav-hover" active-class="active-nav">
@@ -58,9 +58,9 @@
                         </ul>
                     </a>
 
-                    <router-link v-else to="/login" class="btn btn-outline-primary rounded-pill px-4">
+                    <button v-else @click="gotoLogin()"  class="btn btn-outline-primary rounded-pill px-4">
                         Login
-                    </router-link>
+                    </button>
                 </li>
             </ul>
         </div>
@@ -102,13 +102,19 @@
 
 <script setup>
     import { storeToRefs } from 'pinia'; 
-    import { RouterLink } from 'vue-router'
+    import { RouterLink, useRouter } from 'vue-router'
     import { useProductStore } from '@/stores/products';
-    import { useProfileStore } from '@/stores/profile';
+    import { useProfileStore } from '@/stores/profile'; // ធានាថា import ត្រឹមត្រូវ
     import { useauthStore } from '@/stores/auth';
     import { onMounted, ref, watch } from 'vue';
-    import { useRouter } from 'vue-router';
-    
+
+    const router = useRouter();   
+    function gotoLogin(){
+        // alert("login")
+        router.push('/login');
+        
+    };
+
     // 🛠️ សម្អាត៖ ទុកការ Import តែម្តងគត់នៅខាងលើ និងលុបការប្រកាសបាតកូដចោល
     import { useCart } from '@/stores/addToCart';
     // ស្វែងរកផ្នែក onMounted ក្នុង Navbar.vue រួចកែដូចខាងក្រោម៖
@@ -150,22 +156,15 @@
         search.value = '';
     }
 
-    //////get profile image
+    ///////////get profile image
     const profileStore = useProfileStore();
-    let { imagePreview } = storeToRefs(profileStore);
-
-    
-    console.log(imagePreview)
-
-
-    onMounted(async () => {
-        await productStore.fetchProduct();
+    const { imagePreview } = storeToRefs(profileStore);
+    onMounted(() => {
+        profileStore.getProfile();
     });
-
 
     /////////////log out///////////////
     const showLogoutModal = ref(false);
-    const router = useRouter();
     const handleLogout = () => {
         showLogoutModal.value = true;
     }
@@ -181,8 +180,9 @@
     const cancelLogout = () => {
         showLogoutModal.value = false;
     }
-    console.log("token"+isLogin.value); 
+    // console.log("token"+isLogin.value); 
 </script>
+
 <style>
     .profile-img {
         width: 25px;
@@ -248,4 +248,3 @@
         color: #0e65ef;
     }
 </style>
-

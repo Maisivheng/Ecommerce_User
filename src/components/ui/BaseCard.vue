@@ -7,16 +7,12 @@
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         
             <div class="col" v-for="product in products" :key="product.id">
-                <div class="product-card-exact">
+                <router-link class="product-card-exact text-decoration-none" :to="`/detailpage/${product.id}`">
                     <div class="badge-container"><span class="badge-red-exact">{{product.condition}}</span></div>
                     
                     <div class="exact-img-wrapper">
                         <img :src="product.image" alt="Smart Watch">
                     </div>
-
-                    <a @click="handleFormSubmit(product)" class="btn-cart text-decoration-none">
-                        <i class="bi bi-cart3 cart"></i>
-                    </a>
 
                     <div class="card-body-content d-flex justify-content-between">
                         <div class="exact-info-title">{{product.title}}</div>
@@ -28,9 +24,9 @@
                     
                     <div class="exact-card-footer">
                         <!-- <span class="exact-stock-text">មានក្នុងស្តុក</span> -->
-                        <router-link :to="`/detailpage/${product.id}`" class="exact-btn-action">ព័ត៌មានលម្អិត</router-link>
+                        <button @click="handleFormSubmit(product)" class="exact-btn-action">បន្ថែមក្នុងកន្រ្តក់</button>
                     </div>
-                </div>
+                </router-link>
             </div>
         </div>
     </main>

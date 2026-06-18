@@ -12,7 +12,7 @@ export const useProductStore = defineStore('product', () => {
         }
         let res = await api.get(url);
         products.value = res.data?.data;
-        console.log(products.value);
+        // console.log(products.value);
     }
 
     
@@ -23,9 +23,9 @@ export const useProductStore = defineStore('product', () => {
             console.error("Error: ID របស់ផលិតផលគឺ undefined មិនអាចហៅ API បានទេ!");
             return;
         }
-        console.log(params)
+        // console.log(params)
         let res = await api.get(`/api/products/${params}`);  
-        console.log(ref)      
+        // console.log(ref)      
         product.value = res.data?.data;
     }
 
