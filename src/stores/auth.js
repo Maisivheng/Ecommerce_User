@@ -15,7 +15,7 @@ export const useauthStore = defineStore('auth', () => {
       const res =await api.post('/api/login', data);
       success.value = res.status;
       errMassage.value = res.data.message;
-      console.log(errMassage.value);
+      // console.log(errMassage.value);
       if(errMassage.value !== 'Incorrect email or password.'){
         token.value = res.data.data.token;
         localStorage.setItem('token', token.value)
