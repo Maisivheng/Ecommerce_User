@@ -10,16 +10,16 @@ export const useProductStore = defineStore('product', () => {
     const categories = ref([]); // បង្កើត state ដើម្បីរក្សាទុក category
 
     async function fetchCategories() {
-        let res = await api.get('/api/categories'); // ហៅ API ទៅកាន់ backend
+        let res = await api.get('/api/categories?'); // ហៅ API ទៅកាន់ backend
         categories.value = res.data?.data;
     }
  
     async function fetchProduct(params = {}) {
         const query = params.search !== undefined ? params.search : searchQuery.value;
         let url = "/api/products";
-        if (params.search) {
-            url += `?search=${encodeURIComponent(query)}`;
-        }
+        // if (params.search) {
+        //     url += `?search=${encodeURIComponent(query)}`;
+        // }
 
         let res = await api.get(url);
         products.value = res.data?.data;

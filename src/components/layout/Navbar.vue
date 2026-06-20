@@ -99,19 +99,19 @@
 </template>
 
 <script setup>
-    import { storeToRefs } from 'pinia'; 
-    import { RouterLink, useRouter} from 'vue-router'
     import { useProductStore } from '@/stores/products';
     import { useProfileStore } from '@/stores/profile'; // ធានាថា import ត្រឹមត្រូវ
     import { useauthStore } from '@/stores/auth';
-    import { onMounted, ref, watch } from 'vue';
+    import { RouterLink, useRouter} from 'vue-router'
+    import { onMounted, ref, watch, computed } from 'vue';
+    import { storeToRefs } from 'pinia'; 
 
 
     // 🛠️ សម្អាត៖ ទុកការ Import តែម្តងគត់នៅខាងលើ និងលុបការប្រកាសបាតកូដចោល
     import { useCart } from '@/stores/addToCart';
     // ស្វែងរកផ្នែក onMounted ក្នុង Navbar.vue រួចកែដូចខាងក្រោម៖
     onMounted(async () => {// ទាញយកទិន្នន័យផលិតផល
-        await productStore.fetchProduct();
+        // await productStore.fetchProduct();
         
         // 🛠️ បន្ថែមថ្មី៖ ទាញយកទិន្នន័យកន្ត្រកទំនិញពី API/LocalStorage មកបង្ហាញលើ Badge
         if (cartStore.fetchCartItems) {
@@ -121,50 +121,25 @@
     let auth = useauthStore();
     const {token} = storeToRefs(auth)
     let Token = ref(token);
-    // console.log(token.value)
-    let isSearchOpen = ref(false);
     const cartStore = useCart();
     const { totalCartItems } = storeToRefs(cartStore);
     let isLogin = ref(null||localStorage.getItem('token'))
-    // console.log(isLogin.value)
-    /////Show and Hide btn search
-    function showHide(){
-        // isShow.value = false;//dosen't use ref again bc it already use
-        isSearchOpen.value = !isSearchOpen.value;
-    }
-    const isFocused = ref(false)
-    function Hide(){
-        isSearchOpen.value = false;
-    }
-
-    ///////Search Product
-    const productStore = useProductStore();
-    // let search = ref('');
-    // // console.log(search.value);
-    // watch(search, async(value) => {
-    //     productStore.searchQuery = value;
-    //     await productStore.fetchProduct({search : value});
-    // })
-
-    // function CancelInput(){
-    //     search.value = '';
-    // }
 
     ///////////get profile image
     const profileStore = useProfileStore();
-    const { avatarUrl } = storeToRefs(profileStore);
-
+    const avatarUrl = computed(() => {
+        return profileStore ? profileStore.avatarUrl : ''; 
+    });
+    
     /////////////log out///////////////
     const showLogoutModal = ref(false);
     const handleLogout = () => {
         showLogoutModal.value = true;
     }
     const confirmLogout = async() => {
-        // console.log(1);
         await auth.Logout();
         showLogoutModal.value = false;
         isLogin.value = localStorage.getItem('token'); 
-        // window.location.reload(); 
     }
     const cancelLogout = () => {
         showLogoutModal.value = false;
@@ -175,9 +150,7 @@
         // router.push("/login");
         window.location.href = "/login";
     };
-    // console.log("token"+isLogin.value); 
 </script>
-
 <style>
     .profile-img {
         width: 25px;
