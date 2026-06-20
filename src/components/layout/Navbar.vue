@@ -2,28 +2,22 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top py-3">
         <div class="container d-flex justify-content-between">
 
-            <!-- Logo -->
             <router-link to="/" class="navbar-brand fw-bold fs-4 text-primary">
                 ពិភពទំនិញ
             </router-link>
 
-            <!-- Navbar -->
-            <ul class="collapse navbar-collapse navbar-nav justify-content-end align-items-center gap-lg-4 mt-3 mt-lg-0">
-                <!-- Buy / Sell -->
-                <li>
-                    <div class="nav-item d-flex justify-content-center align-items-center gap-lg-3 my-3 my-lg-0">
-                        <router-link to="/ContactUS" class="btn btn-outline-primary rounded-pill px-3"
-                            :class="{ 'bg-primary active': $route.path === '/ContactUS' }">
-                            <i class="bi bi-bag-check me-1"></i>
-                            ទិញ
+            <ul class="navbar-nav flex-row justify-content-end align-items-center gap-lg-4 mt-3 mt-lg-0">
+                <li class="nav-item d-flex justify-content-center align-items-center gap-lg-3 my-3 my-lg-0">
+                    <router-link to="/shop-page" class="btn btn-outline-primary rounded-pill px-3 nav-hover" active-class="active-nav">
+                        <i class="bi bi-cart me-1"></i> ទិញ
                         </router-link>
 
-                        <router-link to="/sellPage" class="btn btn-outline-primary rounded-pill px-3">
-                            <i class="bi bi-shop me-1"></i>
-                            លក់
+                    <router-link to="/sellPage" class="btn btn-outline-primary rounded-pill px-3 nav-hover" active-class="active-nav">
+                        <i class="bi bi-shop me-1"></i> លក់
                         </router-link>
+                </li>
                     
-                        <li class="d-flex justify-content-center gap-lg-2 my-3 my-lg-0">
+                <li class="nav-item d-flex justify-content-center gap-lg-2 my-3 my-lg-0">
                             <router-link to="/" class="nav-link">
                                 ទំព័រដើម
                             </router-link>
@@ -32,31 +26,29 @@
                                 ទំនាក់ទំនង
                             </router-link>
                         </li>
-                    </div>
-                </li>
 
-                <!-- Right Side -->
                 <li class="nav-item d-flex align-items-center justify-content-end gap-lg-2 ms-lg-5 w-30">
-                    <!-- Cart -->
-                    <router-link to="/addtoCart" class="nav-link px-2 py-0 rounded-4" style="background: #eff1f2;">
+                    <router-link to="/addtoCart" class="nav-link rounded-4 position-relative px-2 py-0 me-1">
                         <i class="bi bi-cart3"></i>
-                        <small>ចំនួន{{totalCartItems}}</small>
+                        <span v-if="totalCartItems > 0" class="badge rounded-pill bg-danger position-absolute bottom-25 start-100 translate-middle" style="font-size: 0.6rem;">
+                            {{ totalCartItems }}
+                        </span>
+                        <small v-else>ទទេ</small>
                     </router-link>
 
-                    <!-- search -->
-                    <router-link to="" @click="showHide()"
+                    <!-- <router-link to="" @click="showHide()"
                         :class="{ 'text-primary': isSearchOpen }"
                         :style="{ color: isSearchOpen ? primary : '#1f2937' }">
                         <i class="bi bi-search"></i>
-                    </router-link>
+                    </router-link> -->
 
-                    <a v-if="auth.token" @click.prevent="`isSearchOpen = true`" 
+                    <a v-if="isLogin" @click.prevent="`isSearchOpen = true`" 
                         class="nav-link d-flex align-items-start text-decoration-none">
-                        <img :src="imagePreview" class="profile-img"/>
+                        <img :src="avatarUrl" class="profile-img"/>
                         <ul class="dropdown">
                             <li class="dropdown-item mb-2">
                                 <router-link to="/profile" class="dropdown-link text-decoration-none">មើលប្រវត្តិរូប</router-link>
-                            </li>
+                            </li >
 
                             <li class="dropdown-item"> 
                                 <a href="#" @click.prevent.stop="handleLogout" class="dropdown-link text-decoration-none">ចាកចេញ<i class="bi bi-box-arrow-right ms-1"></i></a>
@@ -64,77 +56,26 @@
                         </ul>
                     </a>
 
-                    <!-- Login -->
-                    <router-link v-else to="/login" class="btn btn-outline-primary rounded-pill px-4">
+                    <button v-else @click="gotoLogin"  class="btn btn-outline-primary rounded-pill px-4">
                         Login
-                    </router-link>
+                    </button>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <div class="search d-flex" v-if="isSearchOpen">
-        <div class="search-container-wrapper d-flex gap-2 m-auto">
+    <!-- <div class="search d-flex" v-if="isSearchOpen">
+        <div class="search-container-wrapper d-flex gap-2 m-50">
             <div class="search-wrapper">
                 <i class="bi bi-search"></i>
                 <input type="text" class="search-input" placeholder="ស្វែងរក" v-model="search">
-                <button @click="CancelInput" class=" btn-sm border-0">
+                <button @click="CancelInput" class="btn-sm border-0">
                     <i class="bi bi-x-lg black rounded-pill"></i>
                 </button>               
             </div>
             <button class="btn m-auto btn-cancel" @click="Hide()">បោះបង់</button>
         </div>
-    </div>
-
-    <!-- respone screen -->
-    <div class="aeon-bottom-nav navbar">
-        <router-link to="/" class="nav-item">
-            <i class="bi bi-house-door"></i>
-        </router-link>
-        
-        <router-link to="/" class="nav-item">
-            <i class="bi bi-bag-check"></i>
-            <!-- <span>ទិញ</span> -->
-        </router-link>
-
-        <router-link to="/sell" class="nav-item">
-            <i class="bi bi-shop"></i>
-            <!-- <span>លក់</span> -->
-        </router-link>
-
-        <router-link to="/addtoCart" class="nav-item position-relative" >
-            <i class="bi bi-cart3"></i>
-            <small class="item position-absolute">{{totalCartItems}}</small>
-        </router-link>
-
-        <!-- search -->
-        <router-link to="" @click="showHide()" class="nav-item"
-            :class="{ 'text-primary': isSearchOpen }"
-            :style="{ color: isSearchOpen ? primary : '#1f2937' }">
-            <i class="bi bi-search"></i>
-        </router-link>
-
-        <div v-if="auth.token" @click.prevent="`isSearchOpen = true`" 
-            class="nav-item">
-            <img :src="imagePreview" class="profile-img mb-1"/>
-            <ul class="nav-dropdown text-start">
-                <li class="dropdown-item mb-2">
-                    <router-link to="/profile" class="dropdown-link text-decoration-none">មើលប្រវត្តិរូប</router-link>
-                </li>
-
-                <li class="dropdown-item"> 
-                    <a href="#" @click.prevent.stop="handleLogout" class="dropdown-link text-decoration-none d-inline-block">ចាកចេញ
-                        <i class="bi bi-box-arrow-right fs-6"></i>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Login -->
-        <router-link v-else to="/login" class="btn btn-outline-primary rounded-pill nav-item px-4">
-            Login
-        </router-link>
-    </div>
+    </div> -->
 
     <div class="modal" tabindex="-1" :class="{ 'show': showLogoutModal }" 
         :style="{ display: showLogoutModal ? 'block' : 'none', backgroundColor: showLogoutModal ? 'rgba(0,0,0,0.5)' : 'transparent' }"
@@ -143,7 +84,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">ចាកចេញពីគណនី</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="cancelLogout"></button>
                 </div>
                 <div class="modal-body">
                     <p>តើអ្នកពិតជាចង់ចាកចេញពីកម្មវិធីមែនទេ?</p>
