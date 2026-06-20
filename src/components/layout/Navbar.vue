@@ -44,7 +44,7 @@
                         <i class="bi bi-search"></i>
                     </router-link>
 
-                    <a v-if="Token" @click.prevent="`isSearchOpen = true`" 
+                    <!-- <a v-if="Token" @click.prevent="`isSearchOpen = true`" 
                         class="nav-link d-flex align-items-start text-decoration-none">
                         <img :src="imagePreview" class="profile-img"/>
                         <ul class="dropdown">
@@ -56,8 +56,20 @@
                                 <a href="#" @click.prevent.stop="handleLogout" class="dropdown-link text-decoration-none">ចាកចេញ<i class="bi bi-box-arrow-right ms-1"></i></a>
                             </li>
                         </ul>
-                    </a>
+                    </a> -->
+                    <a v-if="auth.token" @click.prevent="`isSearchOpen = true`" 
+                        class="nav-link d-flex align-items-start text-decoration-none">
+                        <img :src="imagePreview" class="profile-img"/>
+                        <ul class="dropdown">
+                            <li class="dropdown-item mb-2">
+                                <router-link to="/profile" class="dropdown-link text-decoration-none">មើលប្រវត្តិរូប</router-link>
+                            </li>
 
+                            <li class="dropdown-item"> 
+                                <a href="#" @click.prevent.stop="handleLogout" class="dropdown-link text-decoration-none">ចាកចេញ<i class="bi bi-box-arrow-right ms-1"></i></a>
+                            </li>
+                        </ul>
+                    </a>
                     <button v-else @click="gotoLogin()"  class="btn btn-outline-primary rounded-pill px-4">
                         Login
                     </button>
@@ -107,14 +119,30 @@
     import { useProfileStore } from '@/stores/profile'; // ធានាថា import ត្រឹមត្រូវ
     import { useauthStore } from '@/stores/auth';
     import { onMounted, ref, watch } from 'vue';
-
+    let auth = useauthStore();
+    const {token} = storeToRefs(auth)
+    let isSearchOpen = ref(false);
+    const cartStore = useCart();
+    const { totalCartItems } = storeToRefs(cartStore);
+    let isLogin = ref(null||localStorage.getItem('token'))
+    function showHide(){
+        // isShow.value = false;//dosen't use ref again bc it already use
+        isSearchOpen.value = !isSearchOpen.value;
+    }
+    const isFocused = ref(false)
+    function Hide(){
+        isSearchOpen.value = false;
+    }
     const router = useRouter();   
     function gotoLogin(){
         // alert("login")
         router.push('/login');
         
     };
-
+    
+    ///////////get profile image
+    const profileStore = useProfileStore();
+    const { imagePreview } = storeToRefs(profileStore);
     // 🛠️ សម្អាត៖ ទុកការ Import តែម្តងគត់នៅខាងលើ និងលុបការប្រកាសបាតកូដចោល
     import { useCart } from '@/stores/addToCart';
     // ស្វែងរកផ្នែក onMounted ក្នុង Navbar.vue រួចកែដូចខាងក្រោម៖
@@ -126,26 +154,8 @@
         if (cartStore.fetchCartItems) {
             await cartStore.fetchCartItems();
         }
+        await profileStore.getProfile();
     });
-    let auth = useauthStore();
-    const {token} = storeToRefs(auth)
-    let Token = ref(token);
-    // console.log(token.value)
-    let isSearchOpen = ref(false);
-    const cartStore = useCart();
-    const { totalCartItems } = storeToRefs(cartStore);
-    let isLogin = ref(null||localStorage.getItem('token'))
-    
-    /////Show and Hide btn search
-    function showHide(){
-        // isShow.value = false;//dosen't use ref again bc it already use
-        isSearchOpen.value = !isSearchOpen.value;
-    }
-    const isFocused = ref(false)
-    function Hide(){
-        isSearchOpen.value = false;
-    }
-
     ///////Search Product
     let productStore = useProductStore();
     let search = ref('');
@@ -158,13 +168,6 @@
     function CancelInput(){
         search.value = '';
     }
-
-    ///////////get profile image
-    const profileStore = useProfileStore();
-    const { imagePreview } = storeToRefs(profileStore);
-    onMounted(() => {
-        profileStore.getProfile();
-    });
 
     /////////////log out///////////////
     const showLogoutModal = ref(false);
