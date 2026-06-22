@@ -151,8 +151,8 @@
     // const router = useRouter();
     const gotoLogin = ()=>{
         console.log("login")
-        // router.push("/login");
-        window.location.href = "/login";
+        router.push("/login");
+        // window.location.href = "/login";
     };
 </script>
 <style>
