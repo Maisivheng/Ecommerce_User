@@ -107,6 +107,7 @@
     import { RouterLink, useRouter} from 'vue-router'
     import { onMounted, ref, watch, computed } from 'vue';
     import { storeToRefs } from 'pinia'; 
+    import router from '@/router';
 
 
     // 🛠️ សម្អាត៖ ទុកការ Import តែម្តងគត់នៅខាងលើ និងលុបការប្រកាសបាតកូដចោល
@@ -150,7 +151,7 @@
     }
     // const router = useRouter();
     const gotoLogin = ()=>{
-        console.log("login")
+        // console.log("login")
         router.push("/login");
         // window.location.href = "/login";
     };
