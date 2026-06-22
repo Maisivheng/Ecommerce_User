@@ -168,7 +168,6 @@
         color: #b00e0e;
         transform: translate(10px, -190%);
     }
-
     .nav-link .dropdown{
         padding: 10px 15px;
         background-color: #e3eaf4;
