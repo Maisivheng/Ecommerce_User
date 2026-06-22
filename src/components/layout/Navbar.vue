@@ -148,10 +148,7 @@
     }
     // const router = useRouter();
     const gotoLogin = ()=>{
-        alert(1)
-        // console.log("login")
         router.push("/login");
-        // window.location.href = "/login";
     };
 </script>
 <style>
