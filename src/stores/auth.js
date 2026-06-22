@@ -47,7 +47,7 @@ export const useauthStore = defineStore('auth', () => {
   // logout
   const Logout = async () =>{
       try {
-        console.log(token.value);
+        // console.log(token.value);
         await api.delete('/api/logout');
     } catch (error) {
         console.error("Logout API failed, but clearing local state:", error);

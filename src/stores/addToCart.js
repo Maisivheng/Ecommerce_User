@@ -97,7 +97,7 @@ export const useCart = defineStore('cart', () => {
             payload.append('qty', formData.qty);
 
             // បាញ់ POST ទៅ Backend API
-            const response = await api.post('api/carts', payload);
+            const response = await api.post('/api/carts', payload);
 
             if (response.status == 200 || response.status == 201) {
                 // ប្រសិនបើ Backend ឆ្លើយតបមកថាជោគជ័យ យើងចាប់ផ្តើមរក្សាទុកទិន្នន័យក្នុងម៉ាស៊ីនភ្លាម

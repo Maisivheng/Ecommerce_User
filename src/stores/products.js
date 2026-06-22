@@ -8,24 +8,26 @@ export const useProductStore = defineStore('product', () => {
     const searchQuery = ref('');
     const selectedCategory = ref('');
     const categories = ref([]); // បង្កើត state ដើម្បីរក្សាទុក category
+    
+
 
     async function fetchCategories() {
         let res = await api.get('/api/categories?'); // ហៅ API ទៅកាន់ backend
         categories.value = res.data?.data;
     }
- 
+    let product = ref([])
     async function fetchProduct(params = {}) {
         const query = params.search !== undefined ? params.search : searchQuery.value;
-        let url = "/api/products";
+        let url = "/api/products?page=1&per_page=100&search=";
         // if (params.search) {
         //     url += `?search=${encodeURIComponent(query)}`;
         // }
 
         let res = await api.get(url);
         products.value = res.data?.data;
+        // console.log(products.value);
+        
     }
-
-    let product = ref([])
     async function fetchCatchID(params) {
         if (!params) {
             console.error("Error: ID របស់ផលិតផលគឺ undefined មិនអាចហៅ API បានទេ!");
@@ -36,6 +38,8 @@ export const useProductStore = defineStore('product', () => {
         // console.log(ref)      
         product.value = res.data?.data;
     }
+
+    
 
 
     return {
