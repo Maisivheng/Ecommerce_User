@@ -30,7 +30,10 @@
                 <li class="nav-item d-flex align-items-center justify-content-end gap-lg-2 ms-lg-5 w-30">
                     <router-link to="/addtoCart" class="nav-link rounded-4 position-relative px-2 py-0 me-1">
                         <i class="bi bi-cart3"></i>
-                        <span v-if="totalCartItems > 0" class="badge rounded-pill bg-danger position-absolute bottom-25 start-100 translate-middle" style="font-size: 0.6rem;">
+                        <!-- <span v-if="totalCartItems > 0" class="badge rounded-pill bg-danger position-absolute bottom-25 start-100 translate-middle" style="font-size: 0.6rem;">
+                            {{ totalCartItems }}
+                        </span> -->
+                        <span v-if="auth.token || totalCartItems > 0" class="badge rounded-pill bg-danger position-absolute bottom-25 start-100 translate-middle" style="font-size: 0.6rem;">
                             {{ totalCartItems }}
                         </span>
                         <small v-else>ទទេ</small>
@@ -57,7 +60,7 @@
                     </a>
 
                     <button v-else @click="gotoLogin"  class="btn btn-outline-primary rounded-pill px-4">
-                        Login
+                        ចូលគណនី
                     </button>
                 </li>
             </ul>
