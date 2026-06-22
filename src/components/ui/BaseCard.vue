@@ -106,6 +106,41 @@
         selectCategory.value = val === "" ? null : Number(val);
         visibleCount.value = 12; // Reset ចំនួនពេលប្តូរ Category
     };
+
+    ////////add to cart គ្រប់គ្រងការ Add to Cart 
+    const cartStore = useCart(); 
+    const { formData } = storeToRefs(cartStore);
+
+    // ទទួលយក Object ផលិតផលផ្ទាល់ពីប៊ូតុងដែលយើងចុច
+    const handleFormSubmit = async (product) => {
+        if (!product || !product.id) {
+            alert("រកមិនឃើញទិន្នន័យផលិតផលនេះទេ!");
+            return;
+        }
+
+        // ផ្តល់តម្លៃ id ទៅឲ្យ Pinia store 
+        formData.value.product_id = product.id;
+
+        // រៀបចំទិន្នន័យឲ្យមានសុវត្ថិភាពការពារតម្លៃទទេ
+        const safeProduct = {
+            id: product.id,
+            title: product.title || 'មិនមានឈ្មោះ',
+            description: product.description || 'មិនមានការពិពណ៌នា',
+            condition: product.condition || 'ថ្មី',
+            image: product.image || '',
+            price: Number(product.price) || 0 
+        };
+
+        try {
+            // ហៅទៅកាន់ Actions របស់ Cart Store ដើម្បីរក្សាទុក
+            cartStore.pushToLocalCart(safeProduct, 1); // លេខ 1 គឺចំនួន (Quantity) លំនាំដើម
+            await cartStore.addToCart(); 
+            
+            alert("បានថែមផលិតផលទៅក្នុងកន្ត្រកហើយ!");
+        } catch (error) {
+            console.error("មានបញ្ហាពេលថែមចូលកន្ត្រក៖", error);
+        }
+    };
 </script>
 
 
