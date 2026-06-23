@@ -15,7 +15,7 @@ export const useauthStore = defineStore('auth', () => {
       const res =await api.post('/api/login', data);
       success.value = res.status;
       errMassage.value = res.data.message;
-      console.log(errMassage.value);
+      // console.log(errMassage.value);
       if(errMassage.value !== 'Incorrect email or password.'){
         token.value = res.data.data.token;
         localStorage.setItem('token', token.value)
@@ -47,7 +47,7 @@ export const useauthStore = defineStore('auth', () => {
   // logout
   const Logout = async () =>{
       try {
-        console.log(token.value);
+        // console.log(token.value);
         await api.delete('/api/logout');
     } catch (error) {
         console.error("Logout API failed, but clearing local state:", error);

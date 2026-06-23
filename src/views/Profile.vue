@@ -10,6 +10,10 @@ import { ref, reactive, onMounted } from "vue";
 import api from "@/API/api";
 import Footer from "@/components/layout/Footer.vue";
 
+///get image and user name to profile.js
+import { useProfileStore } from "@/stores/profile";
+const profileStore = useProfileStore();
+
 const activeSection = ref("profile");
 const loading = ref(false);
 const imagePreview = ref("");
@@ -79,7 +83,6 @@ const getProfile = async () => {
     loading.value = true;
     const response = await api.get("/api/me");
     const user = response.data.data;
-
     form.name = user.name || "";
     form.email = user.email || "";
     form.phone = user.phone || "";
@@ -161,7 +164,7 @@ const updateProfile = async () => {
 
     successMessage.value = response.data.message || "Update Success";
     showToast(response.data.message || "Profile Updated", "success");
-
+    profileStore.setName(response.data?.data.name);
     isEditing.value = false;
   } catch (error) {
     console.log(error);
@@ -171,8 +174,6 @@ const updateProfile = async () => {
   }
 };
 
-import { useProfileStore } from "@/stores/profile";
-const profileStore = useProfileStore();
 const updateProfileImage = async () => {
   if (!form.image) {
     showToast("Please select image", "error");
@@ -195,7 +196,9 @@ const updateProfileImage = async () => {
     const freshTimestamp = new Date().getTime();
     imagePreview.value = response.data?.data.avatar + "?t=" + freshTimestamp;
     showToast(response.data.message || "Image Updated", "success");
+
     profileStore.setAvatar(imagePreview.value); // Update ទៅ store
+
     getProfile();
   } catch (error) {
     console.log(error);

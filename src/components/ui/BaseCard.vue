@@ -48,18 +48,50 @@
             </div>
         </div>
 
-        <div class="text-center mt-4" v-if="visibleCount < filteredProducts.length">
+        <div class="text-center mt-4" v-if="visibleCount <  filteredProducts.length">
             <button @click="loadMore" class="exact-btn-action">មើលបន្ថែម</button>
+        </div>
+
+        <div class="toast-container">
+            <transition-group name="toast">
+            <div
+                v-for="toast in toasts"
+                :key="toast.id"
+                class="toast-item"
+                :class="toast.type === 'error' ? 'toast-error' : 'toast-success'"
+            >
+                <span class="toast-icon">
+                {{ toast.type === "error" ? "✕" : "✓" }}
+                </span>
+                <span class="toast-message">{{ toast.message }}</span>
+                <!-- <button class="toast-close" @click="removeToast(toast.id)">✕</button> -->
+            </div>
+            </transition-group>
         </div>
     </main>
     
 </template>
 
 <script setup>
-    import { onMounted, ref, computed } from 'vue';
-    import { storeToRefs } from 'pinia';
-    import { useProductStore } from '@/stores/products';
-    import { useCart } from '@/stores/addToCart';
+import { onMounted, ref,reactive, computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useProductStore } from '@/stores/products';
+import { useCart } from '@/stores/addToCart';
+import { useauthStore } from '@/stores/auth';
+import router from '@/router';
+
+    const toasts = ref([]);
+    const showToast = (message, type = "success") => {
+    const id = Date.now();
+    toasts.value.push({ id, message, type });
+    setTimeout(() => {
+        toasts.value = toasts.value.filter((t) => t.id !== id);
+    }, 3500);
+    };
+
+    const removeToast = (id) => {
+    toasts.value = toasts.value.filter((t) => t.id !== id);
+    };
 
     const productStore = useProductStore();
     const { products, categories } = storeToRefs(productStore);
@@ -133,10 +165,18 @@
 
         try {
             // ហៅទៅកាន់ Actions របស់ Cart Store ដើម្បីរក្សាទុក
-            cartStore.pushToLocalCart(safeProduct, 1); // លេខ 1 គឺចំនួន (Quantity) លំនាំដើម
-            await cartStore.addToCart(); 
-            
-            alert("បានថែមផលិតផលទៅក្នុងកន្ត្រកហើយ!");
+            let auth = useauthStore();
+            if(auth.token){
+                cartStore.pushToLocalCart(safeProduct, 1); // លេខ 1 គឺចំនួន (Quantity) លំនាំដើម
+                await cartStore.addToCart(); 
+                showToast("បានបន្ថែមផលិតផលដោយជោគជ័យ","success")
+                
+            }else{
+                alert("អត់ទាន់មានគណនីផងចង់ទិញមិច")
+                showToast("សុំចូលគណនីរបស់អ្នកមុននឹងទិញ","error")
+                return false
+                // router.push('/login')
+            }
         } catch (error) {
             console.error("មានបញ្ហាពេលថែមចូលកន្ត្រក៖", error);
         }
@@ -168,4 +208,35 @@
         background-color: white;
         box-shadow: 0px 0px 5px #2768f4;
     }
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    .toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 280px;
+  max-width: 380px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.toast-success { background: #22c55e; }
+.toast-error { background: #ef4444; }
 </style>
