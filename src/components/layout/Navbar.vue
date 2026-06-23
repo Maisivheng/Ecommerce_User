@@ -99,12 +99,11 @@
             await cartStore.fetchCartItems();
         }
     });
-    let auth = useauthStore();
-    const {token} = storeToRefs(auth)
-    let Token = ref(token);
+    const auth = useauthStore();
+    const { token } = storeToRefs(auth)
     const cartStore = useCart();
     const { totalCartItems } = storeToRefs(cartStore);
-    let isLogin = ref(null||localStorage.getItem('token'))
+    const isLogin = computed(() => !!token.value)
 
     //////get profile image and userName
     onMounted(() => {
@@ -128,17 +127,15 @@
     const confirmLogout = async() => {
         await auth.Logout();
         showLogoutModal.value = false;
-        isLogin.value = localStorage.getItem('token'); 
+        router.push('/');
     }
 
     const cancelLogout = () => {
         showLogoutModal.value = false;
     }
-    // const router = useRouter();
-    const gotoLogin = ()=>{
-        console.log("login")
-        // router.push("/login");
-        window.location.href = "/login";
+
+    const gotoLogin = () => {
+        router.push('/login');
     };
 </script>
 <style>
