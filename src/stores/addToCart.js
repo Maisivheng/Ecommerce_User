@@ -24,6 +24,11 @@ export const useCart = defineStore('cart', () => {
         localStorage.setItem('my_cart', JSON.stringify(newItems))
     }, { deep: true }) // deep: trueជា Object នៅក្នុង Array
 
+    const purchaseHistory = ref(JSON.parse(localStorage.getItem('purchase_history')) || [])
+    watch(purchaseHistory, (newItems) => {
+        localStorage.setItem('purchase_history', JSON.stringify(newItems))
+    }, { deep: true })
+
     // 3. Action សម្រាប់កែប្រែចំនួនទំនិញ (បូក/ដក qty)
     function updateQty(id, newQty) {
         if (newQty < 0) return // ការពារមិនឱ្យតូចជាង 0
@@ -51,6 +56,22 @@ export const useCart = defineStore('cart', () => {
     // Action សម្រាប់សម្អាតកន្ត្រកទាំងមូល
     function clearCart() {
         cartItems.value = []
+    }
+
+    // Action សម្រាប់ទាញយកទំនិញក្នុងកន្ត្រកពី LocalStorage / state
+    function fetchCartItems() {
+        cartItems.value = JSON.parse(localStorage.getItem('my_cart')) || cartItems.value || []
+        return cartItems.value
+    }
+
+    // Action សម្រាប់រក្សាទុកការបញ្ជាទិញរួច
+    function addPurchase(order) {
+        purchaseHistory.value.unshift(order)
+    }
+
+    // Action សម្រាប់សម្អាតប្រវត្តិការទិញ
+    function clearPurchaseHistory() {
+        purchaseHistory.value = []
     }
 
     // 6. Getters (Computed) សម្រាប់គណនាចំនួន និងតម្លៃសរុប
@@ -124,11 +145,14 @@ export const useCart = defineStore('cart', () => {
     responseMessage,
     responseClass,
     cartItems,
+    purchaseHistory,
     totalCartItems, 
     totalCartPrice, // សម្រាប់យកទៅ Loop បង្ហាញនៅលើទំព័រ Cart Page
     updateQty, 
     removeItem, 
     clearCart,
+    addPurchase,
+    clearPurchaseHistory,
     addToCart,
     pushToLocalCart
   };

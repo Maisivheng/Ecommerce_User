@@ -31,14 +31,14 @@
           <!-- BUTTONS -->
           <div class="d-flex flex-wrap gap-3">
 
-            <button class="btn btn-shop">
+            <RouterLink to="/shop-page" class="btn btn-shop d-inline-flex align-items-center">
               <i class="bi bi-bag-fill me-2"></i>
               ទិញឥឡូវនេះ
-            </button>
+            </RouterLink>
 
-            <button class="btn btn-outline-custom">
-              មើលផលិតផល
-            </button>
+            <RouterLink to="/purchased" class="btn btn-outline-custom d-inline-flex align-items-center">
+              មើលការទិញរួច
+            </RouterLink>
 
           </div>
 

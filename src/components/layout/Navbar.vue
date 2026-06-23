@@ -10,11 +10,15 @@
                 <li class="nav-item d-flex justify-content-center align-items-center gap-lg-3 my-3 my-lg-0">
                     <router-link to="/shop-page" class="btn btn-outline-primary rounded-pill px-3 nav-hover" active-class="active-nav">
                         <i class="bi bi-cart me-1"></i> ទិញ
-                        </router-link>
+                    </router-link>
+
+                    <router-link to="/purchased" class="btn btn-outline-primary rounded-pill px-3 nav-hover" active-class="active-nav">
+                        <i class="bi bi-bag-check me-1"></i> ទិញរួច
+                    </router-link>
 
                     <router-link to="/sellPage" class="btn btn-outline-primary rounded-pill px-3 nav-hover" active-class="active-nav">
                         <i class="bi bi-shop me-1"></i> លក់
-                        </router-link>
+                    </router-link>
                 </li>
                     
                 <li class="nav-item d-flex justify-content-center gap-lg-2 my-3 my-lg-0">
@@ -120,18 +124,15 @@
             await cartStore.fetchCartItems();
         }
     });
-    let auth = useauthStore();
-    const {token} = storeToRefs(auth)
-    let Token = ref(token);
+    const auth = useauthStore();
+    const { token } = storeToRefs(auth)
     const cartStore = useCart();
     const { totalCartItems } = storeToRefs(cartStore);
-    let isLogin = ref(null||localStorage.getItem('token'))
+    const isLogin = computed(() => !!token.value)
 
     //////get profile image
     const profileStore = useProfileStore();
-    const avatarUrl = computed(() => {
-        return profileStore ? profileStore.avatarUrl : ''; 
-    });
+    const avatarUrl = computed(() => profileStore ? profileStore.avatarUrl : '');
     
     /////////////log out///////////////
     const showLogoutModal = ref(false);
@@ -142,17 +143,15 @@
     const confirmLogout = async() => {
         await auth.Logout();
         showLogoutModal.value = false;
-        isLogin.value = localStorage.getItem('token'); 
+        router.push('/');
     }
 
     const cancelLogout = () => {
         showLogoutModal.value = false;
     }
-    // const router = useRouter();
-    const gotoLogin = ()=>{
-        console.log("login")
-        // router.push("/login");
-        window.location.href = "/login";
+
+    const gotoLogin = () => {
+        router.push('/login');
     };
 </script>
 <style>

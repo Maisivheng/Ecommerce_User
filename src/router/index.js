@@ -72,6 +72,15 @@ const router = createRouter({
       },
     },
     {
+      path: "/purchased",
+      name: "purchased",
+      component: () => import('@/views/PurchasedView.vue'),
+      meta: {
+        title: "Purchased",
+        requiresAuth: true,
+      },
+    },
+    {
       path: "/checkout",
       name: "checkout",
       component: CheckoutView,
