@@ -107,7 +107,9 @@
 
     //////get profile image and userName
     onMounted(() => {
-        profileStore.getProfile();
+        if(auth.token){
+            profileStore.getProfile();
+        }
     });
     const profileStore = useProfileStore();
     const avatarUrl = computed(() => {

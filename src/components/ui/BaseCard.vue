@@ -139,12 +139,13 @@ import router from '@/router';
         visibleCount.value = 12; // Reset ចំនួនពេលប្តូរ Category
     };
 
-    ////////add to cart គ្រប់គ្រងការ Add to Cart 
-    const cartStore = useCart(); 
-    const { formData } = storeToRefs(cartStore);
+    
 
     // ទទួលយក Object ផលិតផលផ្ទាល់ពីប៊ូតុងដែលយើងចុច
     const handleFormSubmit = async (product) => {
+        ////////add to cart គ្រប់គ្រងការ Add to Cart 
+        const cartStore = useCart(); 
+        const { formData } = storeToRefs(cartStore);
         if (!product || !product.id) {
             alert("រកមិនឃើញទិន្នន័យផលិតផលនេះទេ!");
             return;
@@ -170,12 +171,13 @@ import router from '@/router';
                 cartStore.pushToLocalCart(safeProduct, 1); // លេខ 1 គឺចំនួន (Quantity) លំនាំដើម
                 await cartStore.addToCart(); 
                 showToast("បានបន្ថែមផលិតផលដោយជោគជ័យ","success")
+                console.log(cardStore.addToCart);
                 
             }else{
-                alert("អត់ទាន់មានគណនីផងចង់ទិញមិច")
+                // alert("អត់ទាន់មានគណនីផងចង់ទិញមិច")
                 showToast("សុំចូលគណនីរបស់អ្នកមុននឹងទិញ","error")
-                return false
-                // router.push('/login')
+                // return false
+                router.push('/login')
             }
         } catch (error) {
             console.error("មានបញ្ហាពេលថែមចូលកន្ត្រក៖", error);
