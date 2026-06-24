@@ -296,7 +296,7 @@ onMounted(() => {
                 class="badge"
                 :class="form.verified ? 'bg-success' : 'bg-danger'"
               >
-                {{ form.verified ? "Verified" : "Unverified" }}
+                <!-- {{ form.verified ? "Verified" : "Unverified" }} -->
               </span>
             </div>
           </div>

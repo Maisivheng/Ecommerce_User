@@ -175,7 +175,7 @@ const changePassword = async () => {
                   v-model="form.old_pass"
                   :type="showOldPassword ? 'text' : 'password'"
                   class="form-control"
-                  placeholder="Enter current password"
+                  placeholder="សូមបញ្ចូលពាក្យសម្ងាត់របស់អ្នក"
                 />
                 <span
                   class="input-group-text"
@@ -198,7 +198,7 @@ const changePassword = async () => {
                   v-model="form.new_pass"
                   :type="showNewPassword ? 'text' : 'password'"
                   class="form-control"
-                  placeholder="Enter new password"
+                  placeholder="សូមបញ្ចូលពាក្យសម្ងាត់ថ្មី"
                 />
                 <span
                   class="input-group-text"
@@ -221,7 +221,7 @@ const changePassword = async () => {
                   v-model="form.new_pass_confirmation"
                   :type="showConfirmPassword ? 'text' : 'password'"
                   class="form-control"
-                  placeholder="Confirm password"
+                  placeholder="បញ្ជាក់ពាក្យសម្ងាត់"
                 />
                 <span
                   class="input-group-text"
