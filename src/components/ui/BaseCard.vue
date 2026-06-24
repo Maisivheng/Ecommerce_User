@@ -143,17 +143,14 @@ import router from '@/router';
     const cartStore = useCart(); 
     const { formData } = storeToRefs(cartStore);
 
-    // ទទួលយក Object ផលិតផលផ្ទាល់ពីប៊ូតុងដែលយើងចុច
     const handleFormSubmit = async (product) => {
+        // ១. ត្រួតពិនិត្យភាពត្រឹមត្រូវនៃទិន្នន័យផលិតផល
         if (!product || !product.id) {
-            alert("រកមិនឃើញទិន្នន័យផលិតផលនេះទេ!");
+            showToast("រកមិនឃើញទិន្នន័យផលិតផល!", "error");
             return;
         }
 
-        // ផ្តល់តម្លៃ id ទៅឲ្យ Pinia store 
-        formData.value.product_id = product.id;
-
-        // រៀបចំទិន្នន័យឲ្យមានសុវត្ថិភាពការពារតម្លៃទទេ
+        // ២. រៀបចំទិន្នន័យឱ្យមានសុវត្ថិភាព (Safe Object)
         const safeProduct = {
             id: product.id,
             title: product.title || 'មិនមានឈ្មោះ',
@@ -163,22 +160,20 @@ import router from '@/router';
             price: Number(product.price) || 0 
         };
 
+        // ៣. ពិនិត្យសិទ្ធិអ្នកប្រើប្រាស់
+        let auth = useauthStore();
+        if (!auth.token) {
+            showToast("សុំចូលគណនីរបស់អ្នកមុននឹងទិញ", "error");
+            return;
+        }
         try {
-            // ហៅទៅកាន់ Actions របស់ Cart Store ដើម្បីរក្សាទុក
-            let auth = useauthStore();
-            if(auth.token){
-                cartStore.pushToLocalCart(safeProduct, 1); // លេខ 1 គឺចំនួន (Quantity) លំនាំដើម
-                await cartStore.addToCart(); 
-                showToast("បានបន្ថែមផលិតផលដោយជោគជ័យ","success")
-                
-            }else{
-                alert("អត់ទាន់មានគណនីផងចង់ទិញមិច")
-                showToast("សុំចូលគណនីរបស់អ្នកមុននឹងទិញ","error")
-                return false
-                // router.push('/login')
-            }
+            // បញ្ជូន safeProduct ចូលទៅក្នុង addToCart
+            await cartStore.addToCart(safeProduct, 1);
+            showToast("បានបន្ថែមផលិតផលដោយជោគជ័យ", "success");
         } catch (error) {
-            console.error("មានបញ្ហាពេលថែមចូលកន្ត្រក៖", error);
+            const errorMsg = error.response?.data?.message || "មានបញ្ហាក្នុងការបន្ថែមទៅកន្ត្រក";
+            showToast(`បរាជ័យ: ${errorMsg}`, "error");
+            console.error("កំហុសក្នុងការបន្ថែមទៅកន្ត្រក៖", error);
         }
     };
 </script>
