@@ -24,6 +24,11 @@ export const useCart = defineStore('cart', () => {
         localStorage.setItem('my_cart', JSON.stringify(newItems))
     }, { deep: true }) // deep: trueជា Object នៅក្នុង Array
 
+    const purchaseHistory = ref(JSON.parse(localStorage.getItem('purchase_history')) || [])
+    watch(purchaseHistory, (newItems) => {
+        localStorage.setItem('purchase_history', JSON.stringify(newItems))
+    }, { deep: true })
+
     // 3. Action សម្រាប់កែប្រែចំនួនទំនិញ (បូក/ដក qty)
     function updateQty(id, newQty) {
         if (newQty < 0) return // ការពារមិនឱ្យតូចជាង 0
@@ -51,6 +56,22 @@ export const useCart = defineStore('cart', () => {
     // Action សម្រាប់សម្អាតកន្ត្រកទាំងមូល
     function clearCart() {
         cartItems.value = []
+    }
+
+    // Action សម្រាប់ទាញយកទំនិញក្នុងកន្ត្រកពី LocalStorage / state
+    function fetchCartItems() {
+        cartItems.value = JSON.parse(localStorage.getItem('my_cart')) || cartItems.value || []
+        return cartItems.value
+    }
+
+    // Action សម្រាប់រក្សាទុកការបញ្ជាទិញរួច
+    function addPurchase(order) {
+        purchaseHistory.value.unshift(order)
+    }
+
+    // Action សម្រាប់សម្អាតប្រវត្តិការទិញ
+    function clearPurchaseHistory() {
+        purchaseHistory.value = []
     }
 
     // 6. Getters (Computed) សម្រាប់គណនាចំនួន និងតម្លៃសរុប
@@ -85,51 +106,51 @@ export const useCart = defineStore('cart', () => {
     localStorage.setItem('my_cart', JSON.stringify(cartItems.value));
   };
 
-    // Function សម្រាប់បាញ់ POST ទៅ Backend និងហៅកូដរក្សាទុកខាងលើ
-    const addToCart = async (productDetail) => {
+    // ក្នុង cartStore.js
+    const addToCart = async (productDetail, selectedQty) => {
         if (loading.value) return;
         loading.value = true;
         responseMessage.value = '';
-        
+
         try {
+            // បង្កើត FormData ថ្មី និងបញ្ចូលតម្លៃដែលបានបញ្ជូនមក
             const payload = new FormData();
-            payload.append('product_id', formData.product_id);
-            payload.append('qty', formData.qty);
+            payload.append('product_id', productDetail.id); 
+            payload.append('qty', selectedQty);
 
-            // បាញ់ POST ទៅ Backend API
-            const response = await api.post('api/carts', payload);
+            // បាញ់ POST ទៅ Backend
+            const response = await api.post('/api/carts', payload);
 
-            if (response.status == 200 || response.status == 201) {
-                // ប្រសិនបើ Backend ឆ្លើយតបមកថាជោគជ័យ យើងចាប់ផ្តើមរក្សាទុកទិន្នន័យក្នុងម៉ាស៊ីនភ្លាម
-                pushToLocalCart(productDetail, formData.qty);
-                
-                // responseMessage.value = 'បានបន្ថែមទំនិញទៅក្នុងកន្ត្រកជោគជ័យ!';
-                // responseClass.value = 'success';
-                // alert('បានបន្ថែមទំនិញទៅក្នុងកន្ត្រកជោគជ័យ!');
+            // បើជោគជ័យ សឹម Update LocalState
+            if (response.status === 200 || response.status === 201) {
+                pushToLocalCart(productDetail, selectedQty);
+                return true; 
             }
         } catch (error) {
-            const errorMsg = error.response?.data?.message || error.message;
-            responseMessage.value = `មានបញ្ហា: ${errorMsg}`;
-            responseClass.value = 'error';
+            // ចាប់យក Error ពី Server ដើម្បីបង្ហាញអ្នកប្រើប្រាស់
+            const errorMsg = error.response?.data?.message || "មានបញ្ហាក្នុងការបន្ថែមទៅកន្ត្រក";
+            responseMessage.value = errorMsg;
             console.error('API Error:', error);
+            throw error; // បោះ Error ទៅ Component ដើម្បីបង្ហាញ Toast
         } finally {
             loading.value = false;
         }
     };
-
-  // Export variables និង functions ទាំងអស់ចេញទៅក្រៅសម្រាប់ឱ្យទំព័រផ្សេងៗហៅប្រើ
-  return {
-    formData,
-    loading,
-    responseMessage,
-    responseClass,
-    cartItems,
-    totalCartItems, 
-    totalCartPrice, // សម្រាប់យកទៅ Loop បង្ហាញនៅលើទំព័រ Cart Page
-    updateQty, 
-    removeItem, 
-    clearCart,
-    addToCart,
-    pushToLocalCart
-  };
+    return {
+        formData,
+        loading,
+        responseMessage,
+        responseClass,
+        cartItems,
+        purchaseHistory,
+        totalCartItems, 
+        totalCartPrice, // សម្រាប់យកទៅ Loop បង្ហាញនៅលើទំព័រ Cart Page
+        updateQty, 
+        removeItem, 
+        clearCart,
+        addPurchase,
+        clearPurchaseHistory,
+        addToCart,
+        pushToLocalCart
+    };
 });

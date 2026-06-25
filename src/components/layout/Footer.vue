@@ -24,9 +24,9 @@
                 <div class="col-md-4 col-lg-3">
                     <h6 class="fw-bold text-dark mb-3" style="font-family: 'Inter', sans-serif; font-size: 18px;">Follow us</h6>
                     <div class="d-flex gap-3">
-                        <a to="anttraining2023@gmail.com" class="text-dark fs-5"><i class="bi bi-facebook"></i></a>
-                        <a to="anttraining2023@gmail.com" class="text-dark fs-5"><i class="bi bi-youtube"></i></a>
-                        <a to="/" class="text-dark fs-5"><i class="bi bi-instagram"></i></a>
+                        <a href="https://facebook.com" target="_blank" rel="noreferrer" class="text-dark fs-5"><i class="bi bi-facebook"></i></a>
+                        <a href="https://youtube.com" target="_blank" rel="noreferrer" class="text-dark fs-5"><i class="bi bi-youtube"></i></a>
+                        <a href="https://instagram.com" target="_blank" rel="noreferrer" class="text-dark fs-5"><i class="bi bi-instagram"></i></a>
                     </div>
                 </div>
             </div>

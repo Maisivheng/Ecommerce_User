@@ -1,53 +1,57 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top py-3">
-        <div class="container d-flex justify-content-between">
+        <div class="container d-flex justify-content-between align-items-center">
 
             <router-link to="/" class="navbar-brand fw-bold fs-4 text-primary">
                 ពិភពទំនិញ
             </router-link>
 
-            <ul class="navbar-nav flex-row justify-content-end align-items-center gap-lg-4 mt-3 mt-lg-0">
-                <li class="nav-item d-flex justify-content-center align-items-center gap-lg-3 my-3 my-lg-0">
-                    <router-link to="/shop-page" class="btn btn-outline-primary rounded-pill px-3 nav-hover" active-class="active-nav">
-                        <i class="bi bi-cart me-1"></i> ទិញ
-                        </router-link>
-
-                    <router-link to="/sellPage" class="btn btn-outline-primary rounded-pill px-3 nav-hover" active-class="active-nav">
-                        <i class="bi bi-shop me-1"></i> លក់
-                        </router-link>
-                </li>
-                    
-                <li class="nav-item d-flex justify-content-center gap-lg-2 my-3 my-lg-0">
-                            <router-link to="/" class="nav-link">
-                                ទំព័រដើម
-                            </router-link>
-
-                            <router-link to="/contactUS" class="nav-link">
-                                ទំនាក់ទំនង
-                            </router-link>
-                        </li>
-
-                <li class="nav-item d-flex align-items-center justify-content-end gap-lg-2 ms-lg-5 w-30">
-                    <router-link to="/addtoCart" class="nav-link rounded-4 position-relative px-2 py-0 me-1">
-                        <i class="bi bi-cart3"></i>
-                        <!-- <span v-if="totalCartItems > 0" class="badge rounded-pill bg-danger position-absolute bottom-25 start-100 translate-middle" style="font-size: 0.6rem;">
-                            {{ totalCartItems }}
-                        </span> -->
-                        <span v-if="auth.token || totalCartItems > 0" class="badge rounded-pill bg-danger position-absolute bottom-25 start-100 translate-middle" style="font-size: 0.6rem;">
-                            {{ totalCartItems }}
-                        </span>
-                        <small v-else>ទទេ</small>
+            <ul class="navbar-nav align-items-center flex-row mt-3 mt-lg-0">
+                <li class="nav-item my-3 my-lg-0">
+                    <router-link to="/shop-page" class="btn rounded-pill nav-hover" active-class="active-nav">
+                        <i class="bi bi-cart me-1"></i> 
+                        <small class="sell">ទិញ</small>
                     </router-link>
 
-                    <!-- <router-link to="" @click="showHide()"
-                        :class="{ 'text-primary': isSearchOpen }"
-                        :style="{ color: isSearchOpen ? primary : '#1f2937' }">
-                        <i class="bi bi-search"></i>
-                    </router-link> -->
+                    <router-link to="/sellPage" class="btn rounded-pill nav-hover" active-class="active-nav">
+                        <i class="bi bi-shop me-1"></i> 
+                        <small class="shop">លក់</small>
+                    </router-link>
+                </li>
+                    
+                <li class="nav-item my-3 my-lg-0">
+                    <router-link to="/" class="nav-link">
+                        <i class="bi bi-house-door"></i>
+                        <span class="home">ទំព័រដើម</span>
+                    </router-link>
 
-                    <a v-if="isLogin" @click.prevent="`isSearchOpen = true`" 
-                        class="nav-link d-flex align-items-start text-decoration-none">
+                    <router-link to="/contactUS" class="nav-link">
+                        <i class="bi bi-envelope"></i>                       
+                        <span class="contactUs">ទំនាក់ទំនង</span>
+                    </router-link>
+
+                    <router-link to="/about" class="nav-link">
+                        <i class="bi bi-person-vcard"></i>                      
+                        <span class="about">អំពីពួកយើង</span>
+                    </router-link>
+
+                </li>
+
+                <li class="nav-item d-flex align-items-center justify-content-end gap-lg-2 w-30">
+                    <router-link to="/addtoCart" class="nav-link rounded-4 position-relative px-2 py-0 me-1">
+                        <i class="bi bi-cart3"></i>
+                        <span v-if="auth.token" class="badge rounded-pill bg-danger position-absolute bottom-25 start-100 translate-middle" style="font-size: 0.6rem;">
+                            {{ totalCartItems }}
+                        </span>
+                        <span class="Bagde-title">កន្ត្រក</span>
+                        
+                    </router-link>
+
+                    <div v-if="isLogin" @click.prevent="`isSearchOpen = true`" 
+                        class="nav-link">
+                        <small class="userName" style="font-size: 14px; font-weight: 500; margin-right: 2px;">{{ userName }}</small>
                         <img :src="avatarUrl" class="profile-img"/>
+                        <span class="userName-bottom">{{ userName }}</span>
                         <ul class="dropdown">
                             <li class="dropdown-item mb-2">
                                 <router-link to="/profile" class="dropdown-link text-decoration-none">មើលប្រវត្តិរូប</router-link>
@@ -57,7 +61,7 @@
                                 <a href="#" @click.prevent.stop="handleLogout" class="dropdown-link text-decoration-none">ចាកចេញ<i class="bi bi-box-arrow-right ms-1"></i></a>
                             </li>
                         </ul>
-                    </a>
+                    </div>
 
                     <button v-else @click="gotoLogin"  class="btn btn-outline-primary rounded-pill px-4">
                         ចូលគណនី
@@ -66,19 +70,6 @@
             </ul>
         </div>
     </nav>
-
-    <!-- <div class="search d-flex" v-if="isSearchOpen">
-        <div class="search-container-wrapper d-flex gap-2 m-50">
-            <div class="search-wrapper">
-                <i class="bi bi-search"></i>
-                <input type="text" class="search-input" placeholder="ស្វែងរក" v-model="search">
-                <button @click="CancelInput" class="btn-sm border-0">
-                    <i class="bi bi-x-lg black rounded-pill"></i>
-                </button>               
-            </div>
-            <button class="btn m-auto btn-cancel" @click="Hide()">បោះបង់</button>
-        </div>
-    </div> -->
 
     <div class="modal" tabindex="-1" :class="{ 'show': showLogoutModal }" 
         :style="{ display: showLogoutModal ? 'block' : 'none', backgroundColor: showLogoutModal ? 'rgba(0,0,0,0.5)' : 'transparent' }"
@@ -118,17 +109,25 @@
             await cartStore.fetchCartItems();
         }
     });
-    let auth = useauthStore();
-    const {token} = storeToRefs(auth)
-    let Token = ref(token);
+    const auth = useauthStore();
+    const { token } = storeToRefs(auth)
     const cartStore = useCart();
     const { totalCartItems } = storeToRefs(cartStore);
-    let isLogin = ref(null||localStorage.getItem('token'))
+    const isLogin = computed(() => !!token.value)
 
-    //////get profile image
+    //////get profile image and userName
+    onMounted(() => {
+        if(auth.token){
+            profileStore.getProfile();
+        }
+    });
     const profileStore = useProfileStore();
     const avatarUrl = computed(() => {
         return profileStore ? profileStore.avatarUrl : ''; 
+    });
+    const userName = computed(() => {
+        console.log("name"+profileStore?profileStore.userName: "")
+        return profileStore ? profileStore.userName : ''; 
     });
     
     /////////////log out///////////////
@@ -140,21 +139,21 @@
     const confirmLogout = async() => {
         await auth.Logout();
         showLogoutModal.value = false;
-        isLogin.value = localStorage.getItem('token'); 
+        router.push('/');
     }
 
     const cancelLogout = () => {
         showLogoutModal.value = false;
     }
-    // const router = useRouter();
-    const gotoLogin = ()=>{
-        router.push("/login");
+
+    const gotoLogin = () => {
+        router.push('/login');
     };
 </script>
 <style>
     .profile-img {
-        width: 25px;
-        height: 25px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         object-fit: cover;
         border: 2px solid #0d6efd;
@@ -179,12 +178,12 @@
         visibility: hidden;
         transition: 0.8s;
     }
-    .nav-link:hover .dropdown
+    /* .nav-link:hover .dropdown
     {
-        transform: translate(-10%, 30px);
+        transform: translate(-10%, 10px);
         opacity: 1;
         visibility: visible;
-    } 
+    }  */
     
     .nav-item .nav-dropdown{
         padding: 10px 15px;

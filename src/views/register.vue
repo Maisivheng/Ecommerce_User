@@ -277,16 +277,18 @@ const validateForm = () => {
   return !errors.name && !errors.email && !errors.password && !errors.password_confirmation && !errorsaccept.acceptTerms
 }
 
-const resetform = () => {
-  email.form = "";
-  password.form = '';
-  email.form = '';
-  password_confirmation = '';
-  acceptTerms.errorsaccept = '';
-
-  return resetform();
+const resetForm = () => {
+  form.name = ''
+  form.email = ''
+  form.password = ''
+  form.password_confirmation = ''
+  formaccept.acceptTerms = false
+  errors.name = ''
+  errors.email = ''
+  errors.password = ''
+  errors.password_confirmation = ''
+  errorsaccept.acceptTerms = ''
 }
-
 
 const handleSignup = async () => {
   if (!validateForm()) {
@@ -295,29 +297,22 @@ const handleSignup = async () => {
   }
   
   loading.value = true
-
-  const success = await auth.register(form)
-  if (success) {
-      alertSuccess('គណនីត្រូវបានបង្កើតដោយជោគជ័យ!')
-      router.push('/');
-  }
   try {
-    await auth.register(form);
-    // console.log(auth.success);
-    
-    if (auth.success) {
+    const success = await auth.register(form)
+    if (success) {
       showToast('គណនីត្រូវបានបង្កើតដោយជោគជ័យ', 'success')
-      router.push('/')
+      resetForm()
+      router.push('/login')
     } else {
       showToast('មិនអាចបង្កើតគណនីបានទេ សូមព្យាយាមម្តងទៀត', 'error')
     }
-    } catch (error) {
+  } catch (error) {
     console.error('Signup error:', error)
     showToast('កំហុសក្នុងការភ្ជាប់ប្រព័ន្ធ សូមព្យាយាមម្តងទៀត', 'error')
-    } finally {
+  } finally {
     loading.value = false 
-    }
   }
+}
 
   
   // try {

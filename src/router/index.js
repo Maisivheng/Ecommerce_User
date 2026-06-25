@@ -15,6 +15,7 @@ import ResetPassword from "@/views/forgotPass/resetpassword.vue";
 import VerityOtp from "@/views/forgotPass/verityOtp.vue";
 import sellPage from "@/views/sellPage.vue";
 import sellProduct from "@/components/profiles/sellProduct.vue";
+import AboutView from "@/views/AboutView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,14 @@ const router = createRouter({
       component: ContactUS,
       meta: {
         title: "Contact Us",
+      },
+    },
+    {
+      path: "/about",
+      name: "about",
+      component: AboutView,
+      meta: {
+        title: "About Us",
       },
     },
     {
@@ -68,6 +77,15 @@ const router = createRouter({
       component: Profile,
       meta: {
         title: "Profile",
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/purchased",
+      name: "purchased",
+      component: () => import('@/views/PurchasedView.vue'),
+      meta: {
+        title: "Purchased",
         requiresAuth: true,
       },
     },

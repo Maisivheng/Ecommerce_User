@@ -1,27 +1,67 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { RouterLink } from "vue-router";
+import { ref, onMounted, computed } from "vue";
 import api from "@/API/api";
-
-// =======================
-// STATES
-// =======================
+import { useCart } from '@/stores/addToCart';
+import { storeToRefs } from 'pinia';
 
 const purchasedProducts = ref([]);
 const loading = ref(false);
+const currentUserName = ref('អ្នកទិញ');
+const cartStore = useCart();
+const { purchaseHistory } = storeToRefs(cartStore);
 
-// =======================
-// GET PURCHASED PRODUCTS
-// =======================
+const hasLocalHistory = computed(() => purchaseHistory.value.length > 0);
 
+const displayProducts = computed(() => {
+  if (purchasedProducts.value.length > 0) {
+    return purchasedProducts.value.map((item) => ({
+      product: item.product || item,
+      qty: item.qty || item.quantity || 1,
+      purchased: true,
+      status: "Purchased Successfully",
+      orderDate: item.date || item.created_at || null,
+      totalPrice: item.totalPrice || item.price || null,
+      buyerName: item.user?.name || currentUserName.value,
+    }));
+  }
+
+  if (purchaseHistory.value.length > 0) {
+    return purchaseHistory.value.flatMap((order) => {
+      return order.items.map((item) => ({
+        product: {
+          image: item.image || "https://via.placeholder.com/400x250?text=No+Image",
+          title: item.title || item.name || "មិនមានឈ្មោះ",
+          price: item.price || 0,
+          creator: { name: currentUserName.value },
+          categories: [],
+          id: item.id,
+        },
+        qty: item.qty || item.quantity || 1,
+        purchased: true,
+        status: `Order #${order.id}`,
+        orderDate: order.date,
+        totalPrice: order.totalPrice,
+      }))
+    })
+  }
+
+  return [];
+});
+
+const getCurrentUser = async () => {
+  try {
+    const response = await api.get('/api/me');
+    const user = response.data.data;
+    currentUserName.value = user?.name || user?.email || 'អ្នកទិញ';
+  } catch (error) {
+    console.warn('Unable to load current user name:', error);
+  }
+};
 
 const getPurchasedProducts = async () => {
   try {
     loading.value = true;
-
     const response = await api.get("/api/profile/purchased");
-
-    // កែសម្រួល៖ ទាញយកតម្លៃពី response និងកំណត់ default ជា Array ទទេ បើគ្មានទិន្នន័យ
     purchasedProducts.value = response.data.data || [];
   } catch (error) {
     console.error("Error fetching purchased products:", error);
@@ -30,11 +70,8 @@ const getPurchasedProducts = async () => {
   }
 };
 
-// =======================
-// MOUNTED
-// =======================
-
 onMounted(() => {
+  getCurrentUser();
   getPurchasedProducts();
 });
 </script>
@@ -89,7 +126,7 @@ onMounted(() => {
 
     <!-- empty state -->
     <div
-      v-else-if="purchasedProducts.length === 0"
+      v-else-if="displayProducts.length === 0"
       class="card card-ui p-5 text-center"
     >
       <i class="bi bi-bag-x text-secondary empty-icon"></i>
@@ -103,8 +140,8 @@ onMounted(() => {
     <div v-else class="row">
       <div
         class="col-lg-4 col-md-6 mb-4"
-        v-for="item in purchasedProducts"
-        :key="item.id"
+        v-for="item in displayProducts"
+        :key="item.product?.id || item.id"
       >
         <div class="card card-ui h-100 overflow-hidden">
           <!-- image (បន្ថែមរូបភាព Default បើករណីគ្មានរូបពី API) -->
@@ -148,17 +185,15 @@ onMounted(() => {
 
             <!-- status -->
             <div class="mb-3">
-              <span class="badge bg-success"> Purchased Successfully </span>
+              <span :class="['badge', item.purchased ? 'bg-success' : 'bg-secondary']">
+                {{ item.status }}
+              </span>
             </div>
 
-            <!-- button -->
-            <RouterLink
-              :to="`/detail/${item.product?.id}`"
-              class="btn btn-outline-primary mt-auto"
-            >
-              <i class="bi bi-eye"></i>
-              View Detail
-            </RouterLink>
+            <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+              <span class="text-muted">Qty: {{ item.qty || 1 }}</span>
+              <span class="text-success fw-bold">${{ item.product?.price?.toFixed(2) || '0.00' }}</span>
+            </div>
           </div>
         </div>
         
