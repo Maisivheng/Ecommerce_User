@@ -302,7 +302,7 @@ const handleSignup = async () => {
     if (success) {
       showToast('គណនីត្រូវបានបង្កើតដោយជោគជ័យ', 'success')
       resetForm()
-      router.push('/')
+      router.push('/login')
     } else {
       showToast('មិនអាចបង្កើតគណនីបានទេ សូមព្យាយាមម្តងទៀត', 'error')
     }
