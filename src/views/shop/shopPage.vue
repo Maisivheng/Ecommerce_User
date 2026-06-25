@@ -67,6 +67,7 @@
                     </span>
                   </div>
 
+
                   <div class="mt-auto d-flex align-items-center justify-content-between gap-2 flex-wrap">
                     <span class="stock-status text-success fw-medium">
                       <i class="bi bi-check-circle-fill me-1 small"></i>មានក្នុងស្តុក
@@ -82,6 +83,23 @@
           </div>
         </div>
       </div>
+
+       <div class="toast-container">
+            <transition-group name="toast">
+            <div
+                v-for="toast in toasts"
+                :key="toast.id"
+                class="toast-item"
+                :class="toast.type === 'error' ? 'toast-error' : 'toast-success'"
+            >
+                <span class="toast-icon">
+                {{ toast.type === "error" ? "✕" : "✓" }}
+                </span>
+                <span class="toast-message">{{ toast.message }}</span>
+                <!-- <button class="toast-close" @click="removeToast(toast.id)">✕</button> -->
+            </div>
+            </transition-group>
+        </div>
     </main>
     <Footer/>
   </div>
@@ -94,6 +112,7 @@ import Navbar from '@/components/layout/Navbar.vue';
 import Footer from '@/components/layout/Footer.vue';
 import { useProductStore } from '@/stores/products';
 import { useCart } from '@/stores/addToCart'; 
+import { useauthStore } from '@/stores/auth';
 
 const nativeRouter = useVueRouter();
 const productsStore = useProductStore();
@@ -145,12 +164,62 @@ const handleImageError = (event) => {
   event.target.src = defaultImage.value;
 }
 
+// const addToCart = async (product) => {
+//   cartStore.formData.product_id = product.id;
+//   cartStore.formData.qty = 1; 
+//   await cartStore.addToCart(product);
+//   nativeRouter.push('/addtoCart')
+// }
+
+const toasts = ref([]);
+const showToast = (message, type = "success") => {
+    const id = Date.now();
+    toasts.value.push({ id, message, type });
+    setTimeout(() => {
+        toasts.value = toasts.value.filter((t) => t.id !== id);
+    }, 3500);
+};
+
+const removeToast = (id) => {
+  toasts.value = toasts.value.filter((t) => t.id !== id);
+};
+
 const addToCart = async (product) => {
-  cartStore.formData.product_id = product.id;
-  cartStore.formData.qty = 1; 
-  await cartStore.addToCart(product);
-  nativeRouter.push('/addtoCart')
-}
+    // ១. ត្រួតពិនិត្យភាពត្រឹមត្រូវនៃទិន្នន័យផលិតផល
+    if (!product || !product.id) {
+        showToast("រកមិនឃើញទិន្នន័យផលិតផល!", "error");
+        return;
+    }
+
+
+    // ២. រៀបចំទិន្នន័យឱ្យមានសុវត្ថិភាព (Safe Object)
+    const safeProduct = {
+        id: product.id,
+        title: product.title || 'មិនមានឈ្មោះ',
+        description: product.description || 'មិនមានការពិពណ៌នា',
+        condition: product.condition || 'ថ្មី',
+        image: product.image || '',
+        price: Number(product.price) || 0 
+    };
+
+    // ៣. ពិនិត្យសិទ្ធិអ្នកប្រើប្រាស់
+    let auth = useauthStore();
+    if (!auth.token) {
+        showToast("សុំចូលគណនីរបស់អ្នកមុននឹងទិញ", "error");
+        return;
+    }
+
+    // ៤. ហៅ Action ទៅកាន់ Store
+    try {
+        // បញ្ជូន safeProduct ចូលទៅក្នុង addToCart
+        await cartStore.addToCart(safeProduct, 1);
+        showToast("បានបន្ថែមផលិតផលដោយជោគជ័យ", "success");
+    } catch (error) {
+        const errorMsg = error.response?.data?.message || "មានបញ្ហាក្នុងការបន្ថែមទៅកន្ត្រក";
+        showToast(`បរាជ័យ: ${errorMsg}`, "error");
+        console.error("កំហុសក្នុងការបន្ថែមទៅកន្ត្រក៖", error);
+    }
+};
 
 const viewDetails = (id) => {
   nativeRouter.push({ name: 'detailpage', params: { id: id } }); 
@@ -171,4 +240,31 @@ const viewDetails = (id) => {
 .product-card:hover .btn-circle-cart-hover { opacity: 1; }
 .btn-details { background-color: #f1f5f9 !important; color: #334155 !important; font-size: 0.78rem; font-weight: 600; padding: 6px 14px !important; border-radius: 6px !important; transition: all 0.2s; }
 .btn-details:hover { background-color: #111111 !important; color: #ffffff !important; }
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 280px;
+  max-width: 380px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.toast-success { background: #22c55e; }
+.toast-error { background: #ef4444; }
 </style>
