@@ -1,4 +1,5 @@
-﻿<template>
+﻿// checkout page
+<template>
   <Navbar />
   <div class="checkout-wrapper">
 
@@ -442,7 +443,6 @@ export default {
         alert('កំហុសក្នុងការស្វែងរក។ សូមព្យាយាមម្តងទៀត។')
       }
     },
-
     locateMe() {
       if (!navigator.geolocation) {
         alert('Browser របស់អ្នកមិនគាំទ្រ Geolocation។')
@@ -472,7 +472,6 @@ export default {
         }
       )
     },
-
     confirmLocation() {
       if (!this.selectedCoords && !this.note) {
         alert('សូមជ្រើសរើសទីតាំងមុន។')

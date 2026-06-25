@@ -340,17 +340,15 @@ const saveProduct = async () => {
         "category_ids",
         JSON.stringify([Number(form.category_ids[0])]),
       );
-
       if (form.image instanceof File) {
         updateData.append("image", form.image);
       }
-
       response = await api.post(`/api/products/${currentProductId.value}`,updateData,{
           headers: { "Content-Type": "multipart/form-data" },
         },
       );
       showToast( "អាប់ដែតផលិតផលបានជោគជ័យ", "success");
-      router.push('/sellPage');
+      router.push('/profile');
       resetForm();
       
     }
