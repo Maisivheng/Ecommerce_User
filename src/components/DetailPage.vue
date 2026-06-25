@@ -153,7 +153,6 @@ const addToCart = async () => {
 
 <style scoped>
 .detail-page {
-  font-family: 'Kantumruuy Pro', sans-serif;
   background-color: #fafafa;
   min-height: 100vh;
 }

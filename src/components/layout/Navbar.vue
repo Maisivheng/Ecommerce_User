@@ -9,22 +9,32 @@
             <ul class="navbar-nav align-items-center flex-row mt-3 mt-lg-0">
                 <li class="nav-item my-3 my-lg-0">
                     <router-link to="/shop-page" class="btn rounded-pill nav-hover" active-class="active-nav">
-                        <i class="bi bi-cart me-1"></i> ទិញ
+                        <i class="bi bi-cart me-1"></i> 
+                        <small class="sell">ទិញ</small>
                     </router-link>
 
                     <router-link to="/sellPage" class="btn rounded-pill nav-hover" active-class="active-nav">
-                        <i class="bi bi-shop me-1"></i> លក់
+                        <i class="bi bi-shop me-1"></i> 
+                        <small class="shop">លក់</small>
                     </router-link>
                 </li>
                     
                 <li class="nav-item my-3 my-lg-0">
                     <router-link to="/" class="nav-link">
-                        ទំព័រដើម
+                        <i class="bi bi-house-door"></i>
+                        <span class="home">ទំព័រដើម</span>
                     </router-link>
 
                     <router-link to="/contactUS" class="nav-link">
-                        ទំនាក់ទំនង
+                        <i class="bi bi-envelope"></i>                       
+                        <span class="contactUs">ទំនាក់ទំនង</span>
                     </router-link>
+
+                    <router-link to="/about" class="nav-link">
+                        <i class="bi bi-person-vcard"></i>                      
+                        <span class="about">អំពីពួកយើង</span>
+                    </router-link>
+
                 </li>
 
                 <li class="nav-item d-flex align-items-center justify-content-end gap-lg-2 w-30">
@@ -33,13 +43,16 @@
                         <span v-if="auth.token" class="badge rounded-pill bg-danger position-absolute bottom-25 start-100 translate-middle" style="font-size: 0.6rem;">
                             {{ totalCartItems }}
                         </span>
-                        <small v-else>ទទេ</small>
+                        <i class="bi bi-cart3"></i>
+                        <span class="Bagde-title">កន្ត្រក</span>
+                        
                     </router-link>
 
                     <div v-if="isLogin" @click.prevent="`isSearchOpen = true`" 
                         class="nav-link">
                         <small class="userName" style="font-size: 14px; font-weight: 500; margin-right: 2px;">{{ userName }}</small>
                         <img :src="avatarUrl" class="profile-img"/>
+                        <span class="userName-bottom">{{ userName }}</span>
                         <ul class="dropdown">
                             <li class="dropdown-item mb-2">
                                 <router-link to="/profile" class="dropdown-link text-decoration-none">មើលប្រវត្តិរូប</router-link>
