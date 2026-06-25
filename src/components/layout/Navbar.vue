@@ -43,7 +43,6 @@
                         <span v-if="auth.token" class="badge rounded-pill bg-danger position-absolute bottom-25 start-100 translate-middle" style="font-size: 0.6rem;">
                             {{ totalCartItems }}
                         </span>
-                        <i class="bi bi-cart3"></i>
                         <span class="Bagde-title">កន្ត្រក</span>
                         
                     </router-link>
