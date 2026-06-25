@@ -38,7 +38,7 @@
           </div>
         </div>
         <div class="col-lg-6 text-center">
-          <!-- <img src="/src/assets/photo_2026-06-09_13-12-58.jpg" class="img-fluid rounded shadow-sm hover-scale" alt="About"> -->
+          <img src="/src/assets/photo_2026-06-25_13-09-38.jpg" class="img-fluid rounded shadow-sm hover-scale" alt="About">
         </div>
       </div>
 
@@ -119,10 +119,10 @@ const teachers = ref([
 const developers = ref([
   { id: 1, name: 'MAI SIVHENG', image: '/src/assets/seaheng.jpg', telegramLink: 'https://t.me/ahsmosmindelsava' },
   { id: 2, name: 'RETH SREYROTH', image: '/src/assets/sreyroth.jpg', telegramLink: 'https://t.me/rothrothkh' },
-  { id: 3, name: 'Eng Sreynichh', image: '/src/assets/sreyninh.png', telegramLink: 'https://t.me/Eng_Sreynichh' },
+  { id: 3, name: 'Eng Sreynichh', image: '/src/assets/sreyninh.jpg', telegramLink: 'https://t.me/Eng_Sreynichh' },
   { id: 4, name: 'BIT MANAT', image: '/src/assets/manat.jpg', telegramLink: 'https://t.me/bit_mana_t' },
   { id: 5, name: 'LEM SENGHOR', image: '/src/assets/senghor.jpg', telegramLink: 'https://t.me/Lemsenghor' },
-  { id: 6, name: 'YEAN MONYRITHY', image: '/src/assets/monyrithy.png', telegramLink: 'https://t.me/Y_Monyrithy' },
+  { id: 6, name: 'YEAN MONYRITHY', image: '/src/assets/monyrithy.jpg', telegramLink: 'https://t.me/Y_Monyrithy' },
   { id: 7, name: 'SRENG MENGLIN', image: '/src/assets/menglin.jpg', telegramLink: 'https://t.me/srengmenglin' },
 ]);
 </script>
