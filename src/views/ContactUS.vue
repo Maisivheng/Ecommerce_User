@@ -6,9 +6,9 @@
 <template>
     <Navbar></Navbar>
     <!-- Banner -->
-    <div class="banner-placeholder border-bottom">
+    <!-- <div class="banner-placeholder border-bottom">
         <p class="text-muted m-0">[ រូបភាព Banner គ្រឿងទេស និងអាហារប្រចាំថ្ងៃរបស់លោកអ្នក ]</p>
-    </div>
+    </div> -->
 
     <!-- Content -->
     <div class="container my-5 py-4 bg-white rounded shadow-sm">
@@ -89,9 +89,9 @@
                     </div>
                     
                     <!-- ផែនទីគំរូ Google Map -->
-                    <div class="ratio ratio-16x9 rounded border overflow-hidden shadow-sm mt-2">
-                        <iframe src="https://google.com" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
+                    <!-- <div class="ratio ratio-16x9 rounded border overflow-hidden shadow-sm mt-2"> -->
+                        <!-- <iframe src="https://google.com" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> -->
+                    <!-- </div> -->
                 </div>
             </div>
             

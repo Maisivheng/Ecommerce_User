@@ -158,7 +158,8 @@ const viewDetails = (id) => {
 </script>
 
 <style scoped>
-.shop-page { font-family: 'Kantumruuy Pro', sans-serif; background-color: #f8fafc; min-height: 100vh; }
+
+.shop-page { min-height: 100vh; }
 .search-input-wrapper { min-width: 200px; }
 .search-input-wrapper input { border-radius: 20px !important; padding: 6px 15px; border: 1px solid #e2e8f0; }
 .section-title { font-size: 1.5rem; font-weight: 700; color: #111111; }
